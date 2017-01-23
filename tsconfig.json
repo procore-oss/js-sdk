@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "outFile": "dist/index.js"
+  },
+  "include": [
+    "lib/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "test"
+  ]
+}

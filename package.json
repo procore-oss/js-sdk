@@ -1,0 +1,17 @@
+{
+  "name": "node-procore",
+  "version": "0.0.1",
+  "description": "A wrapper for the procore API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc --watch",
+    "compile": "tsc"
+  },
+  "author": "Procore Tech <insights@procore.com> (http://procore.com)",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.4.7",
+    "typescript": "^2.1.5"
+  }
+}
