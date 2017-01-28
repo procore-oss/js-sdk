@@ -1,3 +1,5 @@
 dist
 node_modules
-typings
+*-debug.log
+*-error.log
+docs

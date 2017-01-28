@@ -1,17 +1,45 @@
 {
-  "name": "node-procore",
-  "version": "0.0.1",
+  "name": "@procore/sdk",
+  "version": "0.5.0",
   "description": "A wrapper for the procore API",
-  "main": "index.js",
+  "main": "lib",
+  "homepage": "https://github.com/procore/node-procore",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/procore/node-procore.git"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha -r ts-node/register test/**/*.spec.ts",
+    "test:watch": "mocha -r ts-node/register test/**/*.spec.ts -w --watch-extensions ts,tsx",
     "watch": "tsc --watch",
-    "compile": "tsc"
+    "compile": "tsc",
+    "docs": "typedoc --includeDeclarations --excludeExternals --readme README.md --target es5 --out docs dist/*.ts",
+    "endpoints": "node-procore-endpoints lib"
   },
   "author": "Procore Tech <insights@procore.com> (http://procore.com)",
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.4.7",
+    "isomorphic-fetch": "^2.2.1",
+    "qs": "^6.3.0",
+    "ramda": "^0.23.0"
+  },
+  "devDependencies": {
+    "@procore/endpoints": "^1.5.1",
+    "@types/chai": "^3.4.34",
+    "@types/core-js": "^0.9.35",
+    "@types/fetch-mock": "^5.8.0",
+    "@types/mocha": "^2.2.38",
+    "@types/qs": "^6.2.30",
+    "@types/ramda": "^0.0.3",
+    "@types/sinon": "^1.16.35",
+    "@types/string": "^0.0.28",
+    "chai": "^3.5.0",
+    "fetch-mock": "^5.9.3",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "string": "^3.3.3",
+    "ts-node": "^2.0.0",
+    "typedoc": "^0.5.6",
     "typescript": "^2.1.5"
   }
 }
