@@ -1,6 +1,6 @@
 {
   "name": "@procore/sdk",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A wrapper for the procore API",
   "main": "lib",
   "homepage": "https://github.com/procore/js-sdk",
