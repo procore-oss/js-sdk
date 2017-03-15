@@ -16,7 +16,7 @@ We recommend installing the package with [yarn](http://yarnpkg.com)
 
 ```javascript
 import 'isomorphic-fetch';
-import { client, oauth, refresher, me, projects } from '@procore/sdk';
+import { client, oauth, refresher, me, projects, images } from '@procore/sdk';
 
 const token = document.head.querySelector('value=auth_token').getAttribute('content');
 
@@ -33,7 +33,8 @@ const procore = client(
 
 Promise.all([
   procore.get(me()),
-  procore.get(projects({ company_id: 2 }))
+  procore.get(projects({ company_id: 2 })),
+  procore.get(images({ action: 'most_recent' }))
 ])
 .then(onSuccess);
 ```
@@ -46,7 +47,7 @@ yarn test
 
 ## Endpoint Generator
 
-[`node-procore-endpoints`](https://github.com/procore/node-procore-endpoints) generates interfaces and endpoint functions for improved developer experience. See the project for more details.
+[`node-procore-endpoints`](https://github.com/procore/js-sdk-endpoints) generates interfaces and endpoint functions for improved developer experience. See the project for more details.
 
 ```typescript
 interface DirectCosts {
@@ -72,7 +73,7 @@ export default directCosts
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/procore/node-procore. This project is
+Bug reports and pull requests are welcome on GitHub at https://github.com/procore/js-sdk. This project is
 intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the
 [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 

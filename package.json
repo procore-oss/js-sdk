@@ -1,6 +1,6 @@
 {
   "name": "@procore/sdk",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A wrapper for the procore API",
   "main": "lib",
   "homepage": "https://github.com/procore/node-procore",
@@ -21,7 +21,8 @@
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
     "qs": "^6.3.0",
-    "ramda": "^0.23.0"
+    "ramda": "^0.23.0",
+    "string": "^3.3.3"
   },
   "devDependencies": {
     "@procore/endpoints": "^1.5.1",
@@ -37,7 +38,6 @@
     "fetch-mock": "^5.9.3",
     "mocha": "^3.2.0",
     "sinon": "^1.17.7",
-    "string": "^3.3.3",
     "ts-node": "^2.0.0",
     "typedoc": "^0.5.6",
     "typescript": "^2.1.5"
