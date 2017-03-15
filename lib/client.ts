@@ -43,11 +43,12 @@ function request(url: string, payload: any, method: string): Function {
 }
 
 export class Client {
-  private readonly hostname: string = hostname;
+  private readonly host: string;
   private authorize: any;
 
-  constructor(authorizer: Authorizer) {
+  constructor(authorizer: Authorizer, host: string = hostname) {
     this.authorize = authorizer.authorize
+    this.host = host
   }
 
   public get = (endpoint: Endpoint): Promise<any> =>
@@ -76,7 +77,7 @@ export class Client {
       collectionUrl => `${collectionUrl}/${params.id}`
     ),
     hostname => `${hostname}${S(base).template(params, '{', '}').s}`
-  )(this.hostname)
+  )(this.host)
 
 }
 
