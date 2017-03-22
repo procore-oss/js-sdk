@@ -1,7 +1,7 @@
 import * as fetchMock from 'fetch-mock'
 import { stringify } from 'qs'
 import { expect } from 'chai'
-import { client, oauth } from './../lib'
+import { client, oauth, implicit } from './../lib'
 
 const project = { id: 3 }
 

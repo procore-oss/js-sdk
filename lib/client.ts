@@ -81,7 +81,7 @@ export class Client {
 
 }
 
-function client(authorizer: Authorizer, host: string) {
+function client(authorizer: Authorizer, host: string = hostname) {
   return new Client(authorizer, host)
 }
 

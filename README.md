@@ -12,6 +12,8 @@ We recommend installing the package with [yarn](http://yarnpkg.com)
 
 ## Example
 
+### Authorization Code Flow
+
 [Setting up a server](/guides/setup.md)
 
 ```javascript
@@ -20,7 +22,7 @@ import { client, oauth, refresher, me, projects, images } from '@procore/sdk';
 
 const token = document.head.querySelector('value=auth_token').getAttribute('content');
 
-const authorizer = oauth({ token });
+const authorizer = oauth(token);
 
 const refreshToken = token => fetch(
   '/oauth/procore/refresh',
@@ -37,6 +39,32 @@ Promise.all([
   procore.get(images({ action: 'most_recent' }))
 ])
 .then(onSuccess);
+```
+
+### Implicit Grant Flow
+When creating an app, register the redirect URI as your app's root URL. E.g. `https://example.com`
+
+```javascript
+import 'isomorphic-fetch';
+import qs from 'qs';
+import { client, oauth, implicit, me, projects, images } from '@procore/sdk';
+
+const clientId = document.head.querySelector('value=client_id').getAttribute('content');
+const redirectUri = document.head.querySelector('value=redirect_uri').getAttribute('content');
+
+const accessToken = qs.parse(window.location).access_token;
+
+if ( !accessToken ) {
+  window.location = implicit({ id: clientId, uri: redirectUri });
+}
+
+const procore = client(oauth(accessToken));
+Promise.all([
+    procore.get(me()),
+    procore.get(projects({ company_id: 2 })),
+    procore.get(images({ action: 'most_recent' }))
+  ])
+}).then(onSuccess);
 ```
 
 
