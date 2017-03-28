@@ -1,7 +1,7 @@
 
 ```javascript
 // server/main.js
-const { authorize, token, refresh} = require('@procore/sdk');
+const { authorize, token, refresh} = require('@procore/js-sdk');
 const Hapi = require('hapi');
 const Joi = require('joi');
 const Session = require('yar');
