@@ -1,6 +1,6 @@
 # Procore JS SDK
 
-[![CircleCI](https://circleci.com/gh/procore/node-procore.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/js-sdk)
+[![CircleCI](https://circleci.com/gh/procore/js-sdk.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/js-sdk)
 
 A node.js and browser compatible JS SDK for the procore API.
 
