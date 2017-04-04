@@ -1,6 +1,6 @@
 {
   "name": "@procore/sdk",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A wrapper for the procore API",
   "main": "lib",
   "homepage": "https://github.com/procore/js-sdk",
@@ -25,7 +25,7 @@
     "string": "^3.3.3"
   },
   "devDependencies": {
-    "@procore/endpoints": "^1.5.1",
+    "@procore/js-sdk-endpoints": "^1.8.0",
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.35",
     "@types/fetch-mock": "^5.8.0",
