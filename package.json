@@ -19,14 +19,13 @@
   "author": "Procore Tech <insights@procore.com> (http://procore.com)",
   "license": "ISC",
   "dependencies": {
-    "@procore/js-sdk-endpoints": "^1.6.0",
+    "@procore/js-sdk-endpoints": "^1.8.0",
     "isomorphic-fetch": "^2.2.1",
     "qs": "^6.3.0",
     "ramda": "^0.23.0",
     "string": "^3.3.3"
   },
   "devDependencies": {
-    "@procore/js-sdk-endpoints": "^1.8.0",
     "@types/chai": "^3.4.34",
     "@types/core-js": "^0.9.35",
     "@types/fetch-mock": "^5.8.0",
