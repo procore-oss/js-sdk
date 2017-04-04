@@ -1,12 +1,12 @@
 # Procore JS SDK
 
-[![CircleCI](https://circleci.com/gh/procore/node-procore.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/node-procore)
+[![CircleCI](https://circleci.com/gh/procore/js-sdk.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/js-sdk)
 
 A node.js and browser compatible JS SDK for the procore API.
 
 ## Installation
 ```bash
-yarn add @procore/sdk
+yarn add @procore/js-sdk
 ```
 We recommend installing the package with [yarn](http://yarnpkg.com)
 
@@ -18,7 +18,7 @@ We recommend installing the package with [yarn](http://yarnpkg.com)
 
 ```javascript
 import 'isomorphic-fetch';
-import { client, oauth, refresher, me, projects, images } from '@procore/sdk';
+import { client, oauth, refresher, me, projects, images } from '@procore/js-sdk';
 
 const token = document.head.querySelector('value=auth_token').getAttribute('content');
 
@@ -47,7 +47,7 @@ When creating an app, register the redirect URI as your app's root URL. E.g. `ht
 ```javascript
 import 'isomorphic-fetch';
 import qs from 'qs';
-import { client, oauth, implicit, me, projects, images } from '@procore/sdk';
+import { client, oauth, implicit, me, projects, images } from '@procore/js-sdk';
 
 const clientId = document.head.querySelector('value=client_id').getAttribute('content');
 const redirectUri = document.head.querySelector('value=redirect_uri').getAttribute('content');
