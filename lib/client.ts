@@ -36,7 +36,7 @@ function request(url: string, payload: any, method: string): Function {
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<any> {
     headers.append(authKey, authValue)
 
-    return fetch(url, { mode: 'cors', method, headers })
+    return fetch(url, { mode: 'cors', credentials: 'include', method, headers })
       .then(authValid)
       .then(res => res.json())
   }
