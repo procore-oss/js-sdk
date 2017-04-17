@@ -4,7 +4,8 @@
 import { client, csrf } from 'procore';
 
 const procore = client(
-  csrf()
+  csrf(),
+  ''
 );
 
 procore

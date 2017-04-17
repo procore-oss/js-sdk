@@ -36,9 +36,18 @@ function request(url: string, payload: any, method: string): Function {
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<any> {
     headers.append(authKey, authValue)
 
-    return fetch(url, { mode: 'cors', credentials: 'include', method, headers })
+    const request = fetch(url, { mode: 'cors', credentials: 'include', method, headers });
+
+    return request
       .then(authValid)
-      .then(res => res.json())
+      .then((response) => new Promise((res, rej) => {
+        return response
+          .json()
+          .then((body) => {
+            res({ body, request, response })
+          })
+          .catch(rej);
+      }))
   }
 }
 

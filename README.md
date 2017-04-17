@@ -64,7 +64,20 @@ Promise.all([
     procore.get(projects({ company_id: 2 })),
     procore.get(images({ action: 'most_recent' }))
   ])
-}).then(onSuccess);
+})
+  .then(onSuccess);
+```
+
+## Responses
+A single response resolution contains the JSON parsed body, original request, and complete response.
+
+```javascript
+  procore
+    .get(projects({ company_id: 1 }))
+    .then({ body, response, request } => {
+      console.log(body[0].name); // ACME Construction LLC.
+      console.log(response.headers.get('Total')) // 865 (Total records for the resource)
+    });
 ```
 
 

@@ -33,8 +33,8 @@ describe('client', () => {
             base: '/vapid/projects/{project_id}/rfis',
             params: { project_id: 3  }
           }, rfi)
-          .then((res) => {
-            expect(res).to.eql(rfi)
+          .then(({ body }) => {
+            expect(body).to.eql(rfi)
             done()
           })
       })
@@ -53,8 +53,8 @@ describe('client', () => {
         it('gets a signleton resource', (done) => {
           procore
             .get({ base: '/vapid/me', params: {} })
-            .then((res) => {
-              expect(res).to.eql(me)
+            .then(({ body }) => {
+              expect(body).to.eql(me)
 
               done()
             })
@@ -71,8 +71,8 @@ describe('client', () => {
             .get(
               { base: '/vapid/projects/{project_id}/rfis', params: { project_id: project.id, id: rfi.id } }
             )
-            .then(res => {
-              expect(res).to.eql(rfi)
+            .then(({ body }) => {
+              expect(body).to.eql(rfi)
 
               done()
             })
@@ -89,8 +89,8 @@ describe('client', () => {
             .get(
               { base: '/vapid/projects/{project_id}/rfis', params: { project_id: project.id }, action: 'recycle_bin' }
             )
-            .then(res => {
-              expect(res).to.eql([rfi])
+            .then(({ body }) => {
+              expect(body).to.eql([rfi])
 
               done()
             })

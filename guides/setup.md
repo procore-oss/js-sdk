@@ -51,6 +51,7 @@ server.register([Session], () => {
           .then(({ auth_token, refresh_token }) => {
             client(oauth(auth_token))
               .get(me())
+              .then(res => res.json())
               .then(({ id }) => {
                 request.yar.set("user_id", id)
 
@@ -85,6 +86,7 @@ server.register([Session], () => {
           token: auth.auth_token,
           refresh: auth.refresh_token
         })
+        .then(res => res.json())
         .then(({ auth_token, refresh_token }) => {
           auth.auth_token = auth_token
 
