@@ -48,11 +48,10 @@ server.register([Session], () => {
       validate: { query: { code: Joi.string() } },
       handler: (req, reply) => {
         token({ id: clientId, secret: clientSecret, uri: redirectUri, code: req.query.code })
-          .then(({ auth_token, refresh_token }) => {
+          .then(({ body: { auth_token, refresh_token } }) => {
             client(oauth(auth_token))
               .get(me())
-              .then(res => res.json())
-              .then(({ id }) => {
+              .then(({ body: { id } }) => {
                 request.yar.set("user_id", id)
 
                 const authorizationCode = new AuthorizationCode({
@@ -86,8 +85,7 @@ server.register([Session], () => {
           token: auth.auth_token,
           refresh: auth.refresh_token
         })
-        .then(res => res.json())
-        .then(({ auth_token, refresh_token }) => {
+        .then(({ body: { auth_token, refresh_token } }) => {
           auth.auth_token = auth_token
 
           auth.refresh_token = refresh_token
