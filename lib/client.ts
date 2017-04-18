@@ -16,6 +16,12 @@ export interface ClientConfig {
   authorize(request: Function): Promise<any>
 }
 
+interface SDKResponse {
+  body: any;
+  response: any;
+  request: any;
+}
+
 const notNil = compose(
   not,
   isNil
@@ -33,7 +39,7 @@ function request(url: string, payload: any, method: string): Function {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
 
-  return function authorizedRequest([authKey, authValue]: Array<string>): Promise<any> {
+  return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     headers.append(authKey, authValue)
 
     const request = fetch(url, { mode: 'cors', credentials: 'include', method, headers });
