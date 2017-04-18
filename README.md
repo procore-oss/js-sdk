@@ -69,7 +69,8 @@ Promise.all([
 ```
 
 ## Responses
-A single response resolution contains the JSON parsed body, original request, and complete response.
+A single API response contains the response body (JSON parsed), original request, and complete response.
+[isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [docs](https://github.github.io/fetch/) for more details.
 
 ```javascript
   procore
