@@ -14,20 +14,15 @@ const token = "token"
 const headers = { 'Authorization': `Bearer ${token}` }
 
 describe('client', () => {
-  afterEach(fetchMock.restore)
-
   context('using oauth', () => {
     describe('#post', () => {
-
-      beforeEach(() => {
-        fetchMock.post(`end:projects/${project.id}/rfis`, rfi)
-      })
 
       const authorizer = oauth(token)
 
       const procore = client(authorizer)
 
       it('creates a resource', (done) => {
+        fetchMock.post(`end:projects/${project.id}/rfis`, rfi)
         procore
           .post({
             base: '/vapid/projects/{project_id}/rfis',
@@ -35,6 +30,9 @@ describe('client', () => {
           }, rfi)
           .then(({ body }) => {
             expect(body).to.eql(rfi)
+
+            fetchMock.restore()
+
             done()
           })
       })
@@ -46,15 +44,15 @@ describe('client', () => {
       const procore = client(authorizer)
 
       describe('singleton', () => {
-        beforeEach(() => {
-          fetchMock.get('end:vapid/me', me)
-        })
-
         it('gets a signleton resource', (done) => {
+          fetchMock.get('end:vapid/me', me)
+
           procore
             .get({ base: '/vapid/me', params: {} })
             .then(({ body }) => {
               expect(body).to.eql(me)
+
+              fetchMock.restore()
 
               done()
             })
@@ -62,11 +60,9 @@ describe('client', () => {
       })
 
       describe('by id', () => {
-        beforeEach(() => {
-          fetchMock.get(`end:vapid/projects/${project.id}/rfis/${rfi.id}`, rfi)
-        })
-
         it('gets the resource', done => {
+          fetchMock.get(`end:vapid/projects/${project.id}/rfis/${rfi.id}`, rfi)
+
           procore
             .get(
               { base: '/vapid/projects/{project_id}/rfis', params: { project_id: project.id, id: rfi.id } }
@@ -74,23 +70,45 @@ describe('client', () => {
             .then(({ body }) => {
               expect(body).to.eql(rfi)
 
+              fetchMock.restore()
+
+              done()
+            })
+        })
+      })
+
+      describe('pagination', () => {
+        it('Total and Per-Page is in response header', (done) => {
+          fetchMock.mock({ response: { body: [],  headers: { Total: 500, 'Per-Page': 10 } }, matcher: 'end:vapid/pagination_test' })
+
+          procore
+            .get({ base: '/vapid/pagination_test', params: {} })
+            .then(({ body, response }) => {
+              expect(body).to.eql([])
+
+              expect(response.headers.get('Total')).to.equal('500')
+
+              expect(response.headers.get('Per-Page')).to.equal('10')
+
+              fetchMock.restore()
+
               done()
             })
         })
       })
 
       describe('action', () => {
-        beforeEach(() => {
-          fetchMock.get(`end:vapid/projects/${project.id}/rfis/recycle_bin`, [rfi])
-        })
-
         it('gets the resources', done => {
+          fetchMock.get(`end:vapid/projects/${project.id}/rfis/recycle_bin`, [rfi])
+
           procore
             .get(
               { base: '/vapid/projects/{project_id}/rfis', params: { project_id: project.id }, action: 'recycle_bin' }
             )
             .then(({ body }) => {
               expect(body).to.eql([rfi])
+
+              fetchMock.restore()
 
               done()
             })
