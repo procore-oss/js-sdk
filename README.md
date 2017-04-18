@@ -64,7 +64,21 @@ Promise.all([
     procore.get(projects({ company_id: 2 })),
     procore.get(images({ action: 'most_recent' }))
   ])
-}).then(onSuccess);
+})
+  .then(onSuccess);
+```
+
+## Responses
+A single API response contains the response body (JSON parsed), original request, and complete response.
+[isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [docs](https://github.github.io/fetch/) for more details.
+
+```javascript
+  procore
+    .get(projects({ company_id: 1 }))
+    .then({ body, response, request } => {
+      console.log(body[0].name); // ACME Construction LLC.
+      console.log(response.headers.get('Total')) // 865 (Total records for the resource)
+    });
 ```
 
 
