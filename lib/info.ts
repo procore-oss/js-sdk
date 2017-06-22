@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
-import hostname from './hostname'
+import _hostname from './hostname'
 
-function info(token: string): Promise<any> {
+function info(token: string, hostname?: string = _hostname): Promise<any> {
   return fetch(`${hostname}/oauth/token/info`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } })
     .then((res) => res.json())
 }
