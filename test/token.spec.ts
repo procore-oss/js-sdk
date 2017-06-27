@@ -32,7 +32,7 @@ describe('token', () => {
   })
 
   it('generates an auth token with hostname', (done) => {
-    token({ hostname: "test.com", id: "clientIdStub", secret: "clientIdStub", code: "codestub", uri: "uri_stub" })
+    token({ id: "clientIdStub", secret: "clientIdStub", code: "codestub", uri: "uri_stub" }, "test.com")
       .then(res => {
         expect(res).to.eql(truthyCustomHostResponse)
 

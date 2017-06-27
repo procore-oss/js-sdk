@@ -7,7 +7,7 @@ export interface ImplicitConfig {
   hostname?: string;
 }
 
-function implicit({ id, uri, hostname = _hostname }: ImplicitConfig): string {
+function implicit({ id, uri }: ImplicitConfig, hostname = _hostname): string {
   return `${hostname}/oauth/authorize?response_type=token&client_id=${id}&redirect_uri=${uri}`;
 }
 

@@ -9,7 +9,7 @@ export interface TokenConfig {
   hostname?: string;
 }
 
-function token({ id, secret, code, uri, hostname = _hostname }: any): Promise<any> {
+function token({ id, secret, code, uri }: any, hostname = _hostname): Promise<any> {
   return fetch(`${hostname}/oauth/token?grant_type=authorization_code&code=${code}&client_id=${id}&client_secret=${secret}&redirect_uri=${uri}`, { method: 'POST' })
     .then(res => res.json())
 }
