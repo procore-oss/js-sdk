@@ -1,7 +1,6 @@
 import * as fetch from 'isomorphic-fetch'
 import { isNil } from 'ramda'
 import token from './token'
-import info from './info'
 import { Authorizer } from './interfaces'
 
 interface OauthHeader extends Array<string> { 0: string, 1: string }
