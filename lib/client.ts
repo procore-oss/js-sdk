@@ -1,7 +1,12 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
 import * as S from 'string'
-import { when, not, isNil, compose, ifElse, identity } from 'ramda'
+import * as when from 'ramda/src/when'
+import * as not from 'ramda/src/not'
+import * as isNil from 'ramda/src/isNil'
+import * as compose from 'ramda/src/compose'
+import * as ifElse from 'ramda/src/ifElse'
+import * as identity from 'ramda/src/identity'
 import { Authorizer } from './interfaces'
 import hostname from './hostname'
 

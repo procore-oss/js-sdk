@@ -1,5 +1,5 @@
 import * as fetch from 'isomorphic-fetch'
-import { isNil } from 'ramda'
+import isNil from 'ramda/src/isNil'
 import token from './token'
 import { Authorizer } from './interfaces'
 
