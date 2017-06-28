@@ -36,13 +36,17 @@ function authValid(response): any {
 }
 
 function request(url: string, payload: any, method: string): Function {
+  const mode: RequestMode = 'cors';
+  const credentials: RequestCredentials = 'include';
   const headers = new Headers()
   headers.append('Accept', 'application/json')
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     headers.append(authKey, authValue)
 
-    const request = fetch(url, { mode: 'cors', credentials: 'include', method, headers });
+    const defaultOpts = { mode, credentials, method, headers };
+    const opts = payload ? Object.assign(defaultOpts, { body: JSON.stringify(payload) }) : defaultOpts;
+    const request = fetch(url, opts);
 
     return request
       .then(authValid)

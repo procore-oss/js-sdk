@@ -4,3 +4,4 @@ node_modules
 *-error.log
 docs
 lib/*.js
+*DS_Store
