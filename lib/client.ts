@@ -35,14 +35,14 @@ function authValid(response): any {
   }
 }
 
-function request(url: string, payload: any, method: string): Function {
+function request(url: string, payload: any, config: RequestInit): Function {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', method, headers }
+  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...config }
 
-  if ((method !== 'GET' && method !== 'HEAD') && payload) {
+  if ((config.method !== 'GET' && config.method !== 'HEAD') && payload) {
     opts.body = JSON.stringify(payload)
   }
 
@@ -67,23 +67,28 @@ function request(url: string, payload: any, method: string): Function {
 export class Client {
   private readonly host: string;
   private authorize: any;
+  private overrideConfig: RequestInit = {};
 
   constructor(authorizer: Authorizer, host: string = hostname) {
     this.authorize = authorizer.authorize
     this.host = host
   }
 
+  public configure = (config: RequestInit) => {
+    this.overrideConfig = config
+  }
+
   public get = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, 'GET'))
+    this.authorize(request(this.url(endpoint), null, { method: 'GET', ...this.overrideConfig }))
 
   public post = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, 'POST'))
+    this.authorize(request(this.url(endpoint), payload, { method: 'POST', ...this.overrideConfig }))
 
   public patch = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, 'PATCH'))
+    this.authorize(request(this.url(endpoint), payload, { method: 'PATCH', ...this.overrideConfig }))
 
   public destroy = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, 'DESTROY'))
+    this.authorize(request(this.url(endpoint), null, { method: 'DESTROY', ...this.overrideConfig }))
 
   private url = ({ base, action, params, qs }: Endpoint): string => compose(
     when(
