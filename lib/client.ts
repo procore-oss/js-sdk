@@ -40,6 +40,7 @@ function request(url: string, payload: any, method: string): Function {
   const credentials: RequestCredentials = 'include';
   const headers = new Headers()
   headers.append('Accept', 'application/json')
+  headers.append('Content-Type', 'application/json');
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     headers.append(authKey, authValue)
