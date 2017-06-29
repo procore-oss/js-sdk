@@ -67,28 +67,28 @@ function request(url: string, payload: any, config: RequestInit): Function {
 export class Client {
   private readonly host: string;
   private authorize: any;
-  private overrideConfig: RequestInit = {};
+  private fetchConfig: RequestInit = {};
 
   constructor(authorizer: Authorizer, host: string = hostname) {
     this.authorize = authorizer.authorize
     this.host = host
   }
 
-  public configure = (config: RequestInit) => {
-    this.overrideConfig = config
+  public configureFetch = (config: RequestInit) => {
+    this.fetchConfig = config
   }
 
   public get = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, { method: 'GET', ...this.overrideConfig }))
+    this.authorize(request(this.url(endpoint), null, { method: 'GET', ...this.fetchConfig }))
 
   public post = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, { method: 'POST', ...this.overrideConfig }))
+    this.authorize(request(this.url(endpoint), payload, { method: 'POST', ...this.fetchConfig }))
 
   public patch = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, { method: 'PATCH', ...this.overrideConfig }))
+    this.authorize(request(this.url(endpoint), payload, { method: 'PATCH', ...this.fetchConfig }))
 
   public destroy = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, { method: 'DESTROY', ...this.overrideConfig }))
+    this.authorize(request(this.url(endpoint), null, { method: 'DESTROY', ...this.fetchConfig }))
 
   private url = ({ base, action, params, qs }: Endpoint): string => compose(
     when(
