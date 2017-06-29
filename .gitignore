@@ -5,3 +5,4 @@ node_modules
 docs
 lib/*.js
 *DS_Store
+.npmrc
