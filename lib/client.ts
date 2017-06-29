@@ -35,16 +35,15 @@ function authValid(response): any {
   }
 }
 
-function request(url: string, payload: any = {}, method: string): Function {
-  const body = JSON.stringify(payload)
+function request(url: string, payload: any, method: string): Function {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
 
   let opts: RequestInit = { mode: 'cors', credentials: 'include', method, headers }
 
-  if (method !== 'GET' && method !== 'HEAD') {
-    opts.body = body
+  if ((method !== 'GET' && method !== 'HEAD') && payload) {
+    opts.body = JSON.stringify(payload)
   }
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
