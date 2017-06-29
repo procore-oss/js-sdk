@@ -36,6 +36,25 @@ describe('client', () => {
             done()
           })
       })
+
+      it('sends a valid body', (done) => {
+        fetchMock.post(`end:projects/${project.id}/rfis`, (url, opts: RequestInit) => {
+          return opts.body;
+        });
+
+        procore
+          .post({
+            base: '/vapid/projects/{project_id}/rfis',
+            params: { project_id: 3  }
+          }, rfi)
+          .then(({ body }) => {
+            expect(body).to.eql(rfi)
+
+            fetchMock.restore()
+
+            done()
+          })
+      })
     })
 
     describe('#get', () => {

@@ -35,19 +35,22 @@ function authValid(response): any {
   }
 }
 
-function request(url: string, payload: any, method: string): Function {
-  const mode: RequestMode = 'cors';
-  const credentials: RequestCredentials = 'include';
+function request(url: string, payload: any = {}, method: string): Function {
+  const body = JSON.stringify(payload)
   const headers = new Headers()
   headers.append('Accept', 'application/json')
-  headers.append('Content-Type', 'application/json');
+  headers.append('Content-Type', 'application/json')
+
+  let opts: RequestInit = { mode: 'cors', credentials: 'include', method, headers }
+
+  if (method !== 'GET' && method !== 'HEAD') {
+    opts.body = body
+  }
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     headers.append(authKey, authValue)
 
-    const defaultOpts = { mode, credentials, method, headers };
-    const opts = payload ? Object.assign(defaultOpts, { body: JSON.stringify(payload) }) : defaultOpts;
-    const request = fetch(url, opts);
+    const request = fetch(url, opts)
 
     return request
       .then(authValid)
