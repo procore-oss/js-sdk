@@ -95,7 +95,7 @@ export class Client {
   public destroy = (endpoint: Endpoint): Promise<any> =>
     this.authorize(request(this.url(endpoint), null, { method: 'DESTROY', ...this.fetchConfig }))
 
-  private url = ({ base, action, params, qs }: Endpoint): string => compose(
+  private url = ({ base, action, params = {}, qs }: Endpoint): string => compose(
     when(
       () => notNil(qs),
       finalUrl => `${finalUrl}?${stringify(qs)}`
