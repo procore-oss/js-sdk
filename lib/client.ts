@@ -77,7 +77,7 @@ export class Client {
   constructor(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
     this.authorize = authorizer.authorize
     this.host = host
-    this.fetchConfig = config;
+    this.fetchConfig = config
   }
 
   public get = (endpoint: Endpoint): Promise<any> =>
@@ -110,8 +110,8 @@ export class Client {
 
 }
 
-function client(authorizer: Authorizer, host: string = hostname) {
-  return new Client(authorizer, host)
+function client(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
+  return new Client(authorizer, config, host)
 }
 
 export default client
