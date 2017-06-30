@@ -72,6 +72,7 @@ function request(url: string, payload: any, config: RequestInit): Function {
 export class Client {
   private readonly host: string;
   private authorize: any;
+  private fetchConfig: RequestInit;
 
   constructor(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
     this.authorize = authorizer.authorize
