@@ -40,16 +40,12 @@ function authValid(response): any {
   }
 }
 
-function request(url: string, payload: any, config: RequestInit): Function {
+const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit): Function => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...config }
-
-  if ((config.method !== 'GET' && config.method !== 'HEAD') && payload) {
-    opts.body = JSON.stringify(payload)
-  }
+  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults,  ...config }
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     headers.append(authKey, authValue)
@@ -72,25 +68,25 @@ function request(url: string, payload: any, config: RequestInit): Function {
 export class Client {
   private readonly host: string;
   private authorize: any;
-  private fetchConfig: RequestInit;
+  private request: Function;
 
   constructor(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
     this.authorize = authorizer.authorize
     this.host = host
-    this.fetchConfig = config
+    this.request = baseRequest(config)
   }
 
   public get = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, { method: 'GET', ...this.fetchConfig }))
+    this.authorize(this.request(this.url(endpoint), { method: 'GET' }))
 
   public post = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, { method: 'POST', ...this.fetchConfig }))
+    this.authorize(this.request(this.url(endpoint), { method: 'POST' , body: JSON.stringify(payload)}))
 
   public patch = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, { method: 'PATCH', ...this.fetchConfig }))
+    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}))
 
   public destroy = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, { method: 'DESTROY', ...this.fetchConfig }))
+    this.authorize(this.request(this.url(endpoint), { method: 'DESTROY' }))
 
   private url = ({ base, action, params = {}, qs }: Endpoint): string => compose(
     when(
@@ -110,8 +106,8 @@ export class Client {
 
 }
 
-function client(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
-  return new Client(authorizer, config, host)
+function client(authorizer: Authorizer, defaults: RequestInit = {}, host: string = hostname): Client {
+  return new Client(authorizer, defaults, host)
 }
 
 export default client
