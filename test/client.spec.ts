@@ -15,8 +15,23 @@ const headers = { 'Authorization': `Bearer ${token}` }
 
 describe('client', () => {
   context('using oauth', () => {
-    describe('#post', () => {
+    describe('request defaults', () => {
+      it('sets default request options', (done) => {
+        const authorizer = oauth(token)
 
+        const procore = client(authorizer, { credentials: 'omit' })
+
+        fetchMock.get(`end:test_config`, {})
+
+        procore
+          .get({ base: '/test_config' })
+          .then(({ response, request }) => {
+            done()
+          })
+      })
+    })
+
+    describe('#post', () => {
       const authorizer = oauth(token)
 
       const procore = client(authorizer)
