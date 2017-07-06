@@ -1,7 +1,12 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
 import * as S from 'string'
-import { when, not, isNil, compose, ifElse, identity } from 'ramda'
+import * as when from 'ramda/src/when'
+import * as not from 'ramda/src/not'
+import * as isNil from 'ramda/src/isNil'
+import * as compose from 'ramda/src/compose'
+import * as ifElse from 'ramda/src/ifElse'
+import * as identity from 'ramda/src/identity'
 import { Authorizer } from './interfaces'
 import hostname from './hostname'
 
@@ -35,16 +40,12 @@ function authValid(response): any {
   }
 }
 
-function request(url: string, payload: any, method: string): Function {
+const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit): Function => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', method, headers }
-
-  if ((method !== 'GET' && method !== 'HEAD') && payload) {
-    opts.body = JSON.stringify(payload)
-  }
+  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults,  ...config }
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     headers.append(authKey, authValue)
@@ -67,25 +68,27 @@ function request(url: string, payload: any, method: string): Function {
 export class Client {
   private readonly host: string;
   private authorize: any;
+  private request: Function;
 
-  constructor(authorizer: Authorizer, host: string = hostname) {
+  constructor(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
     this.authorize = authorizer.authorize
     this.host = host
+    this.request = baseRequest(config)
   }
 
   public get = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, 'GET'))
+    this.authorize(this.request(this.url(endpoint), { method: 'GET' }))
 
   public post = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, 'POST'))
+    this.authorize(this.request(this.url(endpoint), { method: 'POST' , body: JSON.stringify(payload)}))
 
   public patch = (endpoint: Endpoint, payload: any): Promise<any> =>
-    this.authorize(request(this.url(endpoint), payload, 'PATCH'))
+    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}))
 
   public destroy = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(request(this.url(endpoint), null, 'DESTROY'))
+    this.authorize(this.request(this.url(endpoint), { method: 'DESTROY' }))
 
-  private url = ({ base, action, params, qs }: Endpoint): string => compose(
+  private url = ({ base, action, params = {}, qs }: Endpoint): string => compose(
     when(
       () => notNil(qs),
       finalUrl => `${finalUrl}?${stringify(qs)}`
@@ -103,8 +106,8 @@ export class Client {
 
 }
 
-function client(authorizer: Authorizer, host: string = hostname) {
-  return new Client(authorizer, host)
+function client(authorizer: Authorizer, defaults: RequestInit = {}, host: string = hostname): Client {
+  return new Client(authorizer, defaults, host)
 }
 
 export default client
