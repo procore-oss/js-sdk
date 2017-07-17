@@ -16,7 +16,7 @@ export class OauthAuthorizer implements Authorizer {
     this.token = token
   }
 
-  public  authorize = (request: Function): Promise<any> => request(header(this.token))
+  public authorize = (request: Function): Promise<any> => request(header(this.token))
 
   public setToken = (token: string): void => {
     this.token = token

@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { stub } from 'sinon'
+import { stub, match } from 'sinon'
 import { refresher, oauth } from './../lib'
 
 describe('refresher', () => {
@@ -10,7 +10,7 @@ describe('refresher', () => {
 
         const refreshToken = stub().withArgs(token)
 
-        const request = stub().returns(stub({ catch: () => {} }))
+        const request = stub().resolves({ response: { status: 200 } })
 
         const subject = refresher(oauth(token), refreshToken)
 
@@ -21,7 +21,33 @@ describe('refresher', () => {
     })
 
     context('invalid token', () => {
-      it('requests a new token', () => {
+      it('requests a new token', (done) => {
+        const goodToken = 'good'
+        const badToken = 'bad'
+
+        const refreshToken = stub().resolves({access_token: goodToken})
+
+        const requestStub = stub()
+        const badRequest = requestStub.withArgs(
+          match(['Authorization', `Bearer ${badToken}`])
+        )
+        const goodRequest = requestStub.withArgs(
+          match(['Authorization', `Bearer ${goodToken}`])
+        )
+
+        badRequest.rejects({ response: { status: 401 } })
+        goodRequest.resolves({ response: { status: 200 } })
+
+        const subject = refresher(oauth(badToken), refreshToken)
+
+        subject
+          .authorize(requestStub)
+          .then((res) => {
+            expect(refreshToken.calledOnce).to.eql(true)
+            expect(badRequest.calledBefore(goodRequest)).to.eql(true)
+
+            done()
+          })
       })
     })
   })

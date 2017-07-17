@@ -14,13 +14,16 @@ class Refresher {
     const self = this
 
     return self.oauth.authorize(request)
-      .catch(() => self.refresh(self.oauth.getToken())
-        .then(({ auth_token }: any) => {
-          self.oauth.setToken(auth_token)
+      .catch(() => {
+        return self
+          .refresh(self.oauth.getToken())
+          .then(({ access_token }: any) => {
+            self.oauth.setToken(access_token)
 
-          return self.oauth.authorize(request)
-        })
-      )
+            return self.oauth.authorize(request)
+          })
+      })
+
   }
 }
 
