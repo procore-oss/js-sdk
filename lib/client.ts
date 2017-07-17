@@ -33,7 +33,7 @@ const notNil = compose(
 )
 
 function authValid(response): any {
-  if (response.status === 403) {
+  if (response.status === 403 || response.status === 401 || !response.ok) {
     throw new Error(`${response.status} ${response.statusText}`)
   } else {
    return response
@@ -48,7 +48,7 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
   let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults,  ...config }
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
-    headers.append(authKey, authValue)
+    headers.set('Authorization', authValue)
 
     const request = fetch(url, opts)
 
