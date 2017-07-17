@@ -22,7 +22,6 @@ describe('refresher', () => {
 
     context('invalid token', () => {
       it('requests a new token', (done) => {
-        process.on('unhandledRejection', r => console.log(r));
         const goodToken = 'good'
         const badToken = 'bad'
 
