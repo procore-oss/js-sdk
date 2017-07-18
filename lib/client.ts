@@ -6,16 +6,20 @@ import * as not from 'ramda/src/not'
 import * as isNil from 'ramda/src/isNil'
 import * as compose from 'ramda/src/compose'
 import * as ifElse from 'ramda/src/ifElse'
+import * as concat from 'ramda/src/concat'
+import * as is from 'ramda/src/is'
 import * as identity from 'ramda/src/identity'
 import { Authorizer } from './interfaces'
 import hostname from './hostname'
 
-export interface Endpoint {
+export interface EndpointConfig {
   base: string;
   action?: string;
   params?: any;
   qs?: any;
 }
+
+type Endpoint = EndpointConfig | string
 
 export interface ClientConfig {
   authorize(request: Function): Promise<any>
@@ -88,7 +92,13 @@ export class Client {
   public destroy = (endpoint: Endpoint): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'DESTROY' }))
 
-  private url = ({ base, action, params = {}, qs }: Endpoint): string => compose(
+  private url = (endpoint: Endpoint): string => ifElse(
+    is(String),
+    concat(this.host),
+    this.urlConfig
+  )(endpoint)
+
+  private urlConfig = ({ base, action, params = {}, qs }: EndpointConfig): string => compose(
     when(
       () => notNil(qs),
       finalUrl => `${finalUrl}?${stringify(qs)}`
@@ -101,9 +111,8 @@ export class Client {
       () => notNil(params.id),
       collectionUrl => `${collectionUrl}/${params.id}`
     ),
-    hostname => `${hostname}${S(base).template(params, '{', '}').s}`
+    (hostname) => `${hostname}${S(base).template(params, '{', '}').s}`
   )(this.host)
-
 }
 
 function client(authorizer: Authorizer, defaults: RequestInit = {}, host: string = hostname): Client {
