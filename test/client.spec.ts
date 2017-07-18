@@ -91,6 +91,22 @@ describe('client', () => {
               done()
             })
         })
+
+        context('using a string url as the endpoint', () => {
+          it('gets a signleton resource', (done) => {
+            fetchMock.get('end:vapid/me', me)
+
+            procore
+              .get('/vapid/me')
+              .then(({ body }) => {
+                expect(body).to.eql(me)
+
+                fetchMock.restore()
+
+                done()
+              })
+          })
+        })
       })
 
       describe('by id', () => {
