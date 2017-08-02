@@ -44,10 +44,6 @@ function authValid(response): any {
   }
 }
 
-function mergeHeaders(headers: object | Headers): Headers {
-
-}
-
 const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit): Function => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
