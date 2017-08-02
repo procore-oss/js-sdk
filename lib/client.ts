@@ -44,6 +44,10 @@ function authValid(response): any {
   }
 }
 
+function mergeHeaders(headers: object | Headers): Headers {
+
+}
+
 const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit): Function => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
@@ -52,7 +56,7 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
   let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults,  ...config }
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
-    headers.set(authKey, authValue)
+    opts.headers.set(authKey, authValue)
 
     const request = fetch(url, opts)
 
