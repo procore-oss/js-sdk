@@ -52,7 +52,11 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
   let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults,  ...config }
 
   return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
-    headers.set(authKey, authValue)
+    if (opts.headers instanceof Headers) {
+      opts.headers.set(authKey, authValue)
+    } else {
+      opts.headers[authKey] = authValue
+    }
 
     const request = fetch(url, opts)
 
