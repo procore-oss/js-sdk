@@ -26,6 +26,32 @@ describe('client', () => {
         procore
           .get({ base: '/test_config' })
           .then(({ response, request }) => {
+            fetchMock.restore()
+            done()
+          })
+      })
+
+      it('allows headers override', (done) => {
+        const headers = new Headers()
+        const authorizer = oauth(token)
+        const procore = client(authorizer, { headers })
+        const successResponse = {success: true}
+
+        const options = {
+          method: 'GET',
+          matcher: function (url, opts) {
+            return opts.headers.has('Authorization')
+          }
+        };
+
+        fetchMock.mock('end:test_config', successResponse, options)
+
+        procore
+          .get({ base: '/test_config' })
+          .then(({ body }) => {
+            expect(body).to.eql(successResponse)
+
+            fetchMock.restore()
             done()
           })
       })
