@@ -105,7 +105,7 @@ export class Client {
   private urlConfig = ({ base, action, params = {}, qs }: EndpointConfig): string => compose(
     when(
       () => notNil(qs),
-      finalUrl => `${finalUrl}?${stringify(qs)}`
+      finalUrl => `${finalUrl}?${stringify(qs, { arrayFormat: 'brackets' })}`
     ),
     when(
       () => notNil(action),
