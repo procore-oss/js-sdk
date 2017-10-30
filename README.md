@@ -119,11 +119,10 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/procor
 intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the
 [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-1. Create PR
+1. Create PR with version change `npm version minor`
 2. Merge PR and pull master locally
-3. `npm version minor`
-4. `npm run endpoints && npm run compile`
-5. `npm publish`
+3. `npm run endpoints && npm run compile`
+4. `npm publish`
 
 
 ## License

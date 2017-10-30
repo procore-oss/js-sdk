@@ -153,6 +153,24 @@ describe('client', () => {
         })
       })
 
+      describe('by query strings', () => {
+        it('gets the resource', done => {
+          fetchMock.get(`end:vapid/projects?a%5B%5D=1&a%5B%5D=2`, rfi)
+
+          procore
+            .get(
+              { base: '/vapid/projects', qs: { a: [1, 2] } }
+            )
+            .then(({ body }) => {
+              expect(body).to.eql(rfi)
+
+              fetchMock.restore()
+
+              done()
+            })
+        })
+      })
+
       describe('pagination', () => {
         it('Total and Per-Page is in response header', (done) => {
           fetchMock.mock({ response: { body: [],  headers: { Total: 500, 'Per-Page': 10 } }, matcher: 'end:vapid/pagination_test' })
