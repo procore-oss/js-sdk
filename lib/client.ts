@@ -94,7 +94,7 @@ export class Client {
     this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}))
 
   public destroy = (endpoint: Endpoint): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'DESTROY' }))
+    this.authorize(this.request(this.url(endpoint), { method: 'DELETE' }))
 
   private url = (endpoint: Endpoint): string => ifElse(
     is(String),
