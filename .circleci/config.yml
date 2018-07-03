@@ -1,0 +1,63 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/node:10.5-stretch-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: yarn install
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Test
+          command: yarn test
+  publish:
+    docker:
+      - image: circleci/node:10.5-stretch-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: Install Dependencies
+          command: yarn install
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+      - run:
+          name: Npm Login
+          command: echo -e "$NPM_USER\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
+      - run:
+          name: Generate Procore Endpoint Functions
+          command: yarn run endpoints
+      - run:
+          name: Compile Source
+          command: yarn run compile
+      - run:
+          name: Publish Package
+          command: npm publish
+workflows:
+  version: 2
+  test_and_publish:
+    jobs:
+      - test
+      - publish:
+          requires:
+            - test
+          filters:
+            branches:
+              only:
+                - master
