@@ -120,10 +120,8 @@ intended to be a safe, welcoming space for collaboration, and contributors are e
 [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 1. Create PR with version change `npm version minor`
-2. Merge PR and pull master locally
-3. `npm run endpoints && npm run compile`
-4. `npm publish`
-
+2. Merge PR
+3. Circle ci will release a new version of the package
 
 ## License
 
