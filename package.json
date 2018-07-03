@@ -37,7 +37,7 @@
     "@types/string": "^0.0.28",
     "chai": "^3.5.0",
     "fetch-mock": "^5.9.3",
-    "mocha": "^3.2.0",
+    "mocha": "^5.2.0",
     "sinon": "^2.3.8",
     "ts-node": "^2.0.0",
     "typedoc": "^0.5.6",
