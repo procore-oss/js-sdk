@@ -1,6 +1,7 @@
 version: 2
 jobs:
   test:
+    working_directory: ~/js-sdk
     docker:
       - image: circleci/node:10.5-stretch-browsers
     steps:
@@ -21,6 +22,7 @@ jobs:
           name: Test
           command: yarn test
   publish:
+    working_directory: ~/js-sdk
     docker:
       - image: circleci/node:10.5-stretch-browsers
     steps:
@@ -39,9 +41,9 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: Authenticate with registry
-          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/.npmrc
+          command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/js-sdk/.npmrc
       - run:
-          name: Generate Procore Endpoint Functions
+          name: Generate Procore Endpoints
           command: yarn run endpoints
       - run:
           name: Compile Source
