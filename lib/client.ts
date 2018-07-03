@@ -63,6 +63,10 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
     return request
       .then(authValid)
       .then((response) => new Promise((res, rej) => {
+        if (response.status === 204) {
+          return res({ body: {}, request, response });
+        }
+
         return response
           .json()
           .then((body) => {
