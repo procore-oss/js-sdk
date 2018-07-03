@@ -38,8 +38,8 @@ jobs:
           paths:
             - ~/.cache/yarn
       - run:
-          name: Npm Login
-          command: echo -e "$NPM_USER\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
+          name: Authenticate with registry
+          command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/.npmrc
       - run:
           name: Generate Procore Endpoint Functions
           command: yarn run endpoints
