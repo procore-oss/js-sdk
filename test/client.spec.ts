@@ -8,7 +8,7 @@ const project = { id: 3 }
 const me = { id: 42, login: "foo@procore.com", name: "foo" }
 
 const rfi = { id: 1, subject: "Create RFI Subject", assignee_id: 2945 }
-
+const idsToDelete = [{ id: 1 }, { id: 2 }]
 const token = "token"
 
 const headers = { 'Authorization': `Bearer ${token}` }
@@ -208,6 +208,64 @@ describe('client', () => {
             })
 
         })
+      })
+    })
+
+    describe('#delete', () => {
+      const authorizer = oauth(token)
+
+      const procore = client(authorizer)
+
+      it('deletes a resource without a body', (done) => {
+        fetchMock.delete(`end:projects/${project.id}/rfis/${rfi.id}`, rfi)
+        procore
+          .destroy({
+            base: '/vapid/projects/{project_id}/rfis/{rfi_id}',
+            params: { project_id: 3, rfi_id: rfi.id }
+          })
+          .then(({ body }) => {
+            expect(body).to.eql(rfi)
+
+            fetchMock.restore()
+
+            done()
+          })
+      })
+
+      it('deletes resource(s) sent with a body', (done) => {
+        fetchMock.delete(`end:projects/${project.id}/rfis/${rfi.id}`, (url, opts: RequestInit) => {
+          return {body: opts.body, status: 200};
+        });
+
+        procore
+          .destroy({
+            base: '/vapid/projects/{project_id}/rfis/{rfi_id}',
+            params: { project_id: 3, rfi_id: rfi.id }
+          }, idsToDelete)
+          .then(({ body }) => {
+            expect(body).to.eql(idsToDelete)
+
+            fetchMock.restore()
+
+            done()
+          })
+      })
+
+      it('handles delete with no response: status 204', (done) => {
+        fetchMock.delete(`end:projects/${project.id}/rfis/${rfi.id}`, {status: 204});
+
+        procore
+          .destroy({
+            base: '/vapid/projects/{project_id}/rfis/{rfi_id}',
+            params: { project_id: 3, rfi_id: rfi.id }
+          })
+          .then(({ body }) => {
+            expect(body).to.eql({})
+
+            fetchMock.restore()
+
+            done()
+          })
       })
     })
   })
