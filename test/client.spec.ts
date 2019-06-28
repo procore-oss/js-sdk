@@ -55,6 +55,25 @@ describe('client', () => {
             done()
           })
       })
+
+      it('returns the raw request even if the request fails', done => {
+        const procore = client(oauth(token))
+        const response = {
+          status: 401,
+          body: {errors: {name: ['is already taken']}}
+        }
+
+        fetchMock.get('end:test_config', response)
+
+        procore.get({base: '/test_config'})
+          .catch(({body, response: {status}}) => {
+            expect(body).to.eql(response.body)
+            expect(status).to.eql(response.status)
+
+            fetchMock.restore()
+            done()
+          })
+      })
     })
 
     describe('#post', () => {
