@@ -36,14 +36,6 @@ const notNil = compose(
   isNil
 )
 
-function authValid(response): any {
-  if (response.status === 403 || response.status === 401 || !response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`)
-  } else {
-   return response
-  }
-}
-
 const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit): Function => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
@@ -61,19 +53,15 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
     const request = fetch(url, opts)
 
     return request
-      .then(authValid)
-      .then((response) => new Promise((res, rej) => {
-        if (response.status === 204) {
-          return res({ body: {}, request, response });
-        }
-
+      .then((response) => {
         return response
           .json()
-          .then((body) => {
-            res({ body, request, response })
-          })
-          .catch(rej);
-      }))
+          .then((body) => new Promise((res, rej) => {
+            const sdkResp = {body, request, response}
+
+            response.ok ? res(sdkResp) : rej(sdkResp)
+          }))
+      })
   }
 }
 
