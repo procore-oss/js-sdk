@@ -1,6 +1,6 @@
 {
   "name": "@procore/js-sdk",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A wrapper for the procore API",
   "main": "lib",
   "homepage": "https://github.com/procore/js-sdk",
@@ -19,7 +19,7 @@
   "author": "Procore Tech <insights@procore.com> (http://procore.com)",
   "license": "ISC",
   "dependencies": {
-    "@procore/js-sdk-endpoints": "^1.9.0",
+    "@procore/js-sdk-endpoints": "1.9.1",
     "isomorphic-fetch": "^2.2.1",
     "qs": "^6.3.0",
     "ramda": "^0.23.0",
