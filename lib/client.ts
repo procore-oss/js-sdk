@@ -36,7 +36,11 @@ const notNil = compose(
   isNil
 )
 
-const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit): Function => {
+function defaultFormatter(response: Response) {
+  return response.json();
+}
+
+const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
   const headers = new Headers()
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
@@ -51,11 +55,11 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
     }
 
     const request = fetch(url, opts)
+    const formatter = reqConfig && reqConfig.formatter ? reqConfig.formatter : defaultFormatter;
 
     return request
       .then((response) => {
-        return response
-          .json()
+        return formatter(response)
           .then((body) => new Promise((res, rej) => {
             const sdkResp = {body, request, response}
 
@@ -63,6 +67,10 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
           }))
       })
   }
+}
+
+interface RequestConfig {
+  formatter?(response: Response): Promise<any>;
 }
 
 export class Client {
@@ -76,16 +84,16 @@ export class Client {
     this.request = baseRequest(config)
   }
 
-  public get = (endpoint: Endpoint): Promise<any> =>
+  public get = (endpoint: Endpoint, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'GET' }))
 
-  public post = (endpoint: Endpoint, payload: any): Promise<any> =>
+  public post = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'POST' , body: JSON.stringify(payload)}))
 
-  public patch = (endpoint: Endpoint, payload: any): Promise<any> =>
+  public patch = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}))
 
-  public destroy = (endpoint: Endpoint, payload?: any): Promise<any> =>
+  public destroy = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload)}))
 
   private url = (endpoint: Endpoint): string => ifElse(
