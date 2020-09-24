@@ -85,16 +85,16 @@ export class Client {
   }
 
   public get = (endpoint: Endpoint, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'GET' }))
+    this.authorize(this.request(this.url(endpoint), { method: 'GET' }, reqConfig))
 
   public post = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'POST' , body: JSON.stringify(payload)}))
+    this.authorize(this.request(this.url(endpoint), { method: 'POST' , body: JSON.stringify(payload)}, reqConfig))
 
   public patch = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}))
+    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}, reqConfig))
 
   public destroy = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload)}))
+    this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload)}, reqConfig))
 
   private url = (endpoint: Endpoint): string => ifElse(
     is(String),
