@@ -2,7 +2,6 @@ import * as fetchMock from 'fetch-mock'
 import { stringify } from 'qs'
 import { expect } from 'chai'
 import { client, oauth, implicit } from './../lib'
-import { count } from "core-js/fn/log"
 
 const project = { id: 3 }
 
