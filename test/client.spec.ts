@@ -14,6 +14,27 @@ const token = "token"
 const headers = { 'Authorization': `Bearer ${token}` }
 
 describe('client', () => {
+  it('uses the custom formatter', (done) => {
+    const authorizer = oauth(token)
+    const procore = client(authorizer)
+    let counter = 1;
+
+    function formatter(response: any) {
+      counter +=1;
+      return response.json();
+    }
+
+    fetchMock.get('end:vapid/me', me)
+    procore
+      .get('/vapid/me', { formatter })
+      .then(({ body }) => {
+        expect(body).to.eql(me)
+        expect(counter).to.eql(2)
+        fetchMock.restore()
+        done()
+      })
+  })
+
   context('using oauth', () => {
     describe('request defaults', () => {
       it('sets default request options', (done) => {

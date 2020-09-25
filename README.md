@@ -81,6 +81,20 @@ A single API response contains the response body (JSON parsed), original request
     });
 ```
 
+### Formatting the response
+
+By default, the SDK tries to format the response as JSON, you can control the
+response formatting passing the `formatter` option as follow:
+
+```tsx
+// Create your own formatter
+function formatter(response: Response): Promise<unknown> {
+  return response.text()
+}
+
+// Pass the formatter configuration
+procore.get(myendpoint(), { formatter })
+```
 
 ## Tests
 ```
