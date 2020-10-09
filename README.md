@@ -103,7 +103,7 @@ yarn test
 
 ## Endpoint Generator
 
-[`node-procore-endpoints`](https://github.com/procore/js-sdk-endpoints) generates interfaces and endpoint functions for improved developer experience. See the project for more details.
+[`js-sdk-endpoints`](https://github.com/procore/js-sdk-endpoints) generates interfaces and endpoint functions for improved developer experience. See the project for more details.
 
 ```typescript
 interface DirectCosts {
