@@ -13,6 +13,7 @@ import hostname from './hostname'
 
 export interface EndpointConfig {
   base: string;
+  api_version?: string;
   action?: string;
   params?: any;
   qs?: any;
@@ -101,7 +102,7 @@ export class Client {
     this.urlConfig
   )(endpoint)
 
-  private urlConfig = ({ base, action, params = {}, qs }: EndpointConfig): string => compose(
+  private urlConfig = ({ base, action, params = {}, qs, api_version }: EndpointConfig): string => compose(
     when(
       () => notNil(qs),
       finalUrl => `${finalUrl}?${stringify(qs, { arrayFormat: 'brackets' })}`
@@ -114,8 +115,19 @@ export class Client {
       () => notNil(params.id),
       collectionUrl => `${collectionUrl}/${params.id}`
     ),
-    (hostname) => `${hostname}${S(base).template(params, '{', '}').s}`
+    (hostname) => `${hostname}/${this.version(api_version)}${S(base).template(params, '{', '}').s}`
   )(this.host)
+
+  private version = (api_version: string): string => {
+    api_version = (api_version === 'undefined' || api_version === '') ? 'v1.0' : api_version;
+    if (api_version === 'vapid' || api_version === 'vapid/') {
+      return api_version
+    } else if(api_version.match(/v\d+\.\d+/)) {
+      return `rest/${api_version}`
+    } else {
+      throw new Error(`'${api_version}' is an invalid Procore API version`)
+    }
+  }
 }
 
 function client(authorizer: Authorizer, defaults: RequestInit = {}, host: string = hostname): Client {
