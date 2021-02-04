@@ -8,7 +8,6 @@ import * as compose from 'ramda/src/compose'
 import * as ifElse from 'ramda/src/ifElse'
 import * as concat from 'ramda/src/concat'
 import * as is from 'ramda/src/is'
-import * as identity from 'ramda/src/identity'
 import { Authorizer } from './interfaces'
 import hostname from './hostname'
 
