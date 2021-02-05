@@ -101,32 +101,6 @@ procore.get(myendpoint(), { formatter })
 yarn test
 ```
 
-## Endpoint Generator
-
-[`js-sdk-endpoints`](https://github.com/procore/js-sdk-endpoints) generates interfaces and endpoint functions for improved developer experience. See the project for more details.
-
-```typescript
-interface DirectCosts {
-  action: string;
-  qs?: any;
-  id?: number;
-  project_id: number;
-
-}
-
-function directCosts({ action, qs, id, project_id }: DirectCosts): any {
-  return {
-    base: '/vapid/projects/{project_id}/direct_costs',
-    action,
-    params: { id, project_id },
-    qs
-  }
-}
-
-export default directCosts
-
-```
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/procore/js-sdk. This project is

@@ -20,9 +20,7 @@
   "license": "ISC",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
-    "qs": "^6.3.0",
-    "ramda": "^0.23.0",
-    "string": "^3.3.3"
+    "qs": "^6.3.0"
   },
   "devDependencies": {
     "@types/chai": "^3.4.34",
@@ -31,9 +29,7 @@
     "@types/isomorphic-fetch": "^0.0.34",
     "@types/mocha": "^2.2.38",
     "@types/qs": "^6.2.30",
-    "@types/ramda": "^0.0.3",
     "@types/sinon": "^2.3.2",
-    "@types/string": "^0.0.28",
     "chai": "^3.5.0",
     "fetch-mock": "^5.9.3",
     "mocha": "^5.2.0",

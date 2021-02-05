@@ -1,19 +1,11 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
-import * as S from 'string'
-import * as when from 'ramda/src/when'
-import * as not from 'ramda/src/not'
-import * as isNil from 'ramda/src/isNil'
-import * as compose from 'ramda/src/compose'
-import * as ifElse from 'ramda/src/ifElse'
-import * as concat from 'ramda/src/concat'
-import * as is from 'ramda/src/is'
 import { Authorizer } from './interfaces'
 import hostname from './hostname'
 
 export interface EndpointConfig {
   base: string;
-  api_version?: string;
+  apiVersion?: string;
   action?: string;
   params?: any;
   qs?: any;
@@ -31,10 +23,9 @@ interface SDKResponse {
   request: any;
 }
 
-const notNil = compose(
-  not,
-  isNil
-)
+const notNil = (v: any) => !(typeof v === 'undefined' || v === null || ((v.constructor === String || v instanceof String) && v.trim() === ''));
+const TOKENS_REG_EX = new RegExp(/\/{(.*?)}/g);
+const replaceParams = (str: string, params: any) => str.replace(TOKENS_REG_EX, (_, p) => params[p] ? `/${params[p]}` : '/');
 
 function defaultFormatter(response: Response) {
   return response.json();
@@ -96,36 +87,39 @@ export class Client {
   public destroy = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload)}, reqConfig))
 
-  private url = (endpoint: Endpoint): string => ifElse(
-    is(String),
-    concat(this.host),
-    this.urlConfig
-  )(endpoint)
+  private url = (endpoint: Endpoint): string =>
+    notNil(endpoint) && (endpoint.constructor === String || endpoint instanceof String) ?
+      `${this.host}${endpoint}` : // TODO: Do we want to allow this. Version will not be handled for this
+      this.urlConfig(endpoint as EndpointConfig);
 
-  private urlConfig = ({ base, action, params = {}, qs, api_version }: EndpointConfig): string => compose(
-    when(
-      () => notNil(qs),
-      finalUrl => `${finalUrl}?${stringify(qs, { arrayFormat: 'brackets' })}`
-    ),
-    when(
-      () => notNil(action),
-      resourceUrl => `${resourceUrl}/${action}`
-    ),
-    when(
-      () => notNil(params.id),
-      collectionUrl => `${collectionUrl}/${params.id}`
-    ),
-    (hostname) => `${hostname}/${this.version(api_version)}${S(base).template(params, '{', '}').s}`
-  )(this.host)
+  private urlConfig = ({ base, action, params = {}, qs, apiVersion }: EndpointConfig): string => {
+      let url = `${this.host}/${this.version(apiVersion)}${replaceParams(base, params)}`;
 
-  private version = (api_version: string): string => {
-    api_version = (api_version === 'undefined' || api_version === '') ? 'v1.0' : api_version;
-    if (api_version === 'vapid' || api_version === 'vapid/') {
-      return api_version
-    } else if(api_version.match(/v\d+\.\d+/)) {
-      return `rest/${api_version}`
+      if (notNil(params.id)) {
+        url = `${url}/${params.id}`;
+      }
+
+      if (notNil(action)) {
+        url = `${url}/${action}`;
+      }
+
+      if (notNil(qs)) {
+        url = `${url}?${stringify(qs, { arrayFormat: 'brackets' })}`;
+      }
+
+      return url;
+    };
+
+  private version = (apiVersion: string = 'v1.0'): string => {
+    const [,restVersion = undefined] = apiVersion.match(/(^v[1-9]\d*\.\d+$)/) || [];
+    const [,vapidVersion = undefined] = apiVersion.match(/(^vapid)\/?$/) || [];
+
+    if (restVersion) {
+      return `rest/${restVersion}`;
+    } else if (vapidVersion) {
+      return vapidVersion;
     } else {
-      throw new Error(`'${api_version}' is an invalid Procore API version`)
+      throw new Error(`'${apiVersion}' is an invalid Procore API version`)
     }
   }
 }

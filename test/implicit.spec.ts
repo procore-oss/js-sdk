@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { client, oauth, implicit } from './../lib'
+import { implicit } from './../lib'
 
 describe('implicit grant', () => {
   it('returns valid oauth url', () => {

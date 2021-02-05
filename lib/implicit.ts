@@ -1,4 +1,3 @@
-import 'isomorphic-fetch'
 import _hostname from './hostname'
 
 export interface ImplicitConfig {

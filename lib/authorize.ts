@@ -9,5 +9,4 @@ function authorize({ clientId, uri }: AuthorizeConfig, hostname = _hostname): st
   return `${hostname}/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${uri}`
 }
 
-
 export default authorize

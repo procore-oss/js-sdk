@@ -11,18 +11,16 @@ class Refresher {
   }
 
   public authorize = (request: Function): Promise<any> => {
-    const self = this
+    const self = this;
 
     return self.oauth.authorize(request)
-      .catch(() => {
-        return self
+      .catch(() => self
           .refresh(self.oauth.getToken())
           .then(({ access_token }: any) => {
             self.oauth.setToken(access_token)
-
-            return self.oauth.authorize(request)
+            return self.oauth.authorize(request);
           })
-      })
+      );
 
   }
 }
