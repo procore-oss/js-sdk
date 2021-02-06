@@ -119,7 +119,7 @@ export class Client {
   )(this.host)
 
   private version = (api_version: string): string => {
-    api_version = (api_version === 'undefined' || api_version === '') ? 'v1.0' : api_version;
+    api_version = (api_version === undefined || api_version === '') ? 'v1.0' : api_version;
     if (api_version === 'vapid' || api_version === 'vapid/') {
       return api_version
     } else if(api_version.match(/v\d+\.\d+/)) {
