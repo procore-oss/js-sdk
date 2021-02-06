@@ -1,7 +1,6 @@
 import * as fetchMock from 'fetch-mock'
-import { stringify } from 'qs'
 import { expect } from 'chai'
-import { client, oauth, implicit } from './../lib'
+import { client, oauth } from './../lib'
 
 const project = { id: 3 }
 
@@ -10,8 +9,6 @@ const me = { id: 42, login: "foo@procore.com", name: "foo" }
 const rfi = { id: 1, subject: "Create RFI Subject", assignee_id: 2945 }
 const idsToDelete = [{ id: 1 }, { id: 2 }]
 const token = "token"
-
-const headers = { 'Authorization': `Bearer ${token}` }
 
 describe('client', () => {
   it('uses the custom formatter', (done) => {
