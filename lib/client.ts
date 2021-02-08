@@ -36,27 +36,24 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
   headers.append('Accept', 'application/json')
   headers.append('Content-Type', 'application/json')
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults,  ...config }
+  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config }
 
-  return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
+  return async function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     if (opts.headers instanceof Headers) {
-      opts.headers.set(authKey, authValue)
+      opts.headers.set(authKey, authValue);
     } else {
-      opts.headers[authKey] = authValue
+      opts.headers[authKey] = authValue;
     }
 
-    const request = fetch(url, opts)
     const formatter = reqConfig && reqConfig.formatter ? reqConfig.formatter : defaultFormatter;
+    const request = fetch(url, opts);
+    const response = await request;
+    const body = await formatter(response);
 
-    return request
-      .then((response) => {
-        return formatter(response)
-          .then((body) => new Promise((res, rej) => {
-            const sdkResp = {body, request, response}
-
-            response.ok ? res(sdkResp) : rej(sdkResp)
-          }))
-      })
+    return new Promise<SDKResponse>((resolve, reject) => {
+      const sdkResp = { body, request, response };
+      response.ok ? resolve(sdkResp) : reject(sdkResp);
+    });
   }
 }
 
@@ -79,13 +76,13 @@ export class Client {
     this.authorize(this.request(this.url(endpoint), { method: 'GET' }, reqConfig))
 
   public post = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'POST' , body: JSON.stringify(payload)}, reqConfig))
+    this.authorize(this.request(this.url(endpoint), { method: 'POST', body: JSON.stringify(payload) }, reqConfig))
 
   public patch = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}, reqConfig))
+    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload) }, reqConfig))
 
   public destroy = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload)}, reqConfig))
+    this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload) }, reqConfig))
 
   private url = (endpoint: Endpoint): string =>
     notNil(endpoint) && (endpoint.constructor === String || endpoint instanceof String) ?
@@ -93,26 +90,26 @@ export class Client {
       this.urlConfig(endpoint as EndpointConfig);
 
   private urlConfig = ({ base, action, params = {}, qs, apiVersion }: EndpointConfig): string => {
-      let url = `${this.host}/${this.version(apiVersion)}${replaceParams(base, params)}`;
+    let url = `${this.host}/${this.version(apiVersion)}${replaceParams(base, params)}`;
 
-      if (notNil(params.id)) {
-        url = `${url}/${params.id}`;
-      }
+    if (notNil(params.id)) {
+      url = `${url}/${params.id}`;
+    }
 
-      if (notNil(action)) {
-        url = `${url}/${action}`;
-      }
+    if (notNil(action)) {
+      url = `${url}/${action}`;
+    }
 
-      if (notNil(qs)) {
-        url = `${url}?${stringify(qs, { arrayFormat: 'brackets' })}`;
-      }
+    if (notNil(qs)) {
+      url = `${url}?${stringify(qs, { arrayFormat: 'brackets' })}`;
+    }
 
-      return url;
-    };
+    return url;
+  };
 
   private version = (apiVersion: string = 'v1.0'): string => {
-    const [,restVersion = undefined] = apiVersion.match(/(^v[1-9]\d*\.\d+$)/) || [];
-    const [,vapidVersion = undefined] = apiVersion.match(/(^vapid)\/?$/) || [];
+    const [, restVersion = undefined] = apiVersion.match(/(^v[1-9]\d*\.\d+$)/) || [];
+    const [, vapidVersion = undefined] = apiVersion.match(/(^vapid)\/?$/) || [];
 
     if (restVersion) {
       return `rest/${restVersion}`;
