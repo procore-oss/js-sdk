@@ -4,11 +4,11 @@ import { client, oauth } from './../lib'
 
 const project = { id: 3 }
 
-const me = { id: 42, login: "foo@procore.com", name: "foo" }
+const me = { id: 42, login: 'foo@procore.com', name: 'foo' }
 
-const rfi = { id: 1, subject: "Create RFI Subject", assignee_id: 2945 }
+const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 }
 const idsToDelete = [{ id: 1 }, { id: 2 }]
-const token = "token"
+const token = 'token'
 
 describe('client', () => {
   it('uses the custom formatter', (done) => {
@@ -21,13 +21,15 @@ describe('client', () => {
       return response.json();
     }
 
-    fetchMock.get('end:vapid/me', me)
+    fetchMock.get('end:/rest/v1.0/me', me)
     procore
-      .get('/vapid/me', { formatter })
+      .get('/rest/v1.0/me', { formatter })
       .then(({ body }) => {
         expect(body).to.eql(me)
         expect(counter).to.eql(2)
+
         fetchMock.restore()
+
         done()
       })
   })
@@ -36,15 +38,15 @@ describe('client', () => {
     describe('request defaults', () => {
       it('sets default request options', (done) => {
         const authorizer = oauth(token)
-
         const procore = client(authorizer, { credentials: 'omit' })
 
         fetchMock.get(`end:test_config`, {})
 
         procore
-          .get({ base: '/test_config' })
+          .get({base: '/test_config'})
           .then(({ response, request }) => {
             fetchMock.restore()
+
             done()
           })
       })
@@ -65,11 +67,12 @@ describe('client', () => {
         fetchMock.mock('end:test_config', successResponse, options)
 
         procore
-          .get({ base: '/test_config' })
+          .get({base: '/test_config'})
           .then(({ body }) => {
             expect(body).to.eql(successResponse)
 
             fetchMock.restore()
+
             done()
           })
       })
@@ -89,6 +92,7 @@ describe('client', () => {
             expect(status).to.eql(response.status)
 
             fetchMock.restore()
+
             done()
           })
       })
@@ -104,7 +108,9 @@ describe('client', () => {
             .get({base:'/me', apiVersion: undefined})
             .then(({ body }) => {
               expect(body).to.eql(me)
+
               fetchMock.restore()
+
               done()
             })
       })
@@ -112,10 +118,12 @@ describe('client', () => {
       it('use default apiVersion when not passing', (done) => {
         fetchMock.get('end:/rest/v1.0/me', me)
         procore
-            .get({base:'/me'})
+            .get({base: '/me'})
             .then(({ body }) => {
               expect(body).to.eql(me)
+
               fetchMock.restore()
+
               done()
             })
       })
@@ -123,21 +131,25 @@ describe('client', () => {
       it('customize with specified version', (done) => {
         fetchMock.get('end:/rest/v1.1/me', me)
         procore
-            .get({base:'/me', apiVersion: "v1.1"})
+            .get({base: '/me', apiVersion: 'v1.1'})
             .then(({ body }) => {
               expect(body).to.eql(me)
+
               fetchMock.restore()
+
               done()
             })
       })
 
-      it('still work for vapid', (done) => {
+      it('still work for vapid when explicitly passed', (done) => {
         fetchMock.get('end:/vapid/me', me)
         procore
-            .get({base:'/me', apiVersion: "vapid"})
+            .get({base: '/me', apiVersion: 'vapid'})
             .then(({ body }) => {
               expect(body).to.eql(me)
+
               fetchMock.restore()
+
               done()
             })
       })
@@ -149,10 +161,10 @@ describe('client', () => {
       const procore = client(authorizer)
 
       it('creates a resource', (done) => {
-        fetchMock.post(`end:projects/${project.id}/rfis`, rfi)
+        fetchMock.post(`end:/rest/v1.0/projects/${project.id}/rfis`, rfi)
         procore
           .post({
-            base: '/vapid/projects/{project_id}/rfis',
+            base: '/rest/v1.0/projects/{project_id}/rfis',
             params: { project_id: 3  }
           }, rfi)
           .then(({ body }) => {
@@ -165,13 +177,13 @@ describe('client', () => {
       })
 
       it('sends a valid body', (done) => {
-        fetchMock.post(`end:projects/${project.id}/rfis`, (url, opts: RequestInit) => {
+        fetchMock.post(`end:/rest/v1.0/projects/${project.id}/rfis`, (url, opts: RequestInit) => {
           return opts.body;
         });
 
         procore
           .post({
-            base: '/vapid/projects/{project_id}/rfis',
+            base: '/rest/v1.0/projects/{project_id}/rfis',
             params: { project_id: 3  }
           }, rfi)
           .then(({ body }) => {
@@ -191,10 +203,10 @@ describe('client', () => {
 
       describe('singleton', () => {
         it('gets a signleton resource', (done) => {
-          fetchMock.get('end:vapid/me', me)
+          fetchMock.get('end:/rest/v1.0/me', me)
 
           procore
-            .get({ base: '/vapid/me', params: {} })
+            .get({ base: '/rest/v1.0/me', params: {} })
             .then(({ body }) => {
               expect(body).to.eql(me)
 
@@ -206,10 +218,10 @@ describe('client', () => {
 
         context('using a string url as the endpoint', () => {
           it('gets a signleton resource', (done) => {
-            fetchMock.get('end:vapid/me', me)
+            fetchMock.get('end:/rest/v1.0/me', me)
 
             procore
-              .get('/vapid/me')
+              .get('/rest/v1.0/me')
               .then(({ body }) => {
                 expect(body).to.eql(me)
 
@@ -223,11 +235,11 @@ describe('client', () => {
 
       describe('by id', () => {
         it('gets the resource', done => {
-          fetchMock.get(`end:vapid/projects/${project.id}/rfis/${rfi.id}`, rfi)
+          fetchMock.get(`end:/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi)
 
           procore
             .get(
-              { base: '/vapid/projects/{project_id}/rfis', params: { project_id: project.id, id: rfi.id } }
+              { base: '/rest/v1.0/projects/{project_id}/rfis', params: { project_id: project.id, id: rfi.id } }
             )
             .then(({ body }) => {
               expect(body).to.eql(rfi)
@@ -241,11 +253,11 @@ describe('client', () => {
 
       describe('by query strings', () => {
         it('gets the resource', done => {
-          fetchMock.get(`end:vapid/projects?a%5B%5D=1&a%5B%5D=2`, rfi)
+          fetchMock.get(`end:/rest/v1.0/projects?a%5B%5D=1&a%5B%5D=2`, rfi)
 
           procore
             .get(
-              { base: '/vapid/projects', qs: { a: [1, 2] } }
+              { base: '/rest/v1.0/projects', qs: { a: [1, 2] } }
             )
             .then(({ body }) => {
               expect(body).to.eql(rfi)
@@ -259,10 +271,10 @@ describe('client', () => {
 
       describe('pagination', () => {
         it('Total and Per-Page is in response header', (done) => {
-          fetchMock.mock({ response: { body: [],  headers: { Total: 500, 'Per-Page': 10 } }, matcher: 'end:vapid/pagination_test' })
+          fetchMock.mock({ response: { body: [],  headers: { Total: 500, 'Per-Page': 10 } }, matcher: 'end:/rest/v1.0/pagination_test' })
 
           procore
-            .get({ base: '/vapid/pagination_test', params: {} })
+            .get({ base: '/rest/v1.0/pagination_test', params: {} })
             .then(({ body, response }) => {
               expect(body).to.eql([])
 
@@ -279,11 +291,11 @@ describe('client', () => {
 
       describe('action', () => {
         it('gets the resources', done => {
-          fetchMock.get(`end:vapid/projects/${project.id}/rfis/recycle_bin`, [rfi])
+          fetchMock.get(`end:/rest/v1.0/projects/${project.id}/rfis/recycle_bin`, [rfi])
 
           procore
             .get(
-              { base: '/vapid/projects/{project_id}/rfis', params: { project_id: project.id }, action: 'recycle_bin' }
+              { base: '/rest/v1.0/projects/{project_id}/rfis', params: { project_id: project.id }, action: 'recycle_bin' }
             )
             .then(({ body }) => {
               expect(body).to.eql([rfi])
@@ -299,14 +311,13 @@ describe('client', () => {
 
     describe('#delete', () => {
       const authorizer = oauth(token)
-
       const procore = client(authorizer)
 
       it('deletes a resource without a body', (done) => {
-        fetchMock.delete(`end:projects/${project.id}/rfis/${rfi.id}`, rfi)
+        fetchMock.delete(`end:/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi)
         procore
           .destroy({
-            base: '/vapid/projects/{project_id}/rfis/{rfi_id}',
+            base: '/rest/v1.0/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
           })
           .then(({ body }) => {
@@ -319,13 +330,13 @@ describe('client', () => {
       })
 
       it('deletes resource(s) sent with a body', (done) => {
-        fetchMock.delete(`end:projects/${project.id}/rfis/${rfi.id}`, (url, opts: RequestInit) => {
+        fetchMock.delete(`end:/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, (url, opts: RequestInit) => {
           return {body: opts.body, status: 200};
         });
 
         procore
           .destroy({
-            base: '/vapid/projects/{project_id}/rfis/{rfi_id}',
+            base: '/rest/v1.0/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
           }, idsToDelete)
           .then(({ body }) => {
@@ -338,11 +349,11 @@ describe('client', () => {
       })
 
       it('handles delete with no response: status 204', (done) => {
-        fetchMock.delete(`end:projects/${project.id}/rfis/${rfi.id}`, {status: 204});
+        fetchMock.delete(`end:/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, {status: 204});
 
         procore
           .destroy({
-            base: '/vapid/projects/{project_id}/rfis/{rfi_id}',
+            base: '/rest/v1.0/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
           })
           .then(({ body }) => {
