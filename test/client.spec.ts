@@ -94,6 +94,55 @@ describe('client', () => {
       })
     })
 
+    describe('request using apiVersion', () => {
+      const authorizer = oauth(token)
+      const procore = client(authorizer)
+
+      it('sets default apiVersion when not passing', (done) => {
+        fetchMock.get('end:/rest/v1.0/me', me)
+        procore
+            .get({base:'/me', apiVersion: undefined})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+              fetchMock.restore()
+              done()
+            })
+      })
+
+      it('use default apiVersion when not passing', (done) => {
+        fetchMock.get('end:/rest/v1.0/me', me)
+        procore
+            .get({base:'/me'})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+              fetchMock.restore()
+              done()
+            })
+      })
+
+      it('customize with specified version', (done) => {
+        fetchMock.get('end:/rest/v1.1/me', me)
+        procore
+            .get({base:'/me', apiVersion: "v1.1"})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+              fetchMock.restore()
+              done()
+            })
+      })
+
+      it('still work for vapid', (done) => {
+        fetchMock.get('end:/vapid/me', me)
+        procore
+            .get({base:'/me', apiVersion: "vapid"})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+              fetchMock.restore()
+              done()
+            })
+      })
+    })
+
     describe('#post', () => {
       const authorizer = oauth(token)
 
