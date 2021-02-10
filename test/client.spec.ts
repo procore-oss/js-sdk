@@ -1,7 +1,7 @@
 import * as fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { client, oauth } from './../lib'
-import hostname from '../lib/hostname'
+import { client, oauth } from '../lib/index'
+import { ClientOptionsDefaults } from '../lib/clientOptions'
 
 const project = { id: 3 }
 
@@ -10,6 +10,7 @@ const me = { id: 42, login: "foo@procore.com", name: "foo" }
 const rfi = { id: 1, subject: "Create RFI Subject", assignee_id: 2945 }
 const idsToDelete = [{ id: 1 }, { id: 2 }]
 const token = "token"
+const hostname = ClientOptionsDefaults.apiHostname;
 
 describe('client', () => {
   it('uses the custom formatter', (done) => {
@@ -102,54 +103,106 @@ describe('client', () => {
       it('sets default version when not passing', (done) => {
         fetchMock.get(`${hostname}/rest/v1.0/me`, me)
         procore
-            .get({base:'/me', version: undefined})
-            .then(({ body }) => {
-              expect(body).to.eql(me)
+          .get({ base: '/me', version: undefined })
+          .then(({ body }) => {
+            expect(body).to.eql(me)
 
-              fetchMock.restore()
+            fetchMock.restore()
 
-              done()
-            })
+            done()
+          })
       })
 
       it('use default version when not passing', (done) => {
         fetchMock.get(`${hostname}/rest/v1.0/me`, me)
         procore
-            .get({base: '/me'})
-            .then(({ body }) => {
-              expect(body).to.eql(me)
+          .get({ base: '/me' })
+          .then(({ body }) => {
+            expect(body).to.eql(me)
 
-              fetchMock.restore()
+            fetchMock.restore()
 
-              done()
-            })
+            done()
+          })
       })
 
       it('customize with specified version', (done) => {
         fetchMock.get(`${hostname}/rest/v1.1/me`, me)
         procore
-            .get({base: '/me', version: 'v1.1'})
-            .then(({ body }) => {
-              expect(body).to.eql(me)
+          .get({ base: '/me', version: 'v1.1' })
+          .then(({ body }) => {
+            expect(body).to.eql(me)
 
-              fetchMock.restore()
+            fetchMock.restore()
 
-              done()
-            })
+            done()
+          })
       })
 
       it('still work for vapid when explicitly passed', (done) => {
         fetchMock.get(`${hostname}/vapid/me`, me)
         procore
-            .get({base: '/me', version: 'vapid'})
-            .then(({ body }) => {
-              expect(body).to.eql(me)
+          .get({ base: '/me', version: 'vapid' })
+          .then(({ body }) => {
+            expect(body).to.eql(me)
 
-              fetchMock.restore()
+            fetchMock.restore()
 
-              done()
-            })
+            done()
+          })
       })
+    })
+
+    describe('request using ClientOptions', () => {
+      const authorizer = oauth(token)
+
+      it('overrides apiHostname with passed default', (done) => {
+        const procore = client(authorizer, undefined, {apiHostname: "https://api.procore.com"});
+        fetchMock.get(`https://api.procore.com/rest/v1.0/me`, me);
+        procore
+          .get({ base: '/me' })
+          .then(({ body }) => {
+            expect(body).to.eql(me);
+            fetchMock.restore();
+            done();
+          });
+      });
+
+      it('overrides version with passed default', (done) => {
+        const procore = client(authorizer, undefined, {defaultVersion: "vapid"});
+        fetchMock.get(`${hostname}/vapid/me`, me);
+        procore
+          .get({ base: '/me' })
+          .then(({ body }) => {
+            expect(body).to.eql(me);
+            fetchMock.restore();
+            done();
+          });
+      });
+
+      it('overrides both apiHostname and version with passed defaults', (done) => {
+        const procore = client(authorizer, undefined, {apiHostname: "https://api.procore.com", defaultVersion: "vapid"});
+        fetchMock.get(`https://api.procore.com/vapid/me`, me);
+        procore
+          .get({ base: '/me' })
+          .then(({ body }) => {
+            expect(body).to.eql(me);
+            fetchMock.restore();
+            done();
+          });
+      });
+
+      it('overrides apiHostname with passed default and uses version passed in .get', (done) => {
+        const procore = client(authorizer, undefined, {apiHostname: "https://api.procore.com", defaultVersion: "vapid"});
+        fetchMock.get(`https://api.procore.com/rest/v1.1/me`, me);
+        procore
+          .get({ base: '/me', version: 'v1.1' })
+          .then(({ body }) => {
+            expect(body).to.eql(me);
+            fetchMock.restore();
+            done();
+          });
+      });
     })
 
     describe('#post', () => {

@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
 import { Authorizer } from './interfaces'
-import _hostname from './hostname'
+import { ClientOptions, ClientOptionsDefaults} from './clientOptions'
 
 export interface EndpointConfig {
   base: string;
@@ -62,14 +62,14 @@ interface RequestConfig {
 }
 
 export class Client {
-  private readonly hostname: string;
+  private readonly options: ClientOptions;
   private authorize: any;
   private request: Function;
 
-  constructor(authorizer: Authorizer, config: RequestInit = {}, hostname: string = _hostname) {
-    this.authorize = authorizer.authorize
-    this.hostname = hostname
-    this.request = baseRequest(config)
+  constructor(authorizer: Authorizer, config: RequestInit = {}, options: ClientOptions = ClientOptionsDefaults) {
+    this.authorize = authorizer.authorize;
+    this.options = Object.assign({}, ClientOptionsDefaults, options);
+    this.request = baseRequest(config);
   }
 
   public get = (endpoint: Endpoint, reqConfig?: RequestConfig): Promise<any> =>
@@ -86,11 +86,11 @@ export class Client {
 
   private url = (endpoint: Endpoint): string =>
     notNil(endpoint) && (endpoint.constructor === String || endpoint instanceof String) ?
-      `${this.hostname}${endpoint}` : // TODO: Do we want to allow this. Version will not be handled for this
+      `${this.options.apiHostname}${endpoint}` : // TODO: Do we want to allow this. Version will not be handled for this
       this.urlConfig(endpoint as EndpointConfig);
 
   private urlConfig = ({ base, action, params = {}, qs, version }: EndpointConfig): string => {
-    let url = `${this.hostname}/${this.version(version)}${replaceParams(base, params)}`;
+    let url = `${this.options.apiHostname}/${this.version(version)}${replaceParams(base, params)}`;
 
     if (notNil(params.id)) {
       url = `${url}/${params.id}`;
@@ -107,7 +107,7 @@ export class Client {
     return url;
   };
 
-  private version = (version: string = 'v1.0'): string => {
+  private version = (version: string = this.options.defaultVersion): string => {
     const [, restVersion = undefined] = version.match(/(^v[1-9]\d*\.\d+$)/) || [];
     const [, vapidVersion = undefined] = version.match(/(^vapid)\/?$/) || [];
 
@@ -121,8 +121,8 @@ export class Client {
   }
 }
 
-function client(authorizer: Authorizer, defaults: RequestInit = {}, hostname: string = _hostname): Client {
-  return new Client(authorizer, defaults, hostname)
+function client(authorizer: Authorizer, defaults: RequestInit = {}, options: ClientOptions = ClientOptionsDefaults): Client {
+  return new Client(authorizer, defaults, options);
 }
 
 export default client

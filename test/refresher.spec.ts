@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { stub, match } from 'sinon'
-import { refresher, oauth } from './../lib'
+import { refresher, oauth } from '../lib/index'
 
 describe('refresher', () => {
   describe('#authorize', () => {
@@ -25,7 +25,7 @@ describe('refresher', () => {
         const goodToken = 'good'
         const badToken = 'bad'
 
-        const refreshToken = stub().resolves({access_token: goodToken})
+        const refreshToken = stub().resolves({ access_token: goodToken })
 
         const requestStub = stub()
         const badRequest = requestStub.withArgs(

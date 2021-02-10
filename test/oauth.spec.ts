@@ -1,5 +1,5 @@
 import { spy } from 'sinon'
-import { oauth } from './../lib'
+import { oauth } from '../lib/index'
 import { expect } from 'chai'
 
 describe('oauth', () => {

@@ -1,5 +1,5 @@
 import 'isomorphic-fetch'
-import _hostname from './hostname'
+import { ClientOptions, ClientOptionsDefaults} from './clientOptions'
 
 export interface TokenConfig {
   id: string;
@@ -8,9 +8,10 @@ export interface TokenConfig {
   uri: string;
 }
 
-function token({ id, secret, code, uri }: TokenConfig, hostname: string = _hostname): Promise<any> {
+function token({ id, secret, code, uri }: TokenConfig, options: ClientOptions = ClientOptionsDefaults): Promise<any> {
+  const _options = Object.assign({}, ClientOptionsDefaults, options);
   return fetch(
-    `${hostname}/oauth/token?grant_type=authorization_code&code=${code}&client_id=${id}&client_secret=${secret}&redirect_uri=${uri}`,
+    `${_options.apiHostname}/oauth/token?grant_type=authorization_code&code=${code}&client_id=${id}&client_secret=${secret}&redirect_uri=${uri}`,
     { method: 'POST' })
     .then(res => res.json());
 }

@@ -36,7 +36,13 @@ const { body } = await procore.get({ base: '/me', version: "vapid" });
 // app.procore.com/vapid/me
 ```
 
-To keep the legacy behavior, set the new `defaultVersion` configuration option.
+To keep the legacy behavior, set the new `defaultVersion` configuration option when
+creating the `client`.
+
+```javascript
+const procore = client(authorizer, undefined, { defaultVersion: 'vapid' });
+```
+
 Note, that Rest v1.0 is a superset of the Vapid Api - there are no breaking
 changes.
 
