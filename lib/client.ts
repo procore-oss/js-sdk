@@ -1,11 +1,11 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
 import { Authorizer } from './interfaces'
-import hostname from './hostname'
+import _hostname from './hostname'
 
 export interface EndpointConfig {
   base: string;
-  apiVersion?: string;
+  version?: string;
   action?: string;
   params?: any;
   qs?: any;
@@ -62,13 +62,13 @@ interface RequestConfig {
 }
 
 export class Client {
-  private readonly host: string;
+  private readonly hostname: string;
   private authorize: any;
   private request: Function;
 
-  constructor(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
+  constructor(authorizer: Authorizer, config: RequestInit = {}, hostname: string = _hostname) {
     this.authorize = authorizer.authorize
-    this.host = host
+    this.hostname = hostname
     this.request = baseRequest(config)
   }
 
@@ -86,11 +86,11 @@ export class Client {
 
   private url = (endpoint: Endpoint): string =>
     notNil(endpoint) && (endpoint.constructor === String || endpoint instanceof String) ?
-      `${this.host}${endpoint}` : // TODO: Do we want to allow this. Version will not be handled for this
+      `${this.hostname}${endpoint}` : // TODO: Do we want to allow this. Version will not be handled for this
       this.urlConfig(endpoint as EndpointConfig);
 
-  private urlConfig = ({ base, action, params = {}, qs, apiVersion }: EndpointConfig): string => {
-    let url = `${this.host}/${this.version(apiVersion)}${replaceParams(base, params)}`;
+  private urlConfig = ({ base, action, params = {}, qs, version }: EndpointConfig): string => {
+    let url = `${this.hostname}/${this.version(version)}${replaceParams(base, params)}`;
 
     if (notNil(params.id)) {
       url = `${url}/${params.id}`;
@@ -107,22 +107,22 @@ export class Client {
     return url;
   };
 
-  private version = (apiVersion: string = 'v1.0'): string => {
-    const [, restVersion = undefined] = apiVersion.match(/(^v[1-9]\d*\.\d+$)/) || [];
-    const [, vapidVersion = undefined] = apiVersion.match(/(^vapid)\/?$/) || [];
+  private version = (version: string = 'v1.0'): string => {
+    const [, restVersion = undefined] = version.match(/(^v[1-9]\d*\.\d+$)/) || [];
+    const [, vapidVersion = undefined] = version.match(/(^vapid)\/?$/) || [];
 
     if (restVersion) {
       return `rest/${restVersion}`;
     } else if (vapidVersion) {
       return vapidVersion;
     } else {
-      throw new Error(`'${apiVersion}' is an invalid Procore API version`)
+      throw new Error(`'${version}' is an invalid Procore API version`)
     }
   }
 }
 
-function client(authorizer: Authorizer, defaults: RequestInit = {}, host: string = hostname): Client {
-  return new Client(authorizer, defaults, host)
+function client(authorizer: Authorizer, defaults: RequestInit = {}, hostname: string = _hostname): Client {
+  return new Client(authorizer, defaults, hostname)
 }
 
 export default client

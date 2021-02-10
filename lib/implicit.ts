@@ -3,7 +3,6 @@ import _hostname from './hostname'
 export interface ImplicitConfig {
   id: string;
   uri: string;
-  hostname?: string; // TODO: This does not seem to be used in code.
 }
 
 function implicit({ id, uri }: ImplicitConfig, hostname: string = _hostname): string {

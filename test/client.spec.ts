@@ -66,7 +66,7 @@ describe('client', () => {
         fetchMock.mock(`${hostname}/rest/v1.1/test_config`, successResponse, options)
 
         procore
-          .get({ base: '/test_config', apiVersion: 'v1.1' })
+          .get({ base: '/test_config', version: 'v1.1' })
           .then(({ body }) => {
             expect(body).to.eql(successResponse)
 
@@ -84,7 +84,7 @@ describe('client', () => {
 
         fetchMock.get(`${hostname}/vapid/test_config`, response)
 
-        procore.get({ base: '/test_config', apiVersion: 'vapid' })
+        procore.get({ base: '/test_config', version: 'vapid' })
           .catch(({ body, response: { status } }) => {
             expect(body).to.eql(response.body)
             expect(status).to.eql(response.status)
@@ -95,14 +95,14 @@ describe('client', () => {
       })
     })
 
-    describe('request using apiVersion', () => {
+    describe('request using version', () => {
       const authorizer = oauth(token)
       const procore = client(authorizer)
 
-      it('sets default apiVersion when not passing', (done) => {
+      it('sets default version when not passing', (done) => {
         fetchMock.get(`${hostname}/rest/v1.0/me`, me)
         procore
-            .get({base:'/me', apiVersion: undefined})
+            .get({base:'/me', version: undefined})
             .then(({ body }) => {
               expect(body).to.eql(me)
 
@@ -112,7 +112,7 @@ describe('client', () => {
             })
       })
 
-      it('use default apiVersion when not passing', (done) => {
+      it('use default version when not passing', (done) => {
         fetchMock.get(`${hostname}/rest/v1.0/me`, me)
         procore
             .get({base: '/me'})
@@ -128,7 +128,7 @@ describe('client', () => {
       it('customize with specified version', (done) => {
         fetchMock.get(`${hostname}/rest/v1.1/me`, me)
         procore
-            .get({base: '/me', apiVersion: 'v1.1'})
+            .get({base: '/me', version: 'v1.1'})
             .then(({ body }) => {
               expect(body).to.eql(me)
 
@@ -141,7 +141,7 @@ describe('client', () => {
       it('still work for vapid when explicitly passed', (done) => {
         fetchMock.get(`${hostname}/vapid/me`, me)
         procore
-            .get({base: '/me', apiVersion: 'vapid'})
+            .get({base: '/me', version: 'vapid'})
             .then(({ body }) => {
               expect(body).to.eql(me)
 

@@ -6,7 +6,6 @@ export interface TokenConfig {
   secret: string;
   code: string;
   uri: string;
-  hostname?: string; // TODO: This does not seem to be used in code.
 }
 
 function token({ id, secret, code, uri }: TokenConfig, hostname: string = _hostname): Promise<any> {
