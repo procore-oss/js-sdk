@@ -6,10 +6,10 @@ export interface TokenConfig {
   secret: string;
   code: string;
   uri: string;
-  hostname?: string;
+  hostname?: string; // TODO: This does not seem to be used in code.
 }
 
-function token({ id, secret, code, uri }: any, hostname = _hostname): Promise<any> {
+function token({ id, secret, code, uri }: TokenConfig, hostname: string = _hostname): Promise<any> {
   return fetch(
     `${hostname}/oauth/token?grant_type=authorization_code&code=${code}&client_id=${id}&client_secret=${secret}&redirect_uri=${uri}`,
     { method: 'POST' })

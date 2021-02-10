@@ -18,7 +18,7 @@ describe('client', () => {
     let counter = 1;
 
     function formatter(response: any) {
-      counter +=1;
+      counter += 1;
       return response.json();
     }
 
@@ -54,7 +54,7 @@ describe('client', () => {
         const headers = new Headers()
         const authorizer = oauth(token)
         const procore = client(authorizer, { headers })
-        const successResponse = {success: true}
+        const successResponse = { success: true }
 
         const options = {
           method: 'GET',
@@ -79,19 +79,76 @@ describe('client', () => {
         const procore = client(oauth(token))
         const response = {
           status: 401,
-          body: {errors: {name: ['is already taken']}}
+          body: { errors: { name: ['is already taken'] } }
         }
 
         fetchMock.get(`${hostname}/vapid/test_config`, response)
 
-        procore.get({base: '/test_config', apiVersion: 'vapid'})
-          .catch(({body, response: {status}}) => {
+        procore.get({ base: '/test_config', apiVersion: 'vapid' })
+          .catch(({ body, response: { status } }) => {
             expect(body).to.eql(response.body)
             expect(status).to.eql(response.status)
 
             fetchMock.restore()
             done()
           })
+      })
+    })
+
+    describe('request using apiVersion', () => {
+      const authorizer = oauth(token)
+      const procore = client(authorizer)
+
+      it('sets default apiVersion when not passing', (done) => {
+        fetchMock.get(`${hostname}/rest/v1.0/me`, me)
+        procore
+            .get({base:'/me', apiVersion: undefined})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+
+              fetchMock.restore()
+
+              done()
+            })
+      })
+
+      it('use default apiVersion when not passing', (done) => {
+        fetchMock.get(`${hostname}/rest/v1.0/me`, me)
+        procore
+            .get({base: '/me'})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+
+              fetchMock.restore()
+
+              done()
+            })
+      })
+
+      it('customize with specified version', (done) => {
+        fetchMock.get(`${hostname}/rest/v1.1/me`, me)
+        procore
+            .get({base: '/me', apiVersion: 'v1.1'})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+
+              fetchMock.restore()
+
+              done()
+            })
+      })
+
+      it('still work for vapid when explicitly passed', (done) => {
+        fetchMock.get(`${hostname}/vapid/me`, me)
+        procore
+            .get({base: '/me', apiVersion: 'vapid'})
+            .then(({ body }) => {
+              expect(body).to.eql(me)
+
+              fetchMock.restore()
+
+              done()
+            })
       })
     })
 
@@ -105,7 +162,7 @@ describe('client', () => {
         procore
           .post({
             base: '/projects/{project_id}/rfis',
-            params: { project_id: 3  }
+            params: { project_id: 3 }
           }, rfi)
           .then(({ body }) => {
             expect(body).to.eql(rfi)
@@ -124,7 +181,7 @@ describe('client', () => {
         procore
           .post({
             base: '/projects/{project_id}/rfis',
-            params: { project_id: 3  }
+            params: { project_id: 3 }
           }, rfi)
           .then(({ body }) => {
             expect(body).to.eql(rfi)
@@ -211,7 +268,7 @@ describe('client', () => {
 
       describe('pagination', () => {
         it('Total and Per-Page is in response header', (done) => {
-          fetchMock.mock({ response: { body: [],  headers: { Total: 500, 'Per-Page': 10 } }, matcher: `${hostname}/rest/v1.0/pagination_test` })
+          fetchMock.mock({ response: { body: [], headers: { Total: 500, 'Per-Page': 10 } }, matcher: `${hostname}/rest/v1.0/pagination_test` })
 
           procore
             .get({ base: '/pagination_test', params: {} })
@@ -272,7 +329,7 @@ describe('client', () => {
 
       it('deletes resource(s) sent with a body', (done) => {
         fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, (url, opts: RequestInit) => {
-          return {body: opts.body, status: 200};
+          return { body: opts.body, status: 200 };
         });
 
         procore
@@ -290,7 +347,7 @@ describe('client', () => {
       })
 
       it('handles delete with no response: status 204', (done) => {
-        fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, {status: 204});
+        fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, { status: 204 });
 
         procore
           .destroy({

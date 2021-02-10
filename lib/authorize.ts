@@ -5,7 +5,7 @@ export interface AuthorizeConfig {
   uri: string;
 }
 
-function authorize({ clientId, uri }: AuthorizeConfig, hostname = _hostname): string {
+function authorize({ clientId, uri }: AuthorizeConfig, hostname: string = _hostname): string {
   return `${hostname}/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${uri}`
 }
 
