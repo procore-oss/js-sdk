@@ -10,6 +10,11 @@ yarn add @procore/js-sdk
 ```
 We recommend installing the package with [yarn](http://yarnpkg.com)
 
+## 3.0.0 Release
+
+v3.0.0 was released on February 15, 2021, and adds support the new Rest v1.0 API.
+See the CHANGELOG for upgrade instructions.
+
 ## Example
 
 ### Authorization Code Flow
@@ -18,9 +23,9 @@ We recommend installing the package with [yarn](http://yarnpkg.com)
 
 ```javascript
 import 'isomorphic-fetch';
-import { client, oauth, refresher, me, projects, images } from '@procore/js-sdk';
+import { client, oauth, refresher } from '@procore/js-sdk';
 
-const token = document.head.querySelector('value=auth_token').getAttribute('content');
+const token = document.head.querySelector('[name=accessToken]').getAttribute('content');
 
 const authorizer = oauth(token);
 
@@ -34,12 +39,23 @@ const procore = client(
 );
 
 Promise.all([
-  procore.get(me()),
-  procore.get(projects({ company_id: 2 })),
-  procore.get(images({ action: 'most_recent' }))
+  procore.get({base: '/me'}),
+  procore.get({base: '/me', apiVersion: 'v1.1'}),
+  procore.get({base: '/me', apiVersion: 'vapid'})
 ])
 .then(onSuccess);
 ```
+
+All paths are relative, the `@procore/js-sdk` will handle expanding them. An API version may
+be specified in the `apiVersion:` argument, or the default version is used. The
+default version is `v1.0` unless otherwise configured.
+
+| Example | Requested URL |
+| --- | --- |
+| `procore.get({base: '/me'})` | `https://app.procore.com/rest/v1.0/me` |
+| `procore.get({base: '/me', apiVersion: 'v1.1'})` | `https://app.procore.com/rest/v1.1/me` |
+| `procore.get({base: '/me', apiVersion: 'vapid'})` | `https://app.procore.com/vapid/me` |
+
 
 ### Implicit Grant Flow
 When creating an app, register the redirect URI as your app's root URL. E.g. `https://example.com`
@@ -60,11 +76,10 @@ if ( !accessToken ) {
 
 const procore = client(oauth(accessToken));
 Promise.all([
-    procore.get(me()),
-    procore.get(projects({ company_id: 2 })),
-    procore.get(images({ action: 'most_recent' }))
+    procore.get({base: '/me'}),
+    procore.get({base: '/me', apiVersion: 'v1.1'}),
+    procore.get({base: '/me', apiVersion: 'vapid'})
   ])
-})
   .then(onSuccess);
 ```
 
@@ -74,7 +89,7 @@ A single API response contains the response body (JSON parsed), original request
 
 ```javascript
   procore
-    .get(projects({ company_id: 1 }))
+    .get({ base: '/projects', params: { company_id: 1 } })
     .then({ body, response, request } => {
       console.log(body[0].name); // ACME Construction LLC.
       console.log(response.headers.get('Total')) // 865 (Total records for the resource)
@@ -93,7 +108,7 @@ function formatter(response: Response): Promise<unknown> {
 }
 
 // Pass the formatter configuration
-procore.get(myendpoint(), { formatter })
+procore.get({base: '/me'}, { formatter })
 ```
 
 ## Tests
