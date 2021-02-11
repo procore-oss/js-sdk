@@ -38,14 +38,13 @@ describe('client', () => {
     describe('request defaults', () => {
       it('sets default request options', (done) => {
         const authorizer = oauth(token)
-
         const procore = client(authorizer, { credentials: 'omit' })
 
         fetchMock.get(`${hostname}/rest/v1.0/test_config`, {})
 
         procore
           .get({ base: '/test_config' })
-          .then(({ response, request }) => {
+          .then(() => {
             fetchMock.restore()
             done()
           })
@@ -57,17 +56,16 @@ describe('client', () => {
         const procore = client(authorizer, { headers })
         const successResponse = { success: true }
 
-        const options = {
+        const mockOptions = {
+          response: successResponse,
           method: 'GET',
-          matcher: function (url, opts) {
-            return opts.headers.has('Authorization')
-          }
+          matcher: (url, opts) => url === `${hostname}/rest/v1.0/test_config` && opts.headers.has('Authorization')
         };
 
-        fetchMock.mock(`${hostname}/rest/v1.1/test_config`, successResponse, options)
+        fetchMock.mock(mockOptions);
 
         procore
-          .get({ base: '/test_config', version: 'v1.1' })
+          .get({ base: '/test_config' })
           .then(({ body }) => {
             expect(body).to.eql(successResponse)
 
