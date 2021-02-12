@@ -1,6 +1,6 @@
 import * as fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { token } from './../lib'
+import { token } from '../lib/index'
 
 const authToken = {
   auth_token: "token",
@@ -32,7 +32,7 @@ describe('token', () => {
   })
 
   it('generates an auth token with hostname', (done) => {
-    token({ id: "clientIdStub", secret: "clientIdStub", code: "codestub", uri: "uri_stub" }, "test.com")
+    token({ id: "clientIdStub", secret: "clientIdStub", code: "codestub", uri: "uri_stub" }, { apiHostname: "test.com" })
       .then(res => {
         expect(res).to.eql(truthyCustomHostResponse)
 
