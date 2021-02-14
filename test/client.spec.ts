@@ -53,21 +53,16 @@ describe('client', () => {
       it('allows headers override', (done) => {
         const headers = new Headers()
         const authorizer = oauth(token)
-        const procore = client(authorizer, { headers })
+        const procore = client(authorizer, { headers: headers })
         const successResponse = { success: true }
 
-        const mockOptions = {
-          response: successResponse,
-          method: 'GET',
-          matcher: (url, opts) => url === `${hostname}/rest/v1.0/test_config` && opts.headers.has('Authorization')
-        };
-
-        fetchMock.mock(mockOptions);
+        fetchMock.get(`${hostname}/rest/v1.0/test_config`, successResponse)
 
         procore
           .get({ base: '/test_config' })
-          .then(({ body }) => {
+          .then(({ body, response }) => {
             expect(body).to.eql(successResponse)
+            expect(response.headers.has('Authorization')).to.equal(false)
 
             fetchMock.restore()
             done()
@@ -319,7 +314,7 @@ describe('client', () => {
 
       describe('pagination', () => {
         it('Total and Per-Page is in response header', (done) => {
-          fetchMock.mock({ response: { body: [], headers: { Total: 500, 'Per-Page': 10 } }, matcher: `${hostname}/rest/v1.0/pagination_test` })
+          fetchMock.get(`${hostname}/rest/v1.0/pagination_test`,  { body: [], headers: { Total: 500, 'Per-Page': 10 } })
 
           procore
             .get({ base: '/pagination_test', params: {} })
