@@ -4,12 +4,10 @@ import { client, oauth } from '../lib/index'
 import { ClientOptionsDefaults } from '../lib/clientOptions'
 
 const project = { id: 3 }
-
-const me = { id: 42, login: "foo@procore.com", name: "foo" }
-
-const rfi = { id: 1, subject: "Create RFI Subject", assignee_id: 2945 }
+const me = { id: 42, login: 'foo@procore.com', name: 'foo' }
+const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 }
 const idsToDelete = [{ id: 1 }, { id: 2 }]
-const token = "token"
+const token = 'token'
 const hostname = ClientOptionsDefaults.apiHostname;
 
 describe('client', () => {
@@ -150,7 +148,7 @@ describe('client', () => {
       const authorizer = oauth(token)
 
       it('overrides apiHostname with passed default', (done) => {
-        const procore = client(authorizer, undefined, {apiHostname: "https://api.procore.com"});
+        const procore = client(authorizer, undefined, { apiHostname: 'https://api.procore.com' });
         fetchMock.get(`https://api.procore.com/rest/v1.0/me`, me);
         procore
           .get({ base: '/me' })
@@ -162,7 +160,7 @@ describe('client', () => {
       });
 
       it('overrides version with passed default', (done) => {
-        const procore = client(authorizer, undefined, {defaultVersion: "vapid"});
+        const procore = client(authorizer, undefined, { defaultVersion: 'vapid' });
         fetchMock.get(`${hostname}/vapid/me`, me);
         procore
           .get({ base: '/me' })
@@ -174,7 +172,7 @@ describe('client', () => {
       });
 
       it('overrides both apiHostname and version with passed defaults', (done) => {
-        const procore = client(authorizer, undefined, {apiHostname: "https://api.procore.com", defaultVersion: "vapid"});
+        const procore = client(authorizer, undefined, { apiHostname: 'https://api.procore.com', defaultVersion: 'vapid' });
         fetchMock.get(`https://api.procore.com/vapid/me`, me);
         procore
           .get({ base: '/me' })
@@ -186,7 +184,7 @@ describe('client', () => {
       });
 
       it('overrides apiHostname with passed default and uses version passed in .get', (done) => {
-        const procore = client(authorizer, undefined, {apiHostname: "https://api.procore.com", defaultVersion: "vapid"});
+        const procore = client(authorizer, undefined, { apiHostname: 'https://api.procore.com', defaultVersion: 'vapid' });
         fetchMock.get(`https://api.procore.com/rest/v1.1/me`, me);
         procore
           .get({ base: '/me', version: 'v1.1' })
