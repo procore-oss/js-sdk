@@ -43,9 +43,6 @@ jobs:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/js-sdk/.npmrc
       - run:
-          name: Generate Procore Endpoints
-          command: yarn run endpoints
-      - run:
           name: Compile Source
           command: yarn run compile
       - run:

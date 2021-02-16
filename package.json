@@ -12,9 +12,7 @@
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
     "test:watch": "mocha -r ts-node/register test/**/*.spec.ts -w --watch-extensions ts,tsx",
     "watch": "tsc --watch",
-    "compile": "tsc",
-    "docs": "typedoc --includeDeclarations --excludeExternals --readme README.md --target es5 --out docs dist/*.ts",
-    "endpoints": "node-procore-endpoints lib"
+    "compile": "tsc"
   },
   "author": "Procore Tech <insights@procore.com> (http://procore.com)",
   "license": "ISC",
@@ -35,7 +33,6 @@
     "mocha": "^5.2.0",
     "sinon": "^2.3.8",
     "ts-node": "^2.0.0",
-    "typedoc": "^0.5.6",
     "typescript": "^2.1.5"
   }
 }
