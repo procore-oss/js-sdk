@@ -13,8 +13,7 @@
     "test:watch": "mocha -r ts-node/register test/**/*.spec.ts -w --watch-extensions ts,tsx",
     "watch": "tsc --watch",
     "compile": "tsc",
-    "docs": "typedoc --includeDeclarations --excludeExternals --readme README.md --target es5 --out docs dist/*.ts",
-    "endpoints": "node-procore-endpoints lib"
+    "docs": "typedoc --includeDeclarations --excludeExternals --readme README.md --target es5 --out docs dist/*.ts"
   },
   "author": "Procore Tech <insights@procore.com> (http://procore.com)",
   "license": "ISC",
