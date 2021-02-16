@@ -11,8 +11,8 @@ function csrf(): Csrf {
 }
 
 function getTokenFromCookie() {
-  var token = document.cookie.match('(^|;)\\s*csrf_token\\s*=\\s*([^;]+)');
-  return token ? token.pop() : '';
+  let token = document.cookie.match('(^|;)\\s*csrf_token\\s*=\\s*([^;]+)');
+  return token ? decodeURIComponent(token.pop()) : '';
 }
 
 export default csrf
