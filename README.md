@@ -10,11 +10,6 @@ yarn add @procore/js-sdk
 ```
 We recommend installing the package with [yarn](http://yarnpkg.com)
 
-## 3.0.0 Release
-
-v3.0.0 was released on February 15, 2021, and adds support the new Rest v1.0 API.
-See the CHANGELOG for upgrade instructions.
-
 ## Example
 
 ### Authorization Code Flow
@@ -25,7 +20,7 @@ See the CHANGELOG for upgrade instructions.
 import 'isomorphic-fetch';
 import { client, oauth, refresher } from '@procore/js-sdk';
 
-const token = document.head.querySelector('[name=accessToken]').getAttribute('content');
+const token = window.document.querySelector('meta[name="accessToken"]').getAttribute('content');
 
 const authorizer = oauth(token);
 
@@ -40,21 +35,25 @@ const procore = client(
 
 Promise.all([
   procore.get({base: '/me'}),
-  procore.get({base: '/me', apiVersion: 'v1.1'}),
-  procore.get({base: '/me', apiVersion: 'vapid'})
+  procore.get({base: '/me', version: 'v1.0'}),
+  procore.get({base: '/me', version: 'vapid'})
 ])
-.then(onSuccess);
+.then([me1, me2, me3] => {
+  console.log(me1.body);
+  console.log(me2.body);
+  console.log(me3.body);
+});
 ```
 
 All paths are relative, the `@procore/js-sdk` will handle expanding them. An API version may
-be specified in the `apiVersion:` argument, or the default version is used. The
+be specified in the `version:` argument, or the default version is used. The
 default version is `v1.0` unless otherwise configured.
 
 | Example | Requested URL |
 | --- | --- |
 | `procore.get({base: '/me'})` | `https://app.procore.com/rest/v1.0/me` |
-| `procore.get({base: '/me', apiVersion: 'v1.1'})` | `https://app.procore.com/rest/v1.1/me` |
-| `procore.get({base: '/me', apiVersion: 'vapid'})` | `https://app.procore.com/vapid/me` |
+| `procore.get({base: '/me', version: 'v1.0'})` | `https://app.procore.com/rest/v1.0/me` |
+| `procore.get({base: '/me', version: 'vapid'})` | `https://app.procore.com/vapid/me` |
 
 
 ### Implicit Grant Flow
@@ -77,10 +76,14 @@ if ( !accessToken ) {
 const procore = client(oauth(accessToken));
 Promise.all([
     procore.get({base: '/me'}),
-    procore.get({base: '/me', apiVersion: 'v1.1'}),
-    procore.get({base: '/me', apiVersion: 'vapid'})
+    procore.get({base: '/me', version: 'v1.0'}),
+    procore.get({base: '/me', version: 'vapid'})
   ])
-  .then(onSuccess);
+  .then([me1, me2, me3] => {
+    console.log(me1.body);
+    console.log(me2.body);
+    console.log(me3.body);
+  });
 ```
 
 ## Responses
