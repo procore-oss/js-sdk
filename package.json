@@ -15,7 +15,7 @@
     "compile": "tsc"
   },
   "author": "Procore Tech <insights@procore.com> (http://procore.com)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
     "qs": "^6.9.4"
