@@ -10,40 +10,33 @@ yarn add @procore/js-sdk
 ```
 We recommend installing the package with [yarn](http://yarnpkg.com)
 
-## Example
+## Making Requests
 
-### Authorization Code Flow
+At the core of the package is the `client` object. Clients are initialized with a
+`client_id` and `client_secret` which can be obtained by signing up for
+Procore's [Developer Program](https://developers.procore.com/).
 
-[Setting up a server](/guides/setup.md)
+A client requires a store. A store manages a particular user's access token.
+Stores automatically manage tokens for you - refreshing, revoking and storage
+are abstracted away to make your code as simple as possible. There are several
+different types of stores available to you.
+
+The Client object exposes `#get`, `#post`, `#put`, `#patch`, and
+`#delete` methods to you.
 
 ```javascript
-import 'isomorphic-fetch';
-import { client, oauth, refresher } from '@procore/js-sdk';
-
-const token = window.document.querySelector('meta[name="accessToken"]').getAttribute('content');
-
-const authorizer = oauth(token);
-
-const refreshToken = token => fetch(
-  '/oauth/procore/refresh',
-  { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }
-);
-
-const procore = client(
-  refresher(authorizer, refreshToken)
-);
-
-Promise.all([
-  procore.get({base: '/me'}),
-  procore.get({base: '/me', version: 'v1.0'}),
-  procore.get({base: '/me', version: 'vapid'})
-])
-.then([me1, me2, me3] => {
-  console.log(me1.body);
-  console.log(me2.body);
-  console.log(me3.body);
-});
+   client.get({ base, version?, action?, params?, qs? }: EndpointConfig)
+  client.post({ base, version?, action?, params?, qs? }: EndpointConfig)
+   client.put({ base, version?, action?, params?, qs? }: EndpointConfig)
+ client.patch({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.delete({ base, version?, action?, params?, qs? }: EndpointConfig)
 ```
+
+## Example
+
+### JS-SDK-Sample-App
+
+Use [js-sdk-sample-app](https://github.com/procore/js-sdk-sample-app/) as a getting started example application.
 
 All paths are relative, the `@procore/js-sdk` will handle expanding them. An API version may
 be specified in the `version:` argument, or the default version is used. The
@@ -51,47 +44,16 @@ default version is `v1.0` unless otherwise configured.
 
 | Example | Requested URL |
 | --- | --- |
-| `procore.get({base: '/me'})` | `https://app.procore.com/rest/v1.0/me` |
-| `procore.get({base: '/me', version: 'v1.0'})` | `https://app.procore.com/rest/v1.0/me` |
-| `procore.get({base: '/me', version: 'vapid'})` | `https://app.procore.com/vapid/me` |
-
-
-### Implicit Grant Flow
-When creating an app, register the redirect URI as your app's root URL. E.g. `https://example.com`
-
-```javascript
-import 'isomorphic-fetch';
-import qs from 'qs';
-import { client, oauth, implicit, me, projects, images } from '@procore/js-sdk';
-
-const clientId = document.head.querySelector('value=client_id').getAttribute('content');
-const redirectUri = document.head.querySelector('value=redirect_uri').getAttribute('content');
-
-const accessToken = qs.parse(window.location).access_token;
-
-if ( !accessToken ) {
-  window.location = implicit({ id: clientId, uri: redirectUri });
-}
-
-const procore = client(oauth(accessToken));
-Promise.all([
-    procore.get({base: '/me'}),
-    procore.get({base: '/me', version: 'v1.0'}),
-    procore.get({base: '/me', version: 'vapid'})
-  ])
-  .then([me1, me2, me3] => {
-    console.log(me1.body);
-    console.log(me2.body);
-    console.log(me3.body);
-  });
-```
+| `client.get({base: '/me'})` | `https://app.procore.com/rest/v1.0/me` |
+| `client.get({base: '/me', version: 'v1.0'})` | `https://app.procore.com/rest/v1.0/me` |
+| `client.get({base: '/me', version: 'vapid'})` | `https://app.procore.com/vapid/me` |
 
 ## Responses
 A single API response contains the response body (JSON parsed), original request, and complete response.
 [isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [docs](https://github.github.io/fetch/) for more details.
 
 ```javascript
-  procore
+  client
     .get({ base: '/projects', params: { company_id: 1 } })
     .then({ body, response, request } => {
       console.log(body[0].name); // ACME Construction LLC.
@@ -111,7 +73,7 @@ function formatter(response: Response): Promise<unknown> {
 }
 
 // Pass the formatter configuration
-procore.get({base: '/me'}, { formatter })
+client.get({base: '/me'}, { formatter })
 ```
 
 ## Tests
