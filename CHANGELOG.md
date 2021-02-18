@@ -1,11 +1,10 @@
 # Change Log
 
-## 3.0.0 (February 15, 2021)
+## 3.0.0 (February 18, 2021)
 
 * Adds support for Rest API versioning
 * Remove `ramda` dependency
 * Remove `string` dependency
-* Remove `qs` dependency
 * Remove `@procore/js-sdk-endpoints` dependency
 
 ### Upgrading
@@ -29,11 +28,11 @@ const { body } = await procore.get({ base: '/me' });
 // app.procore.com/rest/v1.0/me
 
 // Override default version
-const { body } = await procore.get({ base: '/me', version: "v1.1" });
+const { body } = await procore.get({ base: '/me', version: 'v1.0' });
 // app.procore.com/rest/v1.1/me
 
 // Override default version with legacy version
-const { body } = await procore.get({ base: '/me', version: "vapid" });
+const { body } = await procore.get({ base: '/me', version: 'vapid' });
 // app.procore.com/vapid/me
 ```
 
@@ -60,10 +59,10 @@ accept an optional `version` attribute to specify the version at request time.
 const { body } = await procore.get({ base: '/me' });
 // https://app.procore.com/rest/v1.0/me
 
-const { body } = await procore.get({ base: '/me', version: "v1.1" });
+const { body } = await procore.get({ base: '/me', version: 'v1.0' });
 // https://app.procore.com/rest/v1.1/me
 
-const { body } = await procore.get({ base: '/me', version: "vapid" });
+const { body } = await procore.get({ base: '/me', version: 'vapid' });
 // https://app.procore.com/vapid/me
 ```
 
