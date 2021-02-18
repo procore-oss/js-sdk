@@ -13,20 +13,22 @@ class Csrf implements Authorizer {
     return request([this.csrfHeader, this.getToken()]);
   }
 
-  // Default location to search for csrf-token is
+  // 1) Look for csrf_token cookie
+  // "csrf_token={{ csrf_token() }}; Path=/; Domain=.procore.com; SameSite=Strict; Secure=true;"
+  // 2) Look for csrf-token meta tag
   // <head>
   //   <meta name="csrf-token" content="{{ csrf_token() }}">
   // </head>
+  // 3) Return ""
   // https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
   private static getTokenDefault(): String {
-    return window.document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  }
+    const cookieToken = document.cookie.match(/(?:^|;)\s*csrf_token\s*=\s*([^;]+)/);
+    if (cookieToken) {
+      return decodeURIComponent(cookieToken[cookieToken.length - 1]);
+    }
 
-  // cookie to search for csrf-token is
-  // "csrf_token={{ csrf_token() }}; Path=/; Domain=.procore.com; SameSite=Strict; Secure=true; HttpOnly=true;"
-  private static getTokenFromCookie(): String {
-    const token = document.cookie.match(/(?:^|;)\s*csrf_token\s*=\s*([^;]+)/);
-    return token ? decodeURIComponent(token[token.length - 1]) : '';
+    const metaTokenCtr = window.document.querySelector('meta[name="csrf-token"]');
+    return (metaTokenCtr && metaTokenCtr.getAttribute('content')) || '';
   }
 }
 
