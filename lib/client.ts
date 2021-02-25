@@ -32,11 +32,11 @@ function defaultFormatter(response: Response) {
 }
 
 const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
-  const headers = new Headers()
-  headers.append('Accept', 'application/json')
-  headers.append('Content-Type', 'application/json')
+  const headers = new Headers();
+  headers.append('Accept', 'application/json');
+  headers.append('Content-Type', 'application/json');
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config }
+  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config };
 
   return async function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     if (opts.headers instanceof Headers) {

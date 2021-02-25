@@ -1,5 +1,6 @@
 # Procore JS SDK
 
+TODO: Is this circleci link available to external users?
 [![CircleCI](https://circleci.com/gh/procore/js-sdk.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/js-sdk)
 
 A node.js and browser compatible JS SDK for the procore API.
@@ -8,7 +9,7 @@ A node.js and browser compatible JS SDK for the procore API.
 ```bash
 yarn add @procore/js-sdk
 ```
-We recommend installing the package with [yarn](http://yarnpkg.com)
+We recommend installing the package with [yarn](http://yarnpkg.com).
 
 ## Making Requests
 
@@ -16,6 +17,7 @@ At the core of the package is the `client` object. Clients are initialized with 
 `client_id` and `client_secret` which can be obtained by signing up for
 Procore's [Developer Program](https://developers.procore.com/).
 
+TODO: This is a confusing paragraph. We need a better explination of what is meant by a store.
 A client requires a store. A store manages a particular user's access token.
 Stores automatically manage tokens for you - refreshing, revoking and storage
 are abstracted away to make your code as simple as possible. There are several
@@ -36,11 +38,16 @@ client.delete({ base, version?, action?, params?, qs? }: EndpointConfig)
 
 ### JS-SDK-Sample-App
 
-Use [js-sdk-sample-app](https://github.com/procore/js-sdk-sample-app/) as a getting started example application.
+Use [js-sdk-sample-app](https://github.com/procore/js-sdk-sample-app/) as a
+getting started example application.
 
-All paths are relative, the `@procore/js-sdk` will handle expanding them. An API version may
-be specified in the `version:` argument, or the default version is used. The
-default version is `v1.0` unless otherwise configured.
+All paths are relative to `https://{apiHostname}/{vapid|rest/{version}}/`,
+the `@procore/js-sdk` will handle expanding them.
+
+An API version may be specified in the `version` attribute to the `client[method]`
+function call, or the default version is used. The default version is `v1.0` unless
+otherwise configured when instantiating the `client`
+(`client(Authorizer, RequestInit, { defaultVersion: 'vapid' })`).
 
 | Example | Requested URL |
 | --- | --- |
@@ -49,27 +56,43 @@ default version is `v1.0` unless otherwise configured.
 | `client.get({base: '/me', version: 'vapid'})` | `https://app.procore.com/vapid/me` |
 
 ## Responses
-A single API response contains the response body (JSON parsed), original request, and complete response.
-[isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [docs](https://github.github.io/fetch/) for more details.
+A single API response contains the response body (JSON parsed), original request, and complete response: `{ body, request, response }`.
+[isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [fetch](https://github.github.io/fetch/) for more details.
 
 ```javascript
-  client
-    .get({ base: '/projects', params: { company_id: 1 } })
-    .then({ body, response, request } => {
+  client.get({ base: '/projects', params: { company_id: 1 } })
+    .then({ body, request, response } => {
       console.log(body[0].name); // ACME Construction LLC.
       console.log(response.headers.get('Total')) // 865 (Total records for the resource)
+    })
+    .catch(error => {
+      //Handle error
+      console.log(error);
     });
+```
+
+or
+
+```javascript
+  const { body, request, response } = await client.get({ base: '/projects', params: { company_id: 1 } })
+    .catch(error => {
+    //Handle error
+    console.log(error);
+  });
+  console.log(body[0].name); // ACME Construction LLC.
+  console.log(response.headers.get('Total')) // 865 (Total records for the resource)
 ```
 
 ### Formatting the response
 
-By default, the SDK tries to format the response as JSON, you can control the
-response formatting passing the `formatter` option as follow:
+By default, the SDK tries to format the `body` as JSON, you can control the
+formatting of the `body` by passing the `formatter` option as follows:
 
 ```tsx
 // Create your own formatter
 function formatter(response: Response): Promise<unknown> {
-  return response.text()
+  // Your custom formatter code.
+  // Response supports .text() and .json()
 }
 
 // Pass the formatter configuration
@@ -89,7 +112,7 @@ intended to be a safe, welcoming space for collaboration, and contributors are e
 
 1. Create PR with version change `npm version minor`
 2. Merge PR
-3. Circle ci will release a new version of the package
+3. Circle Ci will release a new version of the package
 
 ## License
 
@@ -103,7 +126,7 @@ The package is available as open source under the terms of the [MIT License](htt
   width="250px"
 />
 
-Manage Version is maintained by Procore Technologies.
+The `@procore/js-sdk` is maintained by Procore Technologies.
 
 Procore - building the software that builds the world.
 
