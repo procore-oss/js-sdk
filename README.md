@@ -1,9 +1,8 @@
 # Procore JS SDK
 
-TODO: Is this circleci link available to external users?
 [![CircleCI](https://circleci.com/gh/procore/js-sdk.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/js-sdk)
 
-A node.js and browser compatible JS SDK for the procore API.
+A node.js JS SDK for the Procore API.
 
 ## Installation
 ```bash
@@ -17,14 +16,7 @@ At the core of the package is the `client` object. Clients are initialized with 
 `client_id` and `client_secret` which can be obtained by signing up for
 Procore's [Developer Program](https://developers.procore.com/).
 
-TODO: This is a confusing paragraph. We need a better explination of what is meant by a store.
-A client requires a store. A store manages a particular user's access token.
-Stores automatically manage tokens for you - refreshing, revoking and storage
-are abstracted away to make your code as simple as possible. There are several
-different types of stores available to you.
-
-The Client object exposes `#get`, `#post`, `#put`, `#patch`, and
-`#delete` methods to you.
+The Client object exposes `#get`, `#post`, `#put`, `#patch`, and `#delete` methods to you.
 
 ```javascript
    client.get({ base, version?, action?, params?, qs? }: EndpointConfig)
@@ -60,27 +52,29 @@ A single API response contains the response body (JSON parsed), original request
 [isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [fetch](https://github.github.io/fetch/) for more details.
 
 ```javascript
-  client.get({ base: '/projects', params: { company_id: 1 } })
-    .then({ body, request, response } => {
-      console.log(body[0].name); // ACME Construction LLC.
-      console.log(response.headers.get('Total')) // 865 (Total records for the resource)
-    })
-    .catch(error => {
-      //Handle error
-      console.log(error);
-    });
+client.get({ base: '/projects', params: { company_id: 1 } })
+  .then({ body, request, response } => {
+    console.log(body[0].name); // ACME Construction LLC.
+    console.log(response.headers.get('Total')) // 865 (Total records for the resource)
+  })
+  .catch(error => {
+    //Handle error
+    console.log(error);
+  });
 ```
 
 or
 
 ```javascript
+;(async () => {
   const { body, request, response } = await client.get({ base: '/projects', params: { company_id: 1 } })
     .catch(error => {
-    //Handle error
+    // Handle error
     console.log(error);
   });
   console.log(body[0].name); // ACME Construction LLC.
   console.log(response.headers.get('Total')) // 865 (Total records for the resource)
+})()
 ```
 
 ### Formatting the response
@@ -101,7 +95,7 @@ client.get({base: '/me'}, { formatter })
 
 ## Tests
 ```
-yarn test
+yarn && yarn test
 ```
 
 ## Contributing

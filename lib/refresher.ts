@@ -1,4 +1,3 @@
-import 'isomorphic-fetch'
 import { OauthAuthorizer } from './oauth'
 
 class Refresher {

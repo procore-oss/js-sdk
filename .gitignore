@@ -3,3 +3,4 @@ node_modules
 *-error.log
 *DS_Store
 .npmrc
+lib/*.js

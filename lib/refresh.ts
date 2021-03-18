@@ -16,7 +16,6 @@ async function refresh({ id, secret, uri, token, refresh }: RefreshConfig, optio
     {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${token}`, // TODO: Verify if the expired token is required on refresh.
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({

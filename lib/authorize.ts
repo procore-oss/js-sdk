@@ -1,4 +1,4 @@
-import { ClientOptions, ClientOptionsDefaults} from './clientOptions'
+import { ClientOptions, ClientOptionsDefaults } from './clientOptions'
 
 export interface AuthorizeConfig {
   clientId: string;

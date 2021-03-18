@@ -91,7 +91,7 @@ export class Client {
 
   private url = (endpoint: Endpoint): string =>
     notNil(endpoint) && (endpoint.constructor === String || endpoint instanceof String) ?
-      `${this.options.apiHostname}${endpoint}` : // TODO: Do we want to allow this. Version will not be handled for this
+      `${this.options.apiHostname}${endpoint}` :
       this.urlConfig(endpoint as EndpointConfig);
 
   private urlConfig = ({ base, action, params = {}, qs, version }: EndpointConfig): string => {

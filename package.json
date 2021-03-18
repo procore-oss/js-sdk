@@ -11,6 +11,7 @@
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
     "test:watch": "mocha -r ts-node/register test/**/*.spec.ts -w --watch-extensions ts,tsx",
+    "clean": "rimraf lib/*.js",
     "watch": "tsc --watch",
     "compile": "tsc"
   },
@@ -31,6 +32,7 @@
     "chai": "^3.5.0",
     "fetch-mock": "^5.9.3",
     "mocha": "^5.2.0",
+    "rimraf": "^3.0.2",
     "sinon": "^2.3.8",
     "ts-node": "^2.0.0",
     "typescript": "^2.1.5"
