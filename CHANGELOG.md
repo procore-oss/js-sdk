@@ -52,8 +52,10 @@ changes.
 TODO: Add example for defaultVersion
 ```
 
-All the request methods (`get`, `post`, `put`, `patch`, `destroy|delete`) now
+All the request methods (`get`, `post`, `put`, `patch`, `delete`) now
 accept an optional `version` attribute to specify the version at request time.
+
+`destroy` method is no longer supported. Convert all `destroy` requests to `delete`.
 
 ```javascript
 const { body } = await procore.get({ base: '/me' });

@@ -13,7 +13,6 @@ async function revoke({ token, clientId, clientSecret }: RevokeConfig, options: 
     {
       method: 'POST',
       headers: {
-        // TODO: IS THIS REQUIRED FOR REVOKE? 'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -22,7 +21,7 @@ async function revoke({ token, clientId, clientSecret }: RevokeConfig, options: 
         'client_secret': clientSecret
       })
     }
-  ); // TODO: What should we do in the error case.
+  );
   return res.json();
 }
 

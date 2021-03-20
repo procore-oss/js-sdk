@@ -84,10 +84,8 @@ export class Client {
   public put = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'PUT', body: JSON.stringify(payload) }, reqConfig))
 
-  public destroy = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
+  public delete = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload) }, reqConfig))
-
-  public delete = this.destroy;
 
   private url = (endpoint: Endpoint): string =>
     notNil(endpoint) && (endpoint.constructor === String || endpoint instanceof String) ?

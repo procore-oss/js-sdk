@@ -358,7 +358,7 @@ describe('client', () => {
       it('deletes a resource without a body', (done) => {
         fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi)
         procore
-          .destroy({
+          .delete({
             base: '/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
           })
@@ -377,7 +377,7 @@ describe('client', () => {
         });
 
         procore
-          .destroy({
+          .delete({
             base: '/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
           }, idsToDelete)
@@ -394,7 +394,7 @@ describe('client', () => {
         fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, { status: 204 });
 
         procore
-          .destroy({
+          .delete({
             base: '/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
           })

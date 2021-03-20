@@ -26,7 +26,7 @@ async function refresh({ id, secret, uri, token, refresh }: RefreshConfig, optio
         'refresh_token': refresh
       })
     }
-  ); // TODO: What should we do in the error case.
+  );
   return res.json();
 }
 
