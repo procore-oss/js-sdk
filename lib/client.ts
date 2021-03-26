@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
 import { Authorizer } from './interfaces'
-import { ClientOptions, ClientOptionsDefaults} from './clientOptions'
+import { ClientOptions, ClientOptionsDefaults } from './clientOptions'
 
 export interface EndpointConfig {
   base: string;
@@ -28,7 +28,10 @@ const TOKENS_REG_EX = new RegExp(/\/{(.*?)}/g);
 const replaceParams = (str: string, params: any) => str.replace(TOKENS_REG_EX, (_, p) => params[p] ? `/${params[p]}` : '/');
 
 function defaultFormatter(response: Response) {
-  return response.json();
+  if (response.body !== undefined && response.body !== null) {
+    return response.json();
+  }
+  return Promise.resolve({});
 }
 
 const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {

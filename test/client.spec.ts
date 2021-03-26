@@ -1,19 +1,19 @@
-import * as fetchMock from 'fetch-mock'
+import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { client, oauth } from '../lib/index'
-import { ClientOptionsDefaults } from '../lib/clientOptions'
+import { client, oauth } from '../dist/index'
+import { ClientOptionsDefaults } from '../dist/clientOptions'
 
-const project = { id: 3 }
-const me = { id: 42, login: 'foo@procore.com', name: 'foo' }
-const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 }
-const idsToDelete = [{ id: 1 }, { id: 2 }]
-const token = 'token'
+const project = { id: 3 };
+const me = { id: 42, login: 'foo@procore.com', name: 'foo' };
+const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 };
+const idsToDelete = [{ id: 1 }, { id: 2 }];
+const token = 'token';
 const hostname = ClientOptionsDefaults.apiHostname;
 
 describe('client', () => {
-  it('uses the custom formatter', (done) => {
-    const authorizer = oauth(token)
-    const procore = client(authorizer)
+  it('uses a custom formatter', async () => {
+    const authorizer = oauth(token);
+    const procore = client(authorizer);
     let counter = 1;
 
     function formatter(response: any) {
@@ -21,331 +21,256 @@ describe('client', () => {
       return response.json();
     }
 
-    fetchMock.get(`${hostname}/foo/me`, me)
-    procore
-      .get('/foo/me', { formatter })
-      .then(({ body }) => {
-        expect(body).to.eql(me)
-        expect(counter).to.eql(2)
-        fetchMock.restore()
-        done()
-      })
+    fetchMock.get(`${hostname}/foo/me`, me);
+
+    const { body } = await procore.get('/foo/me', { formatter });
+
+    expect(body).to.eql(me);
+    expect(counter).to.eql(2);
+    fetchMock.restore();
   })
 
   context('using oauth', () => {
     describe('request defaults', () => {
-      it('sets default request options', (done) => {
-        const authorizer = oauth(token)
+      it('sets default request options', async () => {
+        const authorizer = oauth(token);
         const procore = client(authorizer, { credentials: 'omit' })
 
-        fetchMock.get(`${hostname}/rest/v1.0/test_config`, {})
+        fetchMock.get(`${hostname}/rest/v1.0/test_config`, {});
 
-        procore
-          .get({ base: '/test_config' })
-          .then(() => {
-            fetchMock.restore()
-            done()
-          })
+        const { body } = await procore.get({ base: '/test_config' });
+        expect(body).to.eql({});
+        fetchMock.restore();
       })
 
-      it('allows headers override', (done) => {
-        const headers = new Headers()
-        const authorizer = oauth(token)
-        const procore = client(authorizer, { headers: headers })
-        const successResponse = { success: true }
+      it('allows headers override', async () => {
+        const headers = new Headers();
+        const authorizer = oauth(token);
+        const procore = client(authorizer, { headers });
+        const successResponse = { success: true };
 
-        fetchMock.get(`${hostname}/rest/v1.0/test_config`, successResponse)
+        fetchMock.get(`${hostname}/rest/v1.0/test_config`, successResponse);
 
-        procore
-          .get({ base: '/test_config' })
-          .then(({ body, response }) => {
-            expect(body).to.eql(successResponse)
-            expect(response.headers.has('Authorization')).to.equal(false)
+        const { body, response } = await procore.get({ base: '/test_config' });
+        expect(body).to.eql(successResponse);
 
-            fetchMock.restore()
-            done()
-          })
+        // Why does adding a headers object as a default remove the Authorization header?
+        expect(response.headers.has('Authorization')).to.equal(false);
+
+        fetchMock.restore();
       })
 
-      it('returns the raw request even if the request fails', done => {
-        const procore = client(oauth(token))
+      it('returns the raw request even if the request fails', async () => {
+        const procore = client(oauth(token));
         const response = {
           status: 401,
           body: { errors: { name: ['is already taken'] } }
-        }
+        };
 
-        fetchMock.get(`${hostname}/vapid/test_config`, response)
+        fetchMock.get(`${hostname}/vapid/test_config`, response);
 
-        procore.get({ base: '/test_config', version: 'vapid' })
+        await procore.get({ base: '/test_config', version: 'vapid' })
           .catch(({ body, response: { status } }) => {
-            expect(body).to.eql(response.body)
-            expect(status).to.eql(response.status)
+            expect(body).to.eql(response.body);
+            expect(status).to.eql(response.status);
 
-            fetchMock.restore()
-            done()
+            fetchMock.restore();
           })
       })
     })
 
     describe('request using version', () => {
-      const authorizer = oauth(token)
-      const procore = client(authorizer)
+      const authorizer = oauth(token);
+      const procore = client(authorizer);
 
-      it('sets default version when not passing', (done) => {
-        fetchMock.get(`${hostname}/rest/v1.0/me`, me)
-        procore
-          .get({ base: '/me', version: undefined })
-          .then(({ body }) => {
-            expect(body).to.eql(me)
+      it('sets default version when not passing', async () => {
+        fetchMock.get(`${hostname}/rest/v1.0/me`, me);
 
-            fetchMock.restore()
+        const { body } = await procore.get({ base: '/me', version: undefined });
+        expect(body).to.eql(me);
 
-            done()
-          })
+        fetchMock.restore();
       })
 
-      it('use default version when not passing', (done) => {
-        fetchMock.get(`${hostname}/rest/v1.0/me`, me)
-        procore
-          .get({ base: '/me' })
-          .then(({ body }) => {
-            expect(body).to.eql(me)
+      it('use default version when not passing', async () => {
+        fetchMock.get(`${hostname}/rest/v1.0/me`, me);
 
-            fetchMock.restore()
+        const { body } = await procore.get({ base: '/me' });
+        expect(body).to.eql(me);
 
-            done()
-          })
+        fetchMock.restore();
       })
 
-      it('customize with specified version', (done) => {
-        fetchMock.get(`${hostname}/rest/v1.1/me`, me)
-        procore
-          .get({ base: '/me', version: 'v1.1' })
-          .then(({ body }) => {
-            expect(body).to.eql(me)
+      it('customize with specified version', async () => {
+        fetchMock.get(`${hostname}/rest/v1.1/me`, me);
 
-            fetchMock.restore()
+        const { body } = await procore.get({ base: '/me', version: 'v1.1' });
+        expect(body).to.eql(me);
 
-            done()
-          })
+        fetchMock.restore();
       })
 
-      it('still work for vapid when explicitly passed', (done) => {
-        fetchMock.get(`${hostname}/vapid/me`, me)
-        procore
-          .get({ base: '/me', version: 'vapid' })
-          .then(({ body }) => {
-            expect(body).to.eql(me)
+      it('still work for vapid when explicitly passed', async () => {
+        fetchMock.get(`${hostname}/vapid/me`, me);
 
-            fetchMock.restore()
+        const { body } = await procore.get({ base: '/me', version: 'vapid' });
+        expect(body).to.eql(me);
 
-            done()
-          })
+        fetchMock.restore();
       })
     })
 
     describe('request using ClientOptions', () => {
       const authorizer = oauth(token)
 
-      it('overrides apiHostname with passed default', (done) => {
+      it('overrides apiHostname with passed default', async () => {
         const procore = client(authorizer, undefined, { apiHostname: 'https://api.procore.com' });
         fetchMock.get(`https://api.procore.com/rest/v1.0/me`, me);
-        procore
-          .get({ base: '/me' })
-          .then(({ body }) => {
-            expect(body).to.eql(me);
-            fetchMock.restore();
-            done();
-          });
+
+        const { body } = await procore.get({ base: '/me' });
+        expect(body).to.eql(me);
+        fetchMock.restore();
       });
 
-      it('overrides version with passed default', (done) => {
+      it('overrides version with passed default', async () => {
         const procore = client(authorizer, undefined, { defaultVersion: 'vapid' });
         fetchMock.get(`${hostname}/vapid/me`, me);
-        procore
-          .get({ base: '/me' })
-          .then(({ body }) => {
-            expect(body).to.eql(me);
-            fetchMock.restore();
-            done();
-          });
+
+        const { body } = await procore.get({ base: '/me' });
+        expect(body).to.eql(me);
+        fetchMock.restore();
       });
 
-      it('overrides both apiHostname and version with passed defaults', (done) => {
+      it('overrides both apiHostname and version with passed defaults', async () => {
         const procore = client(authorizer, undefined, { apiHostname: 'https://api.procore.com', defaultVersion: 'vapid' });
         fetchMock.get(`https://api.procore.com/vapid/me`, me);
-        procore
-          .get({ base: '/me' })
-          .then(({ body }) => {
-            expect(body).to.eql(me);
-            fetchMock.restore();
-            done();
-          });
+
+        const { body } = await procore.get({ base: '/me' });
+        expect(body).to.eql(me);
+        fetchMock.restore();
       });
 
-      it('overrides apiHostname with passed default and uses version passed in .get', (done) => {
+      it('overrides apiHostname with passed default and uses version passed in .get', async () => {
         const procore = client(authorizer, undefined, { apiHostname: 'https://api.procore.com', defaultVersion: 'vapid' });
         fetchMock.get(`https://api.procore.com/rest/v1.1/me`, me);
-        procore
-          .get({ base: '/me', version: 'v1.1' })
-          .then(({ body }) => {
-            expect(body).to.eql(me);
-            fetchMock.restore();
-            done();
-          });
+
+        const { body } = await procore.get({ base: '/me', version: 'v1.1' });
+        expect(body).to.eql(me);
+        fetchMock.restore();
       });
     })
 
     describe('#post', () => {
-      const authorizer = oauth(token)
+      const authorizer = oauth(token);
+      const procore = client(authorizer);
 
-      const procore = client(authorizer)
+      it('creates a resource', async () => {
+        fetchMock.post(`${hostname}/rest/v1.0/projects/${project.id}/rfis`, rfi);
 
-      it('creates a resource', (done) => {
-        fetchMock.post(`${hostname}/rest/v1.0/projects/${project.id}/rfis`, rfi)
-        procore
+        const { body } = await procore
           .post({
             base: '/projects/{project_id}/rfis',
             params: { project_id: 3 }
-          }, rfi)
-          .then(({ body }) => {
-            expect(body).to.eql(rfi)
+          }, rfi);
+        expect(body).to.eql(rfi);
 
-            fetchMock.restore()
-
-            done()
-          })
+        fetchMock.restore();
       })
 
-      it('sends a valid body', (done) => {
+      it('sends a valid body', async () => {
         fetchMock.post(`${hostname}/rest/v1.0/projects/${project.id}/rfis`, (url, opts: RequestInit) => {
           return opts.body;
         });
 
-        procore
+        const { body } = await procore
           .post({
             base: '/projects/{project_id}/rfis',
             params: { project_id: 3 }
-          }, rfi)
-          .then(({ body }) => {
-            expect(body).to.eql(rfi)
+          }, rfi);
+        expect(body).to.eql(rfi);
 
-            fetchMock.restore()
-
-            done()
-          })
+        fetchMock.restore();
       })
     })
 
     describe('#get', () => {
-      const authorizer = oauth(token)
-
-      const procore = client(authorizer)
+      const authorizer = oauth(token);
+      const procore = client(authorizer);
 
       describe('singleton', () => {
-        it('gets a signleton resource', (done) => {
-          fetchMock.get(`${hostname}/rest/v1.0/me`, me)
+        it('gets a signleton resource', async () => {
+          fetchMock.get(`${hostname}/rest/v1.0/me`, me);
 
-          procore
-            .get({ base: '/me', params: {} })
-            .then(({ body }) => {
-              expect(body).to.eql(me)
+          const { body } = await procore.get({ base: '/me', params: {} });
+          expect(body).to.eql(me);
 
-              fetchMock.restore()
-
-              done()
-            })
+          fetchMock.restore();
         })
 
         context('using a string url as the endpoint', () => {
-          it('gets a signleton resource', (done) => {
-            fetchMock.get(`${hostname}/me`, me)
+          it('gets a signleton resource', async () => {
+            fetchMock.get(`${hostname}/me`, me);
 
-            procore
-              .get('/me')
-              .then(({ body }) => {
-                expect(body).to.eql(me)
+            const { body } = await procore.get('/me');
+            expect(body).to.eql(me);
 
-                fetchMock.restore()
-
-                done()
-              })
+            fetchMock.restore();
           })
         })
       })
 
       describe('by id', () => {
-        it('gets the resource', done => {
-          fetchMock.get(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi)
+        it('gets the resource', async () => {
+          fetchMock.get(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi);
 
-          procore
+          const { body } = await procore
             .get(
               { base: '/projects/{project_id}/rfis', params: { project_id: project.id, id: rfi.id } }
-            )
-            .then(({ body }) => {
-              expect(body).to.eql(rfi)
+            );
+          expect(body).to.eql(rfi);
 
-              fetchMock.restore()
-
-              done()
-            })
+          fetchMock.restore();
         })
       })
 
       describe('by query strings', () => {
-        it('gets the resource', done => {
-          fetchMock.get(`${hostname}/rest/v1.0/projects?a%5B%5D=1&a%5B%5D=2`, rfi)
+        it('gets the resource', async () => {
+          fetchMock.get(`${hostname}/rest/v1.0/projects?a%5B%5D=1&a%5B%5D=2`, rfi);
 
-          procore
+          const { body } = await procore
             .get(
               { base: '/projects', qs: { a: [1, 2] } }
-            )
-            .then(({ body }) => {
-              expect(body).to.eql(rfi)
+            );
+          expect(body).to.eql(rfi);
 
-              fetchMock.restore()
-
-              done()
-            })
+          fetchMock.restore();
         })
       })
 
       describe('pagination', () => {
-        it('Total and Per-Page is in response header', (done) => {
-          fetchMock.get(`${hostname}/rest/v1.0/pagination_test`,  { body: [], headers: { Total: 500, 'Per-Page': 10 } })
+        it('Total and Per-Page is in response header', async () => {
+          fetchMock.get(`${hostname}/rest/v1.0/pagination_test`, { body: [], headers: { Total: 500, 'Per-Page': 10 } });
 
-          procore
-            .get({ base: '/pagination_test', params: {} })
-            .then(({ body, response }) => {
-              expect(body).to.eql([])
+          const { body, response } = await procore.get({ base: '/pagination_test', params: {} });
+          expect(body).to.eql([]);
+          expect(response.headers.get('Total')).to.equal('500');
+          expect(response.headers.get('Per-Page')).to.equal('10');
 
-              expect(response.headers.get('Total')).to.equal('500')
-
-              expect(response.headers.get('Per-Page')).to.equal('10')
-
-              fetchMock.restore()
-
-              done()
-            })
+          fetchMock.restore();
         })
       })
 
       describe('action', () => {
-        it('gets the resources', done => {
-          fetchMock.get(`${hostname}/rest/v1.0/projects/${project.id}/rfis/recycle_bin`, [rfi])
+        it('gets the resources', async () => {
+          fetchMock.get(`${hostname}/rest/v1.0/projects/${project.id}/rfis/recycle_bin`, [rfi]);
 
-          procore
+          const { body } = await procore
             .get(
               { base: '/projects/{project_id}/rfis', params: { project_id: project.id }, action: 'recycle_bin' }
-            )
-            .then(({ body }) => {
-              expect(body).to.eql([rfi])
+            );
+          expect(body).to.eql([rfi]);
 
-              fetchMock.restore()
-
-              done()
-            })
-
+          fetchMock.restore();
         })
       })
     })
@@ -355,56 +280,45 @@ describe('client', () => {
 
       const procore = client(authorizer)
 
-      it('deletes a resource without a body', (done) => {
-        fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi)
-        procore
+      it('deletes a resource without a body', async () => {
+        fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi);
+
+        const { body } = await procore
           .delete({
             base: '/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
-          })
-          .then(({ body }) => {
-            expect(body).to.eql(rfi)
+          });
+        expect(body).to.eql(rfi);
 
-            fetchMock.restore()
-
-            done()
-          })
+        fetchMock.restore();
       })
 
-      it('deletes resource(s) sent with a body', (done) => {
+      it('deletes resource(s) sent with a body', async () => {
         fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, (url, opts: RequestInit) => {
           return { body: opts.body, status: 200 };
         });
 
-        procore
+        const { body } = await procore
           .delete({
             base: '/projects/{project_id}/rfis/{rfi_id}',
             params: { project_id: 3, rfi_id: rfi.id }
-          }, idsToDelete)
-          .then(({ body }) => {
-            expect(body).to.eql(idsToDelete)
+          }, idsToDelete);
+        expect(body).to.eql(idsToDelete);
 
-            fetchMock.restore()
-
-            done()
-          })
+        fetchMock.restore();
       })
 
-      it('handles delete with no response: status 204', (done) => {
+      it('handles delete with no response: status 204', async () => {
         fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, { status: 204 });
 
-        procore
+        const { body } = await procore
           .delete({
             base: '/projects/{project_id}/rfis/{rfi_id}',
-            params: { project_id: 3, rfi_id: rfi.id }
-          })
-          .then(({ body }) => {
-            expect(body).to.eql({})
+            params: { project_id: project.id, rfi_id: rfi.id }
+          });
 
-            fetchMock.restore()
-
-            done()
-          })
+        expect(body).to.eql({});
+        fetchMock.restore();
       })
     })
   })

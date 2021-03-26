@@ -1,6 +1,6 @@
-import * as fetchMock from 'fetch-mock'
+import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { token } from '../lib/index'
+import { token } from '../dist/index'
 
 const authToken = {
   auth_token: "token",
@@ -15,28 +15,35 @@ const truthyCustomHostResponse = {
 
 describe('token', () => {
   before(() => {
-    fetchMock.mock('*', (url, opts) => {
-      return url.indexOf('test.com') !== -1 ? truthyCustomHostResponse : authToken
-    });
-  })
+    fetchMock.mock('*', url =>
+      url.indexOf('test.com') !== -1 ? truthyCustomHostResponse : authToken
+    );
+  });
 
-  after(fetchMock.restore)
+  after(() => fetchMock.restore());
 
-  it('generates an auth token', (done) => {
-    token({ id: "clientIdStub", secret: "clientIdStub", code: "codestub", uri: "uri_stub" })
-      .then(res => {
-        expect(res).to.eql(authToken)
+  it('generates an auth token', async () => {
+    const res = await token(
+      {
+        id: "clientIdStub",
+        secret: "clientIdStub",
+        code: "codestub",
+        uri: "uri_stub"
+      });
+    expect(res).to.eql(authToken);
+  });
 
-        done()
+  it('generates an auth token with hostname', async () => {
+    const res = await token(
+      {
+        id: "clientIdStub",
+        secret: "clientIdStub",
+        code: "codestub",
+        uri: "uri_stub"
+      },
+      {
+        apiHostname: "test.com"
       })
-  })
-
-  it('generates an auth token with hostname', (done) => {
-    token({ id: "clientIdStub", secret: "clientIdStub", code: "codestub", uri: "uri_stub" }, { apiHostname: "test.com" })
-      .then(res => {
-        expect(res).to.eql(truthyCustomHostResponse)
-
-        done()
-      })
-  })
+    expect(res).to.eql(truthyCustomHostResponse)
+  });
 })
