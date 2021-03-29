@@ -45,9 +45,9 @@ otherwise configured when instantiating the `client`
 
 | Example | Requested URL |
 | --- | --- |
-| `client.get({base: '/me'})` | `https://app.procore.com/rest/v1.0/me` |
-| `client.get({base: '/me', version: 'v1.0'})` | `https://app.procore.com/rest/v1.0/me` |
-| `client.get({base: '/me', version: 'vapid'})` | `https://app.procore.com/vapid/me` |
+| `client.get({ base: '/example/{id}', params: { id: 42 } })` | `https://app.procore.com/rest/v1.0/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'v1.1' })` | `https://app.procore.com/rest/v1.1/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'vapid' })` | `https://app.procore.com/vapid/example/42` |
 
 ## Responses
 A single API response contains the response body (JSON parsed), original request, and complete response: `{ body, request, response }`.
