@@ -4,6 +4,8 @@
 
 A node.js JS SDK for the Procore API.
 
+Note: ECMAScript target is ES5.
+
 ## Installation
 ```bash
 yarn add @procore/js-sdk
@@ -52,7 +54,8 @@ A single API response contains the response body (JSON parsed), original request
 [isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [fetch](https://github.github.io/fetch/) for more details.
 
 ```javascript
-client.get({ base: '/projects', params: { company_id: 1 } })
+const procore = client(authorizer);
+procore.get({ base: '/projects', qs: { company_id: 1 } })
   .then({ body, request, response } => {
     console.log(body[0].name); // ACME Construction LLC.
     console.log(response.headers.get('Total')) // 865 (Total records for the resource)
@@ -66,15 +69,18 @@ client.get({ base: '/projects', params: { company_id: 1 } })
 or
 
 ```javascript
-;(async () => {
-  const { body, request, response } = await client.get({ base: '/projects', params: { company_id: 1 } })
+const procore = client(authorizer);
+async function getProjects() {
+  const { body, request, response } = await procore
+    .get({ base: '/projects', qs: { company_id: 1 } })
     .catch(error => {
     // Handle error
     console.log(error);
   });
   console.log(body[0].name); // ACME Construction LLC.
   console.log(response.headers.get('Total')) // 865 (Total records for the resource)
-})()
+}
+getProjects();
 ```
 
 ### Formatting the response
@@ -82,15 +88,16 @@ or
 By default, the SDK tries to format the `body` as JSON, you can control the
 formatting of the `body` by passing the `formatter` option as follows:
 
-```tsx
+```javascript
+const procore = client(authorizer);
 // Create your own formatter
-function formatter(response: Response): Promise<unknown> {
+function formatter(response) {
   // Your custom formatter code.
   // Response supports .text() and .json()
 }
 
 // Pass the formatter configuration
-client.get({base: '/me'}, { formatter })
+procore.get({base: '/me'}, { formatter })
 ```
 
 ## Tests
