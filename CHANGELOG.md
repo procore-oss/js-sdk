@@ -6,6 +6,14 @@
 * Remove `ramda` dependency
 * Remove `string` dependency
 * Remove `@procore/js-sdk-endpoints` dependency
+* Add support for revoking token `revoke()`
+
+
+### Breaking Changes
+ * The 3rd paramater of client() is now an object and no longer a string. Update `const procore = client(authorizer, {}, 'https://api.procore.com');` to `const procore = client(authorizer, {}, { apiHostname: 'https://api.procore.com' });`
+ * The 2nd paramater of info() is now an object and no longer a string. Update `const tknInfo = info(accessToken, 'https://api.procore.com');` to `const tknInfo = info(accessToken, { apiHostname: 'https://api.procore.com' });`
+ * The 3rd paramater of refresh() is now an object and no longer a string. Update `const refreshTkn = refresh({...}, 'https://api.procore.com');` to `const refreshTkn = refresh({...}, { apiHostname: 'https://api.procore.com' });`
+ * The 2nd paramater of token() is now an object and no longer a string. Update `const tknRes = token({...}, 'https://api.procore.com');` to `const tknRes = token({...}, { apiHostname: 'https://api.procore.com' });`
 
 ### Upgrading
 
