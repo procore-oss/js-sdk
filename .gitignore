@@ -1,5 +1,6 @@
 node_modules
 dist
+types
 *-debug.log
 *-error.log
 *DS_Store

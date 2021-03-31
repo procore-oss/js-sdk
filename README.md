@@ -6,6 +6,11 @@ A node.js JS SDK for the Procore API.
 
 Note: ECMAScript target is ES5.
 
+# Requirements
+- Node.js version 10.12 and above.
+- A registered app on the [Procore Developer Portal](https://developers.procore.com/).
+- A Node.js web server (such as Express) for server authentication.
+
 ## Installation
 ```bash
 yarn add @procore/js-sdk
@@ -16,15 +21,17 @@ We recommend installing the package with [yarn](http://yarnpkg.com).
 
 At the core of the package is the `client` object. Clients are initialized with a
 `client_id` and `client_secret` which can be obtained by signing up for
-Procore's [Developer Program](https://developers.procore.com/).
+Procore's [Developer Program](https://developers.procore.com/). The `redirect_uri`
+used for authorization must be specified on the `Manage App` page for the App
+associated with the `client_id` in use.
 
 The Client object exposes `#get`, `#post`, `#put`, `#patch`, and `#delete` methods to you.
 
 ```javascript
-   client.get({ base, version?, action?, params?, qs? }: EndpointConfig)
-  client.post({ base, version?, action?, params?, qs? }: EndpointConfig)
-   client.put({ base, version?, action?, params?, qs? }: EndpointConfig)
- client.patch({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.get({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.post({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.put({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.patch({ base, version?, action?, params?, qs? }: EndpointConfig)
 client.delete({ base, version?, action?, params?, qs? }: EndpointConfig)
 ```
 

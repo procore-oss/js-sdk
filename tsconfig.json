@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "types",
     "esModuleInterop": true,
     "module": "commonjs",
     "target": "es5",
@@ -11,6 +13,8 @@
   },
   "exclude": [
     "node_modules",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "types",
+    "dist"
   ]
 }
