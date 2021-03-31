@@ -2,11 +2,15 @@
 
 ## 3.0.0 (March 31, 2021)
 
-* Adds support for Rest API versioning (rest/v1.0 is default)
+* Adds support for Rest API versioning (rest/v1.0 is)
 * Remove `ramda` dependency
 * Remove `string` dependency
 * Remove `@procore/js-sdk-endpoints` dependency
 * Add support for revoking token `revoke()`
+
+### Breaking Changes
+
+* Remove `/vapid` from base attribute passed to `client.<method>` functions. Versioning will be handled in the `client.<method>` function. See the [Upgrading](#upgrading) section for details about how to upgrade to version 3.0.0.
 
 ### Upgrading
 
