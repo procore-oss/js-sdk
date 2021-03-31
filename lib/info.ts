@@ -1,10 +1,9 @@
 import 'isomorphic-fetch'
-import { ClientOptions, ClientOptionsDefaults } from './clientOptions'
+import { ClientOptions, convert } from './clientOptions'
 
-async function info(token: string, options: ClientOptions = ClientOptionsDefaults): Promise<any> {
-  const _options = Object.assign({}, ClientOptionsDefaults, options);
+async function info(token: string, options: ClientOptions | string): Promise<any> {
   const res = await fetch(
-    `${_options.apiHostname}/oauth/token/info`,
+    `${convert(options).apiHostname}/oauth/token/info`,
     {
       method: 'GET',
       headers: {

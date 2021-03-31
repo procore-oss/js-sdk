@@ -1,7 +1,7 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
 import { Authorizer } from './interfaces'
-import { ClientOptions, ClientOptionsDefaults } from './clientOptions'
+import { ClientOptions, convert } from './clientOptions'
 
 export interface EndpointConfig {
   base: string;
@@ -69,9 +69,9 @@ export class Client {
   private authorize: any;
   private request: Function;
 
-  constructor(authorizer: Authorizer, config: RequestInit = {}, options: ClientOptions = ClientOptionsDefaults) {
+  constructor(authorizer: Authorizer, config: RequestInit = {}, options: ClientOptions) {
     this.authorize = authorizer.authorize;
-    this.options = Object.assign({}, ClientOptionsDefaults, options);
+    this.options = options;
     this.request = baseRequest(config);
   }
 
@@ -127,8 +127,8 @@ export class Client {
   }
 }
 
-function client(authorizer: Authorizer, defaults: RequestInit = {}, options: ClientOptions = ClientOptionsDefaults): Client {
-  return new Client(authorizer, defaults, options);
+function client(authorizer: Authorizer, defaults: RequestInit = {}, options: ClientOptions | string): Client {
+  return new Client(authorizer, defaults, convert(options));
 }
 
 export default client

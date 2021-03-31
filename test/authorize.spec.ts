@@ -15,4 +15,10 @@ describe('authorize grant', () => {
       `https://api.procore.com/oauth/authorize?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(uri)}`
     )
   });
+
+  it('returns valid url with apiHostname passed as string', () => {
+    expect(authorize({ clientId, uri }, 'https://api.procore.com')).to.equal(
+      `https://api.procore.com/oauth/authorize?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(uri)}`
+    )
+  });
 })

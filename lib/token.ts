@@ -1,5 +1,5 @@
 import 'isomorphic-fetch'
-import { ClientOptions, ClientOptionsDefaults } from './clientOptions'
+import { ClientOptions, convert } from './clientOptions'
 
 export interface TokenConfig {
   id: string;
@@ -8,10 +8,9 @@ export interface TokenConfig {
   uri: string;
 }
 
-async function token({ id, secret, code, uri }: TokenConfig, options: ClientOptions = ClientOptionsDefaults): Promise<any> {
-  const _options = Object.assign({}, ClientOptionsDefaults, options);
+async function token({ id, secret, code, uri }: TokenConfig, options: ClientOptions | string): Promise<any> {
   const res = await fetch(
-    `${_options.apiHostname}/oauth/token`,
+    `${convert(options).apiHostname}/oauth/token`,
     {
       method: 'POST',
       headers: {

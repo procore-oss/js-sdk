@@ -1,5 +1,5 @@
 import 'isomorphic-fetch'
-import { ClientOptions, ClientOptionsDefaults } from './clientOptions'
+import { ClientOptions, convert } from './clientOptions'
 
 export interface RevokeConfig {
   token: string;
@@ -7,9 +7,8 @@ export interface RevokeConfig {
   clientSecret: string;
 }
 
-async function revoke({ token, clientId, clientSecret }: RevokeConfig, options: ClientOptions = ClientOptionsDefaults): Promise<any> {
-  const _options = Object.assign({}, ClientOptionsDefaults, options);
-  const res = await fetch(`${_options.apiHostname}/oauth/revoke`,
+async function revoke({ token, clientId, clientSecret }: RevokeConfig, options: ClientOptions | string): Promise<any> {
+  const res = await fetch(`${convert(options).apiHostname}/oauth/revoke`,
     {
       method: 'POST',
       headers: {

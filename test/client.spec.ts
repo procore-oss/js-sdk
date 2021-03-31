@@ -1,14 +1,13 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
 import { client, oauth } from '../dist/index'
-import { ClientOptionsDefaults } from '../dist/clientOptions'
 
 const project = { id: 3 };
 const me = { id: 42, login: 'foo@procore.com', name: 'foo' };
 const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 };
 const idsToDelete = [{ id: 1 }, { id: 2 }];
 const token = 'token';
-const hostname = ClientOptionsDefaults.apiHostname;
+const hostname = 'https://app.procore.com';
 
 describe('client', () => {
   it('uses a custom formatter', async () => {
@@ -155,6 +154,15 @@ describe('client', () => {
         fetchMock.get(`https://api.procore.com/rest/v1.1/me`, me);
 
         const { body } = await procore.get({ base: '/me', version: 'v1.1' });
+        expect(body).to.eql(me);
+        fetchMock.restore();
+      });
+
+      it('overrides apiHostname with passed default as string', async () => {
+        const procore = client(authorizer, undefined, 'https://api.procore.com');
+        fetchMock.get(`https://api.procore.com/rest/v1.0/me`, me);
+
+        const { body } = await procore.get({ base: '/me' });
         expect(body).to.eql(me);
         fetchMock.restore();
       });

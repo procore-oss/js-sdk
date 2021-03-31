@@ -16,4 +16,10 @@ describe('implicit grant', () => {
       `https://api.procore.com/oauth/authorize?response_type=token&client_id=${encodeURIComponent(id)}&redirect_uri=${encodeURIComponent(uri)}`
     )
   });
+
+  it('returns valid url with apiHostname passed as string', () => {
+    expect(implicit({ id, uri }, 'https://api.procore.com')).to.equal(
+      `https://api.procore.com/oauth/authorize?response_type=token&client_id=${encodeURIComponent(id)}&redirect_uri=${encodeURIComponent(uri)}`
+    )
+  });
 })

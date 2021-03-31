@@ -1,18 +1,17 @@
 import 'isomorphic-fetch'
-import { ClientOptions, ClientOptionsDefaults } from './clientOptions'
+import { ClientOptions, convert } from './clientOptions'
 
 export interface RefreshConfig {
   id: string;
   secret: string;
   uri: string;
-  token: string;
+  token?: string;
   refresh: string;
 }
 
-async function refresh({ id, secret, uri, token, refresh }: RefreshConfig, options: ClientOptions = ClientOptionsDefaults): Promise<any> {
-  const _options = Object.assign({}, ClientOptionsDefaults, options);
+async function refresh({ id, secret, uri, token, refresh }: RefreshConfig, options: ClientOptions | string): Promise<any> {
   const res = await fetch(
-    `${_options.apiHostname}/oauth/token`,
+    `${convert(options).apiHostname}/oauth/token`,
     {
       method: 'POST',
       headers: {

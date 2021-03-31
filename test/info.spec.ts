@@ -1,7 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
 import { info } from '../dist/index'
-import { ClientOptionsDefaults } from '../dist/clientOptions'
 
 const token = 'token';
 const infoResponse = {
@@ -17,12 +16,25 @@ const headers = {
   'Authorization': `Bearer ${token}`,
   'Content-Type': 'application/json'
 };
-const hostname = ClientOptionsDefaults.apiHostname;
 
 describe('info', () => {
-  it('basic request', async () => {
-    fetchMock.get({ url: `${hostname}/oauth/token/info`, headers }, infoResponse);
+  it('request', async () => {
+    fetchMock.get({ url: `https://app.procore.com/oauth/token/info`, headers }, infoResponse);
     const body = await info(token);
+    expect(body).to.deep.equal(infoResponse);
+    fetchMock.restore();
+  });
+
+  it('request using ClientOptions', async () => {
+    fetchMock.get({ url: `https://api.procore.com/oauth/token/info`, headers }, infoResponse);
+    const body = await info(token, { apiHostname: 'https://api.procore.com' });
+    expect(body).to.deep.equal(infoResponse);
+    fetchMock.restore();
+  });
+
+  it('request using string for options', async () => {
+    fetchMock.get({ url: `https://api.procore.com/oauth/token/info`, headers }, infoResponse);
+    const body = await info(token, 'https://api.procore.com');
     expect(body).to.deep.equal(infoResponse);
     fetchMock.restore();
   });
