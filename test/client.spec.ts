@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { client, oauth } from '../dist/index'
+import { client, oauth, sdkVersionHeader } from '../dist/lib/index'
 
 const project = { id: 3 };
 const me = { id: 42, login: 'foo@procore.com', name: 'foo' };
@@ -8,6 +8,7 @@ const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 };
 const idsToDelete = [{ id: 1 }, { id: 2 }];
 const token = 'token';
 const hostname = 'https://app.procore.com';
+const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-Procore-Sdk-Version': sdkVersionHeader };
 
 describe('client', () => {
   it('uses a custom formatter', async () => {
@@ -173,7 +174,8 @@ describe('client', () => {
       const procore = client(authorizer);
 
       it('creates a resource', async () => {
-        fetchMock.post(`${hostname}/rest/v1.0/projects/${project.id}/rfis`, rfi);
+        fetchMock.post(
+            { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis`, headers: headers }, rfi);
 
         const { body } = await procore
           .post({
@@ -186,8 +188,9 @@ describe('client', () => {
       })
 
       it('sends a valid body', async () => {
-        fetchMock.post(`${hostname}/rest/v1.0/projects/${project.id}/rfis`, (url, opts: RequestInit) => {
-          return opts.body;
+        fetchMock.post(
+          { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis`, headers: headers }, (url, opts: RequestInit) => {
+            return opts.body;
         });
 
         const { body } = await procore
@@ -207,7 +210,7 @@ describe('client', () => {
 
       describe('singleton', () => {
         it('gets a signleton resource', async () => {
-          fetchMock.get(`${hostname}/rest/v1.0/me`, me);
+          fetchMock.get({ url: `${hostname}/rest/v1.0/me`, headers: headers }, me);
 
           const { body } = await procore.get({ base: '/me', params: {} });
           expect(body).to.eql(me);
@@ -217,7 +220,7 @@ describe('client', () => {
 
         context('using a string url as the endpoint', () => {
           it('gets a signleton resource', async () => {
-            fetchMock.get(`${hostname}/me`, me);
+            fetchMock.get({ url: `${hostname}/me`, headers: headers }, me);
 
             const { body } = await procore.get('/me');
             expect(body).to.eql(me);
@@ -229,7 +232,8 @@ describe('client', () => {
 
       describe('by id', () => {
         it('gets the resource', async () => {
-          fetchMock.get(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi);
+          fetchMock.get(
+            { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, headers: headers }, rfi);
 
           const { body } = await procore
             .get(
@@ -243,7 +247,8 @@ describe('client', () => {
 
       describe('by query strings', () => {
         it('gets the resource', async () => {
-          fetchMock.get(`${hostname}/rest/v1.0/projects?a%5B%5D=1&a%5B%5D=2`, rfi);
+          fetchMock.get(
+            { url: `${hostname}/rest/v1.0/projects?a%5B%5D=1&a%5B%5D=2`, headers: headers }, rfi);
 
           const { body } = await procore
             .get(
@@ -257,7 +262,8 @@ describe('client', () => {
 
       describe('pagination', () => {
         it('Total and Per-Page is in response header', async () => {
-          fetchMock.get(`${hostname}/rest/v1.0/pagination_test`, { body: [], headers: { Total: 500, 'Per-Page': 10 } });
+          fetchMock.get(
+            { url: `${hostname}/rest/v1.0/pagination_test`, headers: headers }, { body: [], headers: { Total: 500, 'Per-Page': 10 } });
 
           const { body, response } = await procore.get({ base: '/pagination_test', params: {} });
           expect(body).to.eql([]);
@@ -270,7 +276,8 @@ describe('client', () => {
 
       describe('action', () => {
         it('gets the resources', async () => {
-          fetchMock.get(`${hostname}/rest/v1.0/projects/${project.id}/rfis/recycle_bin`, [rfi]);
+          fetchMock.get(
+            { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis/recycle_bin`, headers: headers }, [rfi]);
 
           const { body } = await procore
             .get(
@@ -289,7 +296,8 @@ describe('client', () => {
       const procore = client(authorizer)
 
       it('deletes a resource without a body', async () => {
-        fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, rfi);
+        fetchMock.delete(
+          { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, headers: headers }, rfi);
 
         const { body } = await procore
           .delete({
@@ -302,8 +310,9 @@ describe('client', () => {
       })
 
       it('deletes resource(s) sent with a body', async () => {
-        fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, (url, opts: RequestInit) => {
-          return { body: opts.body, status: 200 };
+        fetchMock.delete(
+          { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, headers: headers }, (url, opts: RequestInit) => {
+            return { body: opts.body, status: 200 };
         });
 
         const { body } = await procore
@@ -317,7 +326,8 @@ describe('client', () => {
       })
 
       it('handles delete with no response: status 204', async () => {
-        fetchMock.delete(`${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, { status: 204 });
+        fetchMock.delete(
+          { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, headers: headers }, { status: 204 });
 
         const { body } = await procore
           .delete({

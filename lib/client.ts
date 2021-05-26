@@ -2,6 +2,7 @@ import 'isomorphic-fetch'
 import { stringify } from 'qs'
 import { Authorizer } from './interfaces'
 import { ClientOptions, convert } from './clientOptions'
+import { sdkVersionHeader } from './sdkVersion'
 
 export interface EndpointConfig {
   base: string;
@@ -38,6 +39,7 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
   const headers = new Headers();
   headers.append('Accept', 'application/json');
   headers.append('Content-Type', 'application/json');
+  headers.append('X-Procore-Sdk-Version', sdkVersionHeader);
 
   let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config };
 
