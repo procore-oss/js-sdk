@@ -7,7 +7,7 @@
 * Remove `string` dependency
 * Remove `@procore/js-sdk-endpoints` dependency
 * Add support for revoking token `revoke()`
-* Add `X-Procore-Sdk-Version` header to all requests
+* Add `Procore-Sdk-Version` header to all requests
 * Updated `destroy` method to `delete` method
 
 ### Breaking Changes
