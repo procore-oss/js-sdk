@@ -7,10 +7,13 @@
 * Remove `string` dependency
 * Remove `@procore/js-sdk-endpoints` dependency
 * Add support for revoking token `revoke()`
+* Add `X-Procore-Sdk-Version` header to all requests
+* Updated `destroy` method to `delete` method
 
 ### Breaking Changes
 
 * Remove `/vapid` from base attribute passed to `client.<method>` functions. Versioning will be handled in the `client.<method>` function. See the [Upgrading](#upgrading) section for details about how to upgrade to version 3.0.0.
+* `destroy` method is no longer supported. Convert all `destroy` requests to `delete`.
 
 ### Upgrading
 
