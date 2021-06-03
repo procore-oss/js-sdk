@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { authorize } from '../dist/index'
+import { authorize } from '../dist/lib/index'
 
 describe('authorize grant', () => {
   const clientId = 'a74b52aa6aa06a33c265a8a91738a3a4656a82aa96754a142a446558aa57aaa3'; // This is Fake

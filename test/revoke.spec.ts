@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { revoke } from '../dist/index'
+import { revoke } from '../dist/lib/index'
 
 const someJson = {
   foo: 'bar',

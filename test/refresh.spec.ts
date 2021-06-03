@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { refresh } from '../dist/index'
+import { refresh } from '../dist/lib/index'
 
 const jsonResponse = {
   foo: "bar"

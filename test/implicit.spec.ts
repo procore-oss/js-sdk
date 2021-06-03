@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { implicit } from '../dist/index'
+import { implicit } from '../dist/lib/index'
 
 describe('implicit grant', () => {
   const id = 'a74b52aa6aa06a33c265a8a91738a3a4656a82aa96754a142a446558aa57aaa3'; // This is Fake
