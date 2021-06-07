@@ -4,7 +4,7 @@
   "description": "A wrapper for the procore API",
   "main": "dist/lib",
   "files": [
-    "dist/lib",
+    "dist/lib"
   ],
   "types": "types",
   "homepage": "https://github.com/procore/js-sdk",
