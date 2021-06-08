@@ -8,7 +8,12 @@ const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 };
 const idsToDelete = [{ id: 1 }, { id: 2 }];
 const token = 'token';
 const hostname = 'https://app.procore.com';
-const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json', 'Procore-Sdk-Version': sdkVersionHeader };
+const headers = { 
+    'Accept': 'application/json', 
+    'Content-Type': 'application/json', 
+    'Procore-Sdk-Version': sdkVersionHeader, 
+    'Procore-Sdk-Language': 'javascript' 
+};
 
 describe('client', () => {
   it('uses a custom formatter', async () => {

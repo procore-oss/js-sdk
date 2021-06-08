@@ -40,6 +40,7 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
   headers.append('Accept', 'application/json');
   headers.append('Content-Type', 'application/json');
   headers.append('Procore-Sdk-Version', sdkVersionHeader);
+  headers.append('Procore-Sdk-language', 'javascript');
 
   let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config };
 
