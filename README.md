@@ -2,129 +2,114 @@
 
 [![CircleCI](https://circleci.com/gh/procore/js-sdk.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/js-sdk)
 
-A node.js and browser compatible JS SDK for the procore API.
+A node.js JS SDK for the Procore API.
+
+Note: ECMAScript target is ES5.
+
+# Requirements
+- Node.js version 10.12 and above.
+- A registered app on the [Procore Developer Portal](https://developers.procore.com/).
+- A Node.js web server (such as Express) for server authentication.
 
 ## Installation
 ```bash
 yarn add @procore/js-sdk
 ```
-We recommend installing the package with [yarn](http://yarnpkg.com)
+We recommend installing the package with [yarn](http://yarnpkg.com).
+
+## Making Requests
+
+At the core of the package is the `client` object. Clients are initialized with a
+`client_id` and `client_secret` which can be obtained by signing up for
+Procore's [Developer Program](https://developers.procore.com/). The `redirect_uri`
+used for authorization must be specified on the `Manage App` page for the App
+associated with the `client_id` in use.
+
+The Client object exposes `#get`, `#post`, `#put`, `#patch`, and `#delete` methods to you.
+
+```javascript
+client.get({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.post({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.put({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.patch({ base, version?, action?, params?, qs? }: EndpointConfig)
+client.delete({ base, version?, action?, params?, qs? }: EndpointConfig)
+```
 
 ## Example
 
-### Authorization Code Flow
+### JS-SDK-Sample-App
 
-[Setting up a server](/guides/setup.md)
+Use [js-sdk-sample-app](https://github.com/procore/js-sdk-sample-app/) as a
+getting started example application.
 
-```javascript
-import 'isomorphic-fetch';
-import { client, oauth, refresher, me, projects, images } from '@procore/js-sdk';
+All paths are relative to `https://{apiHostname}/{vapid|rest/{version}}/`,
+the `@procore/js-sdk` will handle expanding them.
 
-const token = document.head.querySelector('value=auth_token').getAttribute('content');
+An API version may be specified in the `version` attribute to the `client[method]`
+function call, or the default version is used. The default version is `v1.0` unless
+otherwise configured when instantiating the `client`
+(`client(Authorizer, RequestInit, { defaultVersion: 'vapid' })`).
 
-const authorizer = oauth(token);
-
-const refreshToken = token => fetch(
-  '/oauth/procore/refresh',
-  { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }
-);
-
-const procore = client(
-  refresher(authorizer, refreshToken)
-);
-
-Promise.all([
-  procore.get(me()),
-  procore.get(projects({ company_id: 2 })),
-  procore.get(images({ action: 'most_recent' }))
-])
-.then(onSuccess);
-```
-
-### Implicit Grant Flow
-When creating an app, register the redirect URI as your app's root URL. E.g. `https://example.com`
-
-```javascript
-import 'isomorphic-fetch';
-import qs from 'qs';
-import { client, oauth, implicit, me, projects, images } from '@procore/js-sdk';
-
-const clientId = document.head.querySelector('value=client_id').getAttribute('content');
-const redirectUri = document.head.querySelector('value=redirect_uri').getAttribute('content');
-
-const accessToken = qs.parse(window.location).access_token;
-
-if ( !accessToken ) {
-  window.location = implicit({ id: clientId, uri: redirectUri });
-}
-
-const procore = client(oauth(accessToken));
-Promise.all([
-    procore.get(me()),
-    procore.get(projects({ company_id: 2 })),
-    procore.get(images({ action: 'most_recent' }))
-  ])
-})
-  .then(onSuccess);
-```
+| Example | Requested URL |
+| --- | --- |
+| `client.get({ base: '/example/{id}', params: { id: 42 } })` | `https://app.procore.com/rest/v1.0/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'v1.1' })` | `https://app.procore.com/rest/v1.1/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'vapid' })` | `https://app.procore.com/vapid/example/42` |
 
 ## Responses
-A single API response contains the response body (JSON parsed), original request, and complete response.
-[isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [docs](https://github.github.io/fetch/) for more details.
+A single API response contains the response body (JSON parsed), original request, and complete response: `{ body, request, response }`.
+[isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [fetch](https://github.github.io/fetch/) for more details.
 
 ```javascript
-  procore
-    .get(projects({ company_id: 1 }))
-    .then({ body, response, request } => {
-      console.log(body[0].name); // ACME Construction LLC.
-      console.log(response.headers.get('Total')) // 865 (Total records for the resource)
-    });
+const procore = client(authorizer);
+procore.get({ base: '/projects', qs: { company_id: 1 } })
+  .then({ body, request, response } => {
+    console.log(body[0].name); // ACME Construction LLC.
+    console.log(response.headers.get('Total')) // 865 (Total records for the resource)
+  })
+  .catch(error => {
+    //Handle error
+    console.log(error);
+  });
+```
+
+or
+
+```javascript
+const procore = client(authorizer);
+async function getProjects() {
+  const { body, request, response } = await procore
+    .get({ base: '/projects', qs: { company_id: 1 } })
+    .catch(error => {
+    // Handle error
+    console.log(error);
+  });
+  console.log(body[0].name); // ACME Construction LLC.
+  console.log(response.headers.get('Total')) // 865 (Total records for the resource)
+}
+getProjects();
 ```
 
 ### Formatting the response
 
-By default, the SDK tries to format the response as JSON, you can control the
-response formatting passing the `formatter` option as follow:
+By default, the SDK tries to format the `body` as JSON, you can control the
+formatting of the `body` by passing the `formatter` option as follows:
 
-```tsx
+```javascript
+const procore = client(authorizer);
 // Create your own formatter
-function formatter(response: Response): Promise<unknown> {
-  return response.text()
+function formatter(response) {
+  // Your custom formatter code.
+  // Response supports .text() and .json()
 }
 
 // Pass the formatter configuration
-procore.get(myendpoint(), { formatter })
+procore.get({base: '/me'}, { formatter })
 ```
 
 ## Tests
 ```
-yarn test
-```
-
-## Endpoint Generator
-
-[`js-sdk-endpoints`](https://github.com/procore/js-sdk-endpoints) generates interfaces and endpoint functions for improved developer experience. See the project for more details.
-
-```typescript
-interface DirectCosts {
-  action: string;
-  qs?: any;
-  id?: number;
-  project_id: number;
-
-}
-
-function directCosts({ action, qs, id, project_id }: DirectCosts): any {
-  return {
-    base: '/vapid/projects/{project_id}/direct_costs',
-    action,
-    params: { id, project_id },
-    qs
-  }
-}
-
-export default directCosts
-
+yarn && yarn test
 ```
 
 ## Contributing
@@ -135,7 +120,7 @@ intended to be a safe, welcoming space for collaboration, and contributors are e
 
 1. Create PR with version change `npm version minor`
 2. Merge PR
-3. Circle ci will release a new version of the package
+3. Circle Ci will release a new version of the package
 
 ## License
 
@@ -149,7 +134,7 @@ The package is available as open source under the terms of the [MIT License](htt
   width="250px"
 />
 
-Manage Version is maintained by Procore Technologies.
+The `@procore/js-sdk` is maintained by Procore Technologies.
 
 Procore - building the software that builds the world.
 

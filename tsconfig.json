@@ -1,7 +1,21 @@
 {
   "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "declarationDir": "types",
+    "esModuleInterop": true,
     "module": "commonjs",
-    "target": "es5"
+    "target": "es5",
+    "resolveJsonModule": true,
+    "lib": [
+      "es2015",
+      "dom"
+    ]
   },
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "types",
+    "dist"
+  ]
 }

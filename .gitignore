@@ -1,6 +1,8 @@
 node_modules
+dist
+types
 *-debug.log
 *-error.log
-docs
 *DS_Store
 .npmrc
+lib/*.js

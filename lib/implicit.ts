@@ -1,14 +1,12 @@
-import 'isomorphic-fetch'
-import _hostname from './hostname'
+import { ClientOptions, convert } from './clientOptions'
 
 export interface ImplicitConfig {
   id: string;
   uri: string;
-  hostname?: string;
 }
 
-function implicit({ id, uri }: ImplicitConfig, hostname = _hostname): string {
-  return `${hostname}/oauth/authorize?response_type=token&client_id=${id}&redirect_uri=${uri}`;
+function implicit({ id, uri }: ImplicitConfig, options: ClientOptions | string): string {
+  return `${convert(options).apiHostname}/oauth/authorize?response_type=token&client_id=${encodeURIComponent(id)}&redirect_uri=${encodeURIComponent(uri)}`;
 }
 
 export default implicit

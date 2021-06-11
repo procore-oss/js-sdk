@@ -1,19 +1,12 @@
 import 'isomorphic-fetch'
 import { stringify } from 'qs'
-import * as S from 'string'
-import * as when from 'ramda/src/when'
-import * as not from 'ramda/src/not'
-import * as isNil from 'ramda/src/isNil'
-import * as compose from 'ramda/src/compose'
-import * as ifElse from 'ramda/src/ifElse'
-import * as concat from 'ramda/src/concat'
-import * as is from 'ramda/src/is'
-import * as identity from 'ramda/src/identity'
 import { Authorizer } from './interfaces'
-import hostname from './hostname'
+import { ClientOptions, convert } from './clientOptions'
+import { sdkVersionHeader } from './sdkVersion'
 
 export interface EndpointConfig {
   base: string;
+  version?: string;
   action?: string;
   params?: any;
   qs?: any;
@@ -31,41 +24,42 @@ interface SDKResponse {
   request: any;
 }
 
-const notNil = compose(
-  not,
-  isNil
-)
+const notNil = (v: any) => !(typeof v === 'undefined' || v === null || ((v.constructor === String || v instanceof String) && v.trim() === ''));
+const TOKENS_REG_EX = new RegExp(/\/{(.*?)}/g);
+const replaceParams = (str: string, params: any) => str.replace(TOKENS_REG_EX, (_, p) => params[p] ? `/${params[p]}` : '/');
 
 function defaultFormatter(response: Response) {
-  return response.json();
+  if (response.body !== undefined && response.body !== null) {
+    return response.json();
+  }
+  return Promise.resolve({});
 }
 
 const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
-  const headers = new Headers()
-  headers.append('Accept', 'application/json')
-  headers.append('Content-Type', 'application/json')
+  const headers = new Headers();
+  headers.append('Accept', 'application/json');
+  headers.append('Content-Type', 'application/json');
+  headers.append('Procore-Sdk-Version', sdkVersionHeader);
+  headers.append('Procore-Sdk-language', 'javascript');
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults,  ...config }
+  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config };
 
-  return function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
+  return async function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
     if (opts.headers instanceof Headers) {
-      opts.headers.set(authKey, authValue)
+      opts.headers.set(authKey, authValue);
     } else {
-      opts.headers[authKey] = authValue
+      opts.headers[authKey] = authValue;
     }
 
-    const request = fetch(url, opts)
     const formatter = reqConfig && reqConfig.formatter ? reqConfig.formatter : defaultFormatter;
+    const request = fetch(url, opts);
+    const response = await request;
+    const body = await formatter(response);
 
-    return request
-      .then((response) => {
-        return formatter(response)
-          .then((body) => new Promise((res, rej) => {
-            const sdkResp = {body, request, response}
-
-            response.ok ? res(sdkResp) : rej(sdkResp)
-          }))
-      })
+    return new Promise<SDKResponse>((resolve, reject) => {
+      const sdkResp = { body, request, response };
+      response.ok ? resolve(sdkResp) : reject(sdkResp);
+    });
   }
 }
 
@@ -74,53 +68,70 @@ interface RequestConfig {
 }
 
 export class Client {
-  private readonly host: string;
+  private readonly options: ClientOptions;
   private authorize: any;
   private request: Function;
 
-  constructor(authorizer: Authorizer, config: RequestInit = {}, host: string = hostname) {
-    this.authorize = authorizer.authorize
-    this.host = host
-    this.request = baseRequest(config)
+  constructor(authorizer: Authorizer, config: RequestInit = {}, options: ClientOptions) {
+    this.authorize = authorizer.authorize;
+    this.options = options;
+    this.request = baseRequest(config);
   }
 
   public get = (endpoint: Endpoint, reqConfig?: RequestConfig): Promise<any> =>
     this.authorize(this.request(this.url(endpoint), { method: 'GET' }, reqConfig))
 
   public post = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'POST' , body: JSON.stringify(payload)}, reqConfig))
+    this.authorize(this.request(this.url(endpoint), { method: 'POST', body: JSON.stringify(payload) }, reqConfig))
 
   public patch = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload)}, reqConfig))
+    this.authorize(this.request(this.url(endpoint), { method: 'PATCH', body: JSON.stringify(payload) }, reqConfig))
 
-  public destroy = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
-    this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload)}, reqConfig))
+  public put = (endpoint: Endpoint, payload: any, reqConfig?: RequestConfig): Promise<any> =>
+    this.authorize(this.request(this.url(endpoint), { method: 'PUT', body: JSON.stringify(payload) }, reqConfig))
 
-  private url = (endpoint: Endpoint): string => ifElse(
-    is(String),
-    concat(this.host),
-    this.urlConfig
-  )(endpoint)
+  public delete = (endpoint: Endpoint, payload?: any, reqConfig?: RequestConfig): Promise<any> =>
+    this.authorize(this.request(this.url(endpoint), { method: 'DELETE', body: JSON.stringify(payload) }, reqConfig))
 
-  private urlConfig = ({ base, action, params = {}, qs }: EndpointConfig): string => compose(
-    when(
-      () => notNil(qs),
-      finalUrl => `${finalUrl}?${stringify(qs, { arrayFormat: 'brackets' })}`
-    ),
-    when(
-      () => notNil(action),
-      resourceUrl => `${resourceUrl}/${action}`
-    ),
-    when(
-      () => notNil(params.id),
-      collectionUrl => `${collectionUrl}/${params.id}`
-    ),
-    (hostname) => `${hostname}${S(base).template(params, '{', '}').s}`
-  )(this.host)
+  private url = (endpoint: Endpoint): string =>
+    notNil(endpoint) && (endpoint.constructor === String || endpoint instanceof String) ?
+      `${this.options.apiHostname}${endpoint}` :
+      this.urlConfig(endpoint as EndpointConfig);
+
+  private urlConfig = ({ base, action, params = {}, qs, version }: EndpointConfig): string => {
+    let url = `${this.options.apiHostname}/${this.version(version)}${replaceParams(base, params)}`;
+
+    if (notNil(params.id)) {
+      url = `${url}/${params.id}`;
+    }
+
+    if (notNil(action)) {
+      url = `${url}/${action}`;
+    }
+
+    if (notNil(qs)) {
+      url = `${url}?${stringify(qs, { arrayFormat: 'brackets' })}`;
+    }
+
+    return url;
+  };
+
+  private version = (version: string = this.options.defaultVersion): string => {
+    const [, restVersion = undefined] = version.match(/(^v[1-9]\d*\.\d+$)/) || [];
+    const [, vapidVersion = undefined] = version.match(/(^vapid)\/?$/) || [];
+
+    if (restVersion) {
+      return `rest/${restVersion}`;
+    } else if (vapidVersion) {
+      return vapidVersion;
+    } else {
+      throw new Error(`'${version}' is an invalid Procore API version`)
+    }
+  }
 }
 
-function client(authorizer: Authorizer, defaults: RequestInit = {}, host: string = hostname): Client {
-  return new Client(authorizer, defaults, host)
+function client(authorizer: Authorizer, defaults: RequestInit = {}, options: ClientOptions | string): Client {
+  return new Client(authorizer, defaults, convert(options));
 }
 
 export default client
