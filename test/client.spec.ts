@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { client, oauth, sdkVersionHeader } from '../dist/lib/index'
+import { client, oauth, sdkVersionHeader } from '../dist/index'
 
 const project = { id: 3 };
 const me = { id: 42, login: 'foo@procore.com', name: 'foo' };

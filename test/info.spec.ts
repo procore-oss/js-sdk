@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { info } from '../dist/lib/index'
+import { info } from '../dist/index'
 
 const token = 'token';
 const infoResponse = {
