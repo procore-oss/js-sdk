@@ -1,6 +1,6 @@
 # Change Log
 
-## 3.0.0 (March 31, 2021)
+## 3.0.1 (June 2021)
 
 * Adds support for Rest API versioning (rest/v1.0 is)
 * Remove `ramda` dependency
@@ -13,12 +13,12 @@
 
 ### Breaking Changes
 
-* Remove `/vapid` from base attribute passed to `client.<method>` functions. Versioning will be handled in the `client.<method>` function. See the [Upgrading](#upgrading) section for details about how to upgrade to version 3.0.0.
+* Remove `/vapid` from base attribute passed to `client.<method>` functions. Versioning will be handled in the `client.<method>` function. See the [Upgrading](#upgrading) section for details about how to upgrade to version 3.0.1.
 * `destroy` method is no longer supported. Convert all `destroy` requests to `delete`.
 
 ### Upgrading
 
-As of v3.0.0, this npm package now defaults to making requests against Procore's new
+As of v3.0.1, this npm package now defaults to making requests against Procore's new
 `/rest/v1.0` namespace, instead of the now deprecated `/vapid` namespace.
 
 Previous Version Usage
@@ -33,7 +33,7 @@ const { body } = await procore.get({
 // app.procore.com/vapid/drawing_areas/42/drawings
 ```
 
-v3.0.0 Version Usage
+v3.0.1 Version Usage
 
 ```javascript
 const procore = client(authorizer);

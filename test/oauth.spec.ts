@@ -1,6 +1,6 @@
 import { spy } from 'sinon'
 import { expect } from 'chai'
-import { oauth } from '../dist/lib/index'
+import { oauth } from '../dist/index'
 
 describe('oauth', () => {
   const token = "fake_token";

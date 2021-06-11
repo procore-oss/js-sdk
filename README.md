@@ -122,6 +122,8 @@ intended to be a safe, welcoming space for collaboration, and contributors are e
 2. Merge PR
 3. Circle Ci will release a new version of the package
 
+Use `npm publish --dry-run` to verify the contents of your new version.
+
 ## License
 
 The package is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).

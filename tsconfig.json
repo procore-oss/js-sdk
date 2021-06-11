@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "dist",
     "declaration": true,
-    "declarationDir": "types",
+    "declarationDir": "dist/types",
     "esModuleInterop": true,
     "module": "commonjs",
     "target": "es5",
