@@ -1,12 +1,12 @@
 {
   "name": "@procore/js-sdk",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A wrapper for the procore API",
-  "main": "dist/lib",
+  "main": "dist/index.js",
   "files": [
-    "dist/lib"
+    "/dist"
   ],
-  "types": "types",
+  "types": "dist/types",
   "homepage": "https://github.com/procore/js-sdk",
   "repository": {
     "type": "git",
@@ -20,7 +20,8 @@
     "test:once": "mocha -r ts-node/register test/**/*.spec.ts",
     "clean": "rimraf dist types",
     "watch": "tsc --watch",
-    "compile": "tsc"
+    "compile": "yarn writeVer && tsc",
+    "writeVer": "cp package.json lib/version.json"
   },
   "author": "Procore Tech <insights@procore.com> (http://procore.com)",
   "license": "MIT",
