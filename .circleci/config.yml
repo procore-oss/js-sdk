@@ -3,7 +3,7 @@ jobs:
   test:
     working_directory: ~/js-sdk
     docker:
-      - image: circleci/node:10.5-stretch-browsers
+      - image: circleci/node:10.12.0
     steps:
       - checkout
       - restore_cache:
@@ -24,7 +24,7 @@ jobs:
   publish:
     working_directory: ~/js-sdk
     docker:
-      - image: circleci/node:10.5-stretch-browsers
+      - image: circleci/node:10.12.0
     steps:
       - checkout
       - restore_cache:
@@ -42,9 +42,6 @@ jobs:
       - run:
           name: Authenticate with registry
           command: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/js-sdk/.npmrc
-      - run:
-          name: Generate Procore Endpoints
-          command: yarn run endpoints
       - run:
           name: Compile Source
           command: yarn run compile

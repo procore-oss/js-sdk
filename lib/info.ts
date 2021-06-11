@@ -1,9 +1,17 @@
 import 'isomorphic-fetch'
-import _hostname from './hostname'
+import { ClientOptions, convert } from './clientOptions'
 
-function info(token: string, hostname: string = _hostname): Promise<any> {
-  return fetch(`${hostname}/oauth/token/info`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } })
-    .then((res) => res.json())
+async function info(token: string, options: ClientOptions | string): Promise<any> {
+  const res = await fetch(
+    `${convert(options).apiHostname}/oauth/token/info`,
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  return res.json();
 }
 
 export default info

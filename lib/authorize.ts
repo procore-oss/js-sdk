@@ -1,13 +1,12 @@
-import _hostname from './hostname'
+import { ClientOptions, convert } from './clientOptions'
 
 export interface AuthorizeConfig {
   clientId: string;
   uri: string;
 }
 
-function authorize({ clientId, uri }: AuthorizeConfig, hostname = _hostname): string {
-  return `${hostname}/oauth/authorize?client_id=${clientId}&response_type=code&redirect_uri=${uri}`
+function authorize({ clientId, uri }: AuthorizeConfig, options: ClientOptions | string): string {
+  return `${convert(options).apiHostname}/oauth/authorize?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(uri)}`
 }
-
 
 export default authorize
