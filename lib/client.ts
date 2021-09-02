@@ -51,7 +51,19 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
       opts.headers[authKey] = authValue;
     }
 
-    const formatter = reqConfig && reqConfig.formatter ? reqConfig.formatter : defaultFormatter;
+    // Add custom headers if provided in RequestConfig
+    if (reqConfig && reqConfig.headers) {
+      Object.keys(reqConfig.headers).forEach((key) => {
+        if (opts.headers instanceof Headers) {
+          opts.headers.set(key, reqConfig.headers[key]);
+        } else {
+          opts.headers[key] = reqConfig.headers[key];
+        }
+      });
+    }
+
+    const formatter =
+      reqConfig && reqConfig.formatter ? reqConfig.formatter : defaultFormatter;
     const request = fetch(url, opts);
     const response = await request;
     const body = await formatter(response);
@@ -65,6 +77,7 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
 
 interface RequestConfig {
   formatter?(response: Response): Promise<any>;
+  headers?: {[key: string]: string};
 }
 
 export class Client {

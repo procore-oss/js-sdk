@@ -107,6 +107,22 @@ function formatter(response) {
 procore.get({base: '/me'}, { formatter })
 ```
 
+### Handling Multiple Procore Zones (MPZ)
+
+You can also add custom headers to the request. A typical use case would be to add support for
+[Multiple Procore Zones (MPZ)](https://developers.procore.com/documentation/mpz-headers)
+
+```javascript
+const procore = client(authorizer);
+// Create your own headers
+const headers = {
+  'Procore-Company-Id': procoreCompanyId,
+};
+
+// Pass the headers configuration
+procore.get({base: '/projects', qs: {company_id: procoreCompanyId}, { headers })
+```
+
 ## Tests
 ```
 yarn && yarn test

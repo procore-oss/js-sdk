@@ -2,38 +2,70 @@ import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
 import { client, oauth, sdkVersionHeader } from '../dist/index'
 
+const company = { id: 4 };
 const project = { id: 3 };
 const me = { id: 42, login: 'foo@procore.com', name: 'foo' };
 const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 };
 const idsToDelete = [{ id: 1 }, { id: 2 }];
 const token = 'token';
 const hostname = 'https://app.procore.com';
-const headers = { 
-    'Accept': 'application/json', 
-    'Content-Type': 'application/json', 
-    'Procore-Sdk-Version': sdkVersionHeader, 
-    'Procore-Sdk-Language': 'javascript' 
+const headers = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+  'Procore-Sdk-Version': sdkVersionHeader,
+  'Procore-Sdk-Language': 'javascript',
 };
 
 describe('client', () => {
-  it('uses a custom formatter', async () => {
-    const authorizer = oauth(token);
-    const procore = client(authorizer);
-    let counter = 1;
+  context('Override fetch', () => {
+    it('uses a custom formatter', async () => {
+      const authorizer = oauth(token);
+      const procore = client(authorizer);
+      let counter = 1;
 
-    function formatter(response: any) {
-      counter += 1;
-      return response.json();
-    }
+      function formatter(response: any) {
+        counter += 1;
+        return response.json();
+      }
 
-    fetchMock.get(`${hostname}/foo/me`, me);
+      fetchMock.get(`${hostname}/foo/me`, me);
 
-    const { body } = await procore.get('/foo/me', { formatter });
+      const { body } = await procore.get('/foo/me', { formatter });
 
-    expect(body).to.eql(me);
-    expect(counter).to.eql(2);
-    fetchMock.restore();
-  })
+      expect(body).to.eql(me);
+      expect(counter).to.eql(2);
+      fetchMock.restore();
+    });
+
+    it('uses a custom header', async () => {
+      const authorizer = oauth(token);
+      const procore = client(authorizer, { headers: { ...headers } });
+
+      const customHeaders = {
+        'Procore-Company-Id': company.id,
+      };
+
+      fetchMock.get(
+        {
+          url: `${hostname}/foo/projects`,
+          headers: {
+            ...headers,
+            ...customHeaders,
+          },
+        },
+        project
+      );
+
+      const { body } = await procore.get('/foo/projects', {
+        headers: {
+          ...customHeaders,
+        },
+      });
+
+      expect(body).to.eql(project);
+      fetchMock.restore();
+    });
+  });
 
   context('using oauth', () => {
     describe('request defaults', () => {
@@ -48,7 +80,7 @@ describe('client', () => {
         fetchMock.restore();
       })
 
-      it('allows headers override', async () => {
+      it('allows response headers override', async () => {
         const headers = new Headers();
         const authorizer = oauth(token);
         const procore = client(authorizer, { headers });
