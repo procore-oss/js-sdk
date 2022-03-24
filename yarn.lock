@@ -246,10 +246,10 @@
   resolved "https://registry.yarnpkg.com/@types/core-js/-/core-js-2.5.4.tgz#fc42ebde7d9cfa7c5f2668f117449b02348e41fd"
   integrity sha512-Xwy8o12ak+iYgFr/KCVaVK5Sy+jFMiiPAID3+ObvMlBzy26XQJw5xu+a6rlHsrJENXj/AwJOGsJpVohUjAzSKQ==
 
-"@types/fetch-mock@^7.3.3":
-  version "7.3.3"
-  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-7.3.3.tgz#255511d70087b9ae8866704c782c88cc96a0b45b"
-  integrity sha512-NLMbBVQh3yx6dMd5CnVxp9ZBhQYuFzWIlRk0kQbgBfyL75u3wtZyUTuFsK9Wb9G3eIw77yja858j1fQAWqM9Og==
+"@types/fetch-mock@^7.3.5":
+  version "7.3.5"
+  resolved "https://registry.yarnpkg.com/@types/fetch-mock/-/fetch-mock-7.3.5.tgz#7aee678c4e7c7e1a168bae8fdab5b8d712e377f6"
+  integrity sha512-sLecm9ohBdGIpYUP9rWk5/XIKY2xHMYTBJIcJuBBM8IJWnYoQ1DAj8F4OVjnfD0API1drlkWEV0LPNk+ACuhsg==
 
 "@types/isomorphic-fetch@^0.0.35":
   version "0.0.35"
