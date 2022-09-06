@@ -17,6 +17,10 @@ const headers = {
 };
 
 describe('client', () => {
+  beforeEach(() => {
+    fetchMock.reset();
+  });
+
   context('Override fetch', () => {
     it('uses a custom formatter', async () => {
       const authorizer = oauth(token);
@@ -37,12 +41,39 @@ describe('client', () => {
       fetchMock.restore();
     });
 
+    it('sets company id header', async () => {
+      const authorizer = oauth(token);
+      const procore = client(authorizer, { headers: { ...headers } });
+
+      const customHeaders = {
+        'Procore-Company-Id': `${company.id}`,
+      };
+
+      fetchMock.get(
+        {
+          url: `${hostname}/foo/projects`,
+          headers: {
+            ...headers,
+            ...customHeaders,
+          },
+        },
+        project
+      );
+
+      const { body } = await procore.get('/foo/projects', {
+        companyId: company.id
+      });
+
+      expect(body).to.eql(project);
+      fetchMock.restore();
+    });
+
     it('uses a custom header', async () => {
       const authorizer = oauth(token);
       const procore = client(authorizer, { headers: { ...headers } });
 
       const customHeaders = {
-        'Procore-Company-Id': company.id,
+        'Procore-Company-Id': `${company.id}`,
       };
 
       fetchMock.get(

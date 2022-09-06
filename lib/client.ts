@@ -41,24 +41,30 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
   headers.append('Content-Type', 'application/json');
   headers.append('Procore-Sdk-Version', sdkVersionHeader);
   headers.append('Procore-Sdk-language', 'javascript');
+  if (reqConfig?.companyId) {
+    headers.append('Procore-Company-Id', `${reqConfig.companyId}`);
+  }
+  if (config.headers) {
+    if (config.headers instanceof Headers) {
+      config.headers.forEach((value, name) => {
+        headers.set(name, value);
+      });
+    } else if (config.headers) {
+      Object.getOwnPropertyNames(config.headers).forEach((name) => {
+        headers.set(name, config.headers[name]);
+      })
+    }
+  }
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config };
+  let opts: RequestInit & {headers: Headers} = { mode: 'cors', credentials: 'include', ...defaults, ...config, headers };
 
   return async function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
-    if (opts.headers instanceof Headers) {
-      opts.headers.set(authKey, authValue);
-    } else {
-      opts.headers[authKey] = authValue;
-    }
+    opts.headers.set(authKey, authValue);
 
     // Add custom headers if provided in RequestConfig
-    if (reqConfig && reqConfig.headers) {
+    if (reqConfig?.headers) {
       Object.keys(reqConfig.headers).forEach((key) => {
-        if (opts.headers instanceof Headers) {
-          opts.headers.set(key, reqConfig.headers[key]);
-        } else {
-          opts.headers[key] = reqConfig.headers[key];
-        }
+        opts.headers.set(key, reqConfig.headers[key]);
       });
     }
 
@@ -77,6 +83,7 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
 
 interface RequestConfig {
   formatter?(response: Response): Promise<any>;
+  companyId?: string | number;
   headers?: {[key: string]: string};
 }
 
