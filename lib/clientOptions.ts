@@ -6,6 +6,7 @@ const ClientOptionsDefaults: ClientOptions = {
 export interface ClientOptions {
   apiHostname?: string;
   defaultVersion?: string;
+  defaultCompanyId?: number | string;
 }
 
 export function convert(options: ClientOptions | string): ClientOptions {

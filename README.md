@@ -46,9 +46,15 @@ All paths are relative to `https://{apiHostname}/{vapid|rest/{version}}/`,
 the `@procore/js-sdk` will handle expanding them.
 
 An API version may be specified in the `version` attribute to the `client[method]`
-function call, or the default version is used. The default version is `v1.0` unless
+function call, or the `defaultVersion` is used. The default version is `v1.0` unless
 otherwise configured when instantiating the `client`
-(`client(Authorizer, RequestInit, { defaultVersion: 'vapid' })`).
+(`client(Authorizer, RequestInit, { defaultVersion: 'vapid', companyId: 10 })`).
+
+A company id may be specified in the `companyId` attribute to the `client[method]`
+function call, or the `defaultCompanyId` value will be used when appending the
+`Procore-Company-Id` header to the request.
+(`client(Authorizer, RequestInit, { defaultVersion: 'vapid', defaultCompanyId: 10 })`).
+
 
 | Example | Requested URL |
 | --- | --- |
@@ -122,7 +128,18 @@ procore.get({base: '/me'}, { formatter })
 ### Multiple Procore Zones (MPZ)
 
 All requests to the Procore API must include the `Procore-Company-Id` header to support Multiple Procore Zones (MPZ). See
-[Multiple Procore Zones (MPZ)](https://developers.procore.com/documentation/mpz-headers) for more details. A `Procore-Company-Id` header will automatically be added to the request if the `companyId` parameter is passed in the `RequestConfig` object.
+[Multiple Procore Zones (MPZ)](https://developers.procore.com/documentation/mpz-headers) for more details. A `Procore-Company-Id` header will automatically be added to the request if the `defaultCompanyId` parameter is passed in the `ClientOptions` object or `companyId` parameter is passed in the `RequestConfig` object.
+
+```javascript
+// Pass the defaultCompanyId configuration in the ClientOptions
+const procore = client(authorizer, undefined, { defaultCompanyId: 10 });
+
+procore.get(
+  { base: "/projects" }
+);
+```
+
+or
 
 ```javascript
 const procore = client(authorizer);

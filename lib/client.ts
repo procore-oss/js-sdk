@@ -35,15 +35,19 @@ function defaultFormatter(response: Response) {
   return Promise.resolve({});
 }
 
-const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
+const baseRequest = (defaults: RequestInit, options: ClientOptions): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
   const headers = new Headers();
   headers.append('Accept', 'application/json');
   headers.append('Content-Type', 'application/json');
   headers.append('Procore-Sdk-Version', sdkVersionHeader);
   headers.append('Procore-Sdk-language', 'javascript');
+
   if (reqConfig?.companyId) {
     headers.append('Procore-Company-Id', `${reqConfig.companyId}`);
+  } else if (options?.defaultCompanyId) {
+    headers.append('Procore-Company-Id', `${options.defaultCompanyId}`);
   }
+
   if (config.headers) {
     if (config.headers instanceof Headers) {
       config.headers.forEach((value, name) => {
@@ -95,7 +99,7 @@ export class Client {
   constructor(authorizer: Authorizer, config: RequestInit = {}, options: ClientOptions) {
     this.authorize = authorizer.authorize;
     this.options = options;
-    this.request = baseRequest(config);
+    this.request = baseRequest(config, options);
   }
 
   public get = (endpoint: Endpoint, reqConfig?: RequestConfig): Promise<any> =>

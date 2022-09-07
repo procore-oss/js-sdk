@@ -2,6 +2,7 @@
 
 ## 3.0.2 (September 2022)
 
+* Add support for adding `Procore-Company-Id` request header when `defaultCompanyId` is passed in `ClientOptions`.
 * Add support for adding `Procore-Company-Id` request header when `companyId` is passed in `RequestConfig`.
 * Add support for customer headers.
 

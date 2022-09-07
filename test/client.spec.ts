@@ -41,9 +41,61 @@ describe('client', () => {
       fetchMock.restore();
     });
 
-    it('sets company id header', async () => {
+    it('sets company id header using clientOptions', async () => {
+      const authorizer = oauth(token);
+      const procore = client(authorizer, { headers: { ...headers } }, { defaultCompanyId: company.id });
+
+      const customHeaders = {
+        'Procore-Company-Id': `${company.id}`,
+      };
+
+      fetchMock.get(
+        {
+          url: `${hostname}/foo/projects`,
+          headers: {
+            ...headers,
+            ...customHeaders,
+          },
+        },
+        project
+      );
+
+      const { body } = await procore.get('/foo/projects');
+
+      expect(body).to.eql(project);
+      fetchMock.restore();
+    });
+
+    it('sets company id header using requestConfig', async () => {
       const authorizer = oauth(token);
       const procore = client(authorizer, { headers: { ...headers } });
+
+      const customHeaders = {
+        'Procore-Company-Id': `${company.id}`,
+      };
+
+      fetchMock.get(
+        {
+          url: `${hostname}/foo/projects`,
+          headers: {
+            ...headers,
+            ...customHeaders,
+          },
+        },
+        project
+      );
+
+      const { body } = await procore.get('/foo/projects', {
+        companyId: company.id
+      });
+
+      expect(body).to.eql(project);
+      fetchMock.restore();
+    });
+
+    it('sets company id header using requestConfig with different clientOptions', async () => {
+      const authorizer = oauth(token);
+      const procore = client(authorizer, { headers: { ...headers } }, { defaultCompanyId: 6765 });
 
       const customHeaders = {
         'Procore-Company-Id': `${company.id}`,
