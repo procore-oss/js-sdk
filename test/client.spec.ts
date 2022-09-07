@@ -243,7 +243,7 @@ describe('client', () => {
 
       it('creates a resource', async () => {
         fetchMock.post(
-            { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis`, headers: headers }, rfi);
+          { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis`, headers: headers }, rfi);
 
         const { body } = await procore
           .post({
@@ -259,7 +259,7 @@ describe('client', () => {
         fetchMock.post(
           { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis`, headers: headers }, (url, opts: RequestInit) => {
             return opts.body;
-        });
+          });
 
         const { body } = await procore
           .post({
@@ -381,7 +381,7 @@ describe('client', () => {
         fetchMock.delete(
           { url: `${hostname}/rest/v1.0/projects/${project.id}/rfis/${rfi.id}`, headers: headers }, (url, opts: RequestInit) => {
             return { body: opts.body, status: 200 };
-        });
+          });
 
         const { body } = await procore
           .delete({
