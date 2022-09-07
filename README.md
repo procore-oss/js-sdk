@@ -62,7 +62,13 @@ A single API response contains the response body (JSON parsed), original request
 
 ```javascript
 const procore = client(authorizer);
-procore.get({ base: '/projects', qs: { company_id: 1 } })
+procore.get({
+    base: '/projects',
+    qs: { company_id: 1 }
+  },
+  {
+    companyId: 1
+  })
   .then({ body, request, response } => {
     console.log(body[0].name); // ACME Construction LLC.
     console.log(response.headers.get('Total')) // 865 (Total records for the resource)
@@ -79,7 +85,13 @@ or
 const procore = client(authorizer);
 async function getProjects() {
   const { body, request, response } = await procore
-    .get({ base: '/projects', qs: { company_id: 1 } })
+    .get({
+      base: '/projects',
+      qs: { company_id: 1 }
+    },
+    {
+      companyId: 1
+    })
     .catch(error => {
     // Handle error
     console.log(error);
@@ -107,15 +119,15 @@ function formatter(response) {
 procore.get({base: '/me'}, { formatter })
 ```
 
-### Handling Multiple Procore Zones (MPZ)
+### Multiple Procore Zones (MPZ)
 
-You can also add custom headers to the request. A typical use case would be to add support for
-[Multiple Procore Zones (MPZ)](https://developers.procore.com/documentation/mpz-headers)
+All requests to the Procore API must include the `Procore-Company-Id` header to support Multiple Procore Zones (MPZ). See
+[Multiple Procore Zones (MPZ)](https://developers.procore.com/documentation/mpz-headers) for more details. A `Procore-Company-Id` header will automatically be added to the request if the `companyId` parameter is passed in the `RequestConfig` object.
 
 ```javascript
 const procore = client(authorizer);
 
-// Pass the headers configuration
+// Pass the companyId configuration in the RequestConfig
 procore.get(
   { base: "/projects" },
   { companyId: procoreCompanyId }
