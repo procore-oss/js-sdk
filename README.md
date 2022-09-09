@@ -48,12 +48,12 @@ the `@procore/js-sdk` will handle expanding them.
 An API version may be specified in the `version` attribute to the `client[method]`
 function call, or the `defaultVersion` is used. The default version is `v1.0` unless
 otherwise configured when instantiating the `client`
-(`client(Authorizer, RequestInit, { defaultVersion: 'vapid', companyId: 10 })`).
+(`client(Authorizer, RequestInit, { defaultVersion: 'vapid' })`).
 
 A company id may be specified in the `companyId` attribute to the `client[method]`
 function call, or the `defaultCompanyId` value will be used when appending the
 `Procore-Company-Id` header to the request.
-(`client(Authorizer, RequestInit, { defaultVersion: 'vapid', defaultCompanyId: 10 })`).
+(`client(Authorizer, RequestInit, { defaultCompanyId: 10 })`).
 
 
 | Example | Requested URL |
