@@ -35,23 +35,45 @@ function defaultFormatter(response: Response) {
   return Promise.resolve({});
 }
 
-const baseRequest = (defaults: RequestInit): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
+const baseRequest = (defaults: RequestInit, options: ClientOptions): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
   const headers = new Headers();
   headers.append('Accept', 'application/json');
   headers.append('Content-Type', 'application/json');
   headers.append('Procore-Sdk-Version', sdkVersionHeader);
   headers.append('Procore-Sdk-language', 'javascript');
 
-  let opts: RequestInit = { mode: 'cors', credentials: 'include', headers, ...defaults, ...config };
+  if (reqConfig?.companyId) {
+    headers.append('Procore-Company-Id', `${reqConfig.companyId}`);
+  } else if (options?.defaultCompanyId) {
+    headers.append('Procore-Company-Id', `${options.defaultCompanyId}`);
+  }
+
+  if (config.headers) {
+    if (config.headers instanceof Headers) {
+      config.headers.forEach((value, name) => {
+        headers.set(name, value);
+      });
+    } else if (config.headers) {
+      Object.getOwnPropertyNames(config.headers).forEach((name) => {
+        headers.set(name, config.headers[name]);
+      })
+    }
+  }
+
+  let opts: RequestInit & {headers: Headers} = { mode: 'cors', credentials: 'include', ...defaults, ...config, headers };
 
   return async function authorizedRequest([authKey, authValue]: Array<string>): Promise<SDKResponse> {
-    if (opts.headers instanceof Headers) {
-      opts.headers.set(authKey, authValue);
-    } else {
-      opts.headers[authKey] = authValue;
+    opts.headers.set(authKey, authValue);
+
+    // Add custom headers if provided in RequestConfig
+    if (reqConfig?.headers) {
+      Object.keys(reqConfig.headers).forEach((key) => {
+        opts.headers.set(key, reqConfig.headers[key]);
+      });
     }
 
-    const formatter = reqConfig && reqConfig.formatter ? reqConfig.formatter : defaultFormatter;
+    const formatter =
+      reqConfig && reqConfig.formatter ? reqConfig.formatter : defaultFormatter;
     const request = fetch(url, opts);
     const response = await request;
     const body = await formatter(response);
@@ -65,6 +87,8 @@ const baseRequest = (defaults: RequestInit): Function => (url: string, config: R
 
 interface RequestConfig {
   formatter?(response: Response): Promise<any>;
+  companyId?: string | number;
+  headers?: {[key: string]: string};
 }
 
 export class Client {
@@ -75,7 +99,7 @@ export class Client {
   constructor(authorizer: Authorizer, config: RequestInit = {}, options: ClientOptions) {
     this.authorize = authorizer.authorize;
     this.options = options;
-    this.request = baseRequest(config);
+    this.request = baseRequest(config, options);
   }
 
   public get = (endpoint: Endpoint, reqConfig?: RequestConfig): Promise<any> =>
