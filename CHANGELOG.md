@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.0.0 (December 2023)
+
+* Update to NodeJs 14.15 (Oldest version of NodeJs Still supported)
+* Update package.json dependencies
+
 ## 3.0.2 (September 2022)
 
 * Add support for adding `Procore-Company-Id` request header when `defaultCompanyId` is passed in `ClientOptions`.

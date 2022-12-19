@@ -7,7 +7,7 @@ A node.js JS SDK for the Procore API.
 Note: ECMAScript target is ES5.
 
 # Requirements
-- Node.js version 10.12 and above.
+- Node.js version 14.15 and above.
 - A registered app on the [Procore Developer Portal](https://developers.procore.com/).
 - A Node.js web server (such as Express) for server authentication.
 
