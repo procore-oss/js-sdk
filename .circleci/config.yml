@@ -45,9 +45,9 @@ jobs:
       - run:
           name: Compile Source
           command: yarn run compile
-      # - run:
-      #     name: Publish Package
-      #     command: npm publish
+      - run:
+          name: Publish Package
+          command: npm publish
 workflows:
   version: 2
   test_and_publish:
@@ -58,7 +58,7 @@ workflows:
             - test
           context:
             - npm-procore-private-automation
-          # filters:
-          #   branches:
-          #     only:
-          #       - master
+          filters:
+            branches:
+              only:
+                - master
