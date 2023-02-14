@@ -240,6 +240,47 @@ describe('client', () => {
       })
     })
 
+    describe('request with version in base', () => {
+      const authorizer = oauth(token);
+      const procore = client(authorizer);
+
+      it('does not duplicate version if base starts with /rest/v', async () => {
+        fetchMock.get(`${hostname}/rest/v1.0/me`, me);
+
+        const { body } = await procore.get({ base: '/rest/v1.0/me' });
+        expect(body).to.eql(me);
+
+        fetchMock.restore();
+      })
+
+      it('does not duplicate version if base starts with /vapid/', async () => {
+        fetchMock.get(`${hostname}/vapid/me`, me);
+
+        const { body } = await procore.get({ base: '/vapid/me' });
+        expect(body).to.eql(me);
+
+        fetchMock.restore();
+      })
+
+      it('does not duplicate version if base starts with /rest/v and version is defined', async () => {
+        fetchMock.get(`${hostname}/rest/v1.0/me`, me);
+
+        const { body } = await procore.get({ base: '/rest/v1.0/me', version: 'v1.1' });
+        expect(body).to.eql(me);
+
+        fetchMock.restore();
+      })
+
+      it('does not duplicate version if base starts with /vapid/ and version is defined', async () => {
+        fetchMock.get(`${hostname}/vapid/me`, me);
+
+        const { body } = await procore.get({ base: '/vapid/me', version: 'v1.0' });
+        expect(body).to.eql(me);
+
+        fetchMock.restore();
+      })
+    })
+
     describe('request using ClientOptions', () => {
       const authorizer = oauth(token)
 

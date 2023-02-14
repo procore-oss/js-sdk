@@ -123,7 +123,15 @@ export class Client {
       this.urlConfig(endpoint as EndpointConfig);
 
   private urlConfig = ({ base, action, params = {}, qs, version }: EndpointConfig): string => {
-    let url = `${this.options.apiHostname}/${this.version(version)}${replaceParams(base, params)}`;
+    let url;
+
+    // Update to ensure client is backward compatible
+    // If base starts with /rest/v or /vapid then ignore vesion and defaultVersion.
+    if (base.startsWith('/rest/v') || base.startsWith('/vapid/')) {
+      url = `${this.options.apiHostname}${replaceParams(base, params)}`;
+    } else {
+      url = `${this.options.apiHostname}/${this.version(version)}${replaceParams(base, params)}`;
+    }
 
     if (notNil(params.id)) {
       url = `${url}/${params.id}`;
