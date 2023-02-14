@@ -126,7 +126,8 @@ export class Client {
     let url;
 
     // Update to ensure client is backward compatible
-    // If base starts with /rest/v or /vapid then ignore vesion and defaultVersion.
+    // If base starts with `/rest/v` or `/vapid` then ignore
+    // `version` and `defaultVersion` parameters.
     if (base.startsWith('/rest/v') || base.startsWith('/vapid/')) {
       url = `${this.options.apiHostname}${replaceParams(base, params)}`;
     } else {
