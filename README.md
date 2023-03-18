@@ -66,8 +66,8 @@ client.delete(
 
 RequestConfig supports 3 parameters:
   * **formatter**: Custom formatter function for response body.
-  * **companyId**: Company Id to set `Procore-Company-Id` header. Take precedence over defaultCompanyId passed in ClientOptions.
-  * **headers**: Custom headers
+  * **companyId**: Company Id used to set `Procore-Company-Id` header. Takes precedence over `defaultCompanyId` passed in ClientOptions.
+  * **headers**: Custom headers passed as key/value pairs.
 
 
 ```javascript
