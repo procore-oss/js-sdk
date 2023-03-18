@@ -62,6 +62,35 @@ client.delete(
 )
 ```
 
+### Request Config (RequestConfig)
+
+RequestConfig supports 3 parameters:
+  * **formatter**: Custom formatter function for response body.
+  * **companyId**: Company Id used to set `Procore-Company-Id` header. Takes precedence over `defaultCompanyId` passed in ClientOptions.
+  * **headers**: Custom headers passed as key/value pairs.
+
+
+```javascript
+import * as sdk from '@procore/js-sdk';
+
+const client = client(authorizer);
+
+const customFormatter = async (response) => {
+  if (response.body) {
+    return await response.json();
+  }
+};
+
+client.get(
+  { base: "/projects" }, 
+  {
+    formatter: customFormatter,
+    companyId: 1,
+    headers: { "Acme-Customer-Header": "code" }
+  }
+);
+```
+
 ## Example
 
 ### JS-SDK-Sample-App
