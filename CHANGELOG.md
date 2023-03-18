@@ -6,6 +6,10 @@
 * Require Node >= 14.15.0 (First LTS version of this version)
 * Update package.json dependencies
 
+### Upgrading
+
+Upgrade to NodeJs 14.15.0 or higher.
+
 ## 3.0.2 (September 2022)
 
 * Add support for adding `Procore-Company-Id` request header when `defaultCompanyId` is passed in `ClientOptions`.
