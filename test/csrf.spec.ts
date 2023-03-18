@@ -4,8 +4,8 @@ import { csrf } from '../dist/index'
 import { expect } from 'chai'
 
 interface Global {
-  document: Document;
-  window: Window;
+  document?: Document;
+  window?: Window;
 }
 
 declare const global: Global;
@@ -47,7 +47,7 @@ describe('csrf', () => {
           url: "https://app.procore.com"
         }
       );
-      global.document = window.document;
+      global.document = window._document;
       global.window = window;
 
       const authorizer = csrf();
@@ -72,7 +72,7 @@ describe('csrf', () => {
           cookieJar: { getCookieStringSync: () => `csrf_token=${encodeURIComponent(CSRF_TOKEN)}; domain=.procore.com; path=/; secure; SameSite=Strict` }
         }
       );
-      global.document = window.document;
+      global.document = window._document;
       global.window = window;
       const authorizer = csrf();
       const request = spy();

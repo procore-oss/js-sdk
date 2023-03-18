@@ -7,7 +7,7 @@ A node.js JS SDK for the Procore API.
 Note: ECMAScript target is ES5.
 
 # Requirements
-- Node.js version 10.12 and above.
+- Node.js version 14.15.0 and above.
 - A registered app on the [Procore Developer Portal](https://developers.procore.com/).
 - A Node.js web server (such as Express) for server authentication.
 
@@ -28,11 +28,38 @@ associated with the `client_id` in use.
 The Client object exposes `#get`, `#post`, `#put`, `#patch`, and `#delete` methods to you.
 
 ```javascript
-client.get({ base, version?, action?, params?, qs? }: EndpointConfig)
-client.post({ base, version?, action?, params?, qs? }: EndpointConfig)
-client.put({ base, version?, action?, params?, qs? }: EndpointConfig)
-client.patch({ base, version?, action?, params?, qs? }: EndpointConfig)
-client.delete({ base, version?, action?, params?, qs? }: EndpointConfig)
+import * as sdk from '@procore/js-sdk';
+
+const client = sdk.client(authorizer);
+
+client.get(
+  { base, version?, action?, params?, qs? }: EndpointConfig | string,
+  {formatter?, companyId?, headers?}: RequestConfig
+)
+
+client.post(
+  { base, version?, action?, params?, qs? }: EndpointConfig | string,
+  payload,
+  {formatter?, companyId?, headers?}: RequestConfig
+)
+
+client.put(
+  { base, version?, action?, params?, qs? }: EndpointConfig | string,
+  payload,
+  {formatter?, companyId?, headers?}: RequestConfig
+)
+
+client.patch(
+  { base, version?, action?, params?, qs? }: EndpointConfig | string,
+  payload,
+  {formatter?, companyId?, headers?}: RequestConfig
+)
+
+client.delete(
+  { base, version?, action?, params?, qs? }: EndpointConfig | string,
+  payload,
+  {formatter?, companyId?, headers?}: RequestConfig
+)
 ```
 
 ## Example
@@ -67,8 +94,11 @@ A single API response contains the response body (JSON parsed), original request
 [isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [fetch](https://github.github.io/fetch/) for more details.
 
 ```javascript
-const procore = client(authorizer);
-procore.get({
+import * as sdk from '@procore/js-sdk';
+
+const client = sdk.client(authorizer);
+
+client.get({
     base: '/projects',
     qs: { company_id: 1 }
   },
@@ -88,9 +118,12 @@ procore.get({
 or
 
 ```javascript
-const procore = client(authorizer);
+import * as sdk from '@procore/js-sdk';
+
+const client = sdk.client(authorizer);
+
 async function getProjects() {
-  const { body, request, response } = await procore
+  const { body, request, response } = await client
     .get({
       base: '/projects',
       qs: { company_id: 1 }
@@ -114,7 +147,9 @@ By default, the SDK tries to format the `body` as JSON, you can control the
 formatting of the `body` by passing the `formatter` option as follows:
 
 ```javascript
-const procore = client(authorizer);
+import * as sdk from '@procore/js-sdk';
+
+const client = sdk.client(authorizer);
 // Create your own formatter
 function formatter(response) {
   // Your custom formatter code.
@@ -122,7 +157,7 @@ function formatter(response) {
 }
 
 // Pass the formatter configuration
-procore.get({base: '/me'}, { formatter })
+client.get({base: '/me'}, { formatter })
 ```
 
 ### Multiple Procore Zones (MPZ)
@@ -131,10 +166,12 @@ All requests to the Procore API must include the `Procore-Company-Id` header to 
 [Multiple Procore Zones (MPZ)](https://developers.procore.com/documentation/mpz-headers) for more details. A `Procore-Company-Id` header will automatically be added to the request if the `defaultCompanyId` parameter is passed in the `ClientOptions` object or `companyId` parameter is passed in the `RequestConfig` object.
 
 ```javascript
-// Pass the defaultCompanyId configuration in the ClientOptions
-const procore = client(authorizer, undefined, { defaultCompanyId: 10 });
+import * as sdk from '@procore/js-sdk';
 
-procore.get(
+// Pass the defaultCompanyId configuration in the ClientOptions
+const client = sdk.client(authorizer, undefined, { defaultCompanyId: 10 });
+
+client.get(
   { base: "/projects" }
 );
 ```
@@ -142,13 +179,39 @@ procore.get(
 or
 
 ```javascript
-const procore = client(authorizer);
+import * as sdk from '@procore/js-sdk';
+
+const client = sdk.client(authorizer);
 
 // Pass the companyId configuration in the RequestConfig
-procore.get(
+client.get(
   { base: "/projects" },
   { companyId: procoreCompanyId }
 );
+```
+
+### Client Options (ClientOptions)
+
+ClientOptions supports 3 parameters:
+  * **apiHostname**: This is the hostname used for api requests. Default: https://app.procore.com
+  * **defaultVersion**: Rest api version. Must in the format `v\d.\d` e.g. v1.0. Default: v1.0
+  * **defaultCompanyId**: If companyId is not provided in RequestConfig this value will be used. Default: undefined
+
+
+```javascript
+import * as sdk from '@procore/js-sdk';
+
+const client = client(
+  authorizer,
+  undefined,
+  { 
+    apiHostname: "https://api.procore.com",
+    defaultVersion: "v1.1",
+    defaultCompanyId: 10,
+  }
+);
+
+client.get({ base: "/projects" });
 ```
 
 ## Tests
