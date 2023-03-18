@@ -13,11 +13,12 @@
     "url": "https://github.com/procore/js-sdk.git"
   },
   "engines": {
-    "node": ">= 14.15"
+    "node": ">= 14.15.0"
   },
   "scripts": {
     "test": "yarn clean && yarn compile && yarn test:once",
     "test:once": "mocha -r ts-node/register test/**/*.spec.ts",
+    "test:file": "mocha -r ts-node/register",
     "clean": "rimraf dist types",
     "watch": "tsc --watch",
     "compile": "yarn writeVer && tsc",
@@ -40,8 +41,8 @@
     "@types/sinon": "^10.0",
     "chai": "^4.3",
     "fetch-mock": "^9.11.0",
-    "jsdom": "^20.0.3",
-    "mocha": "^10.2.0",
+    "jsdom": "^21.1.1",
+    "mocha": "^10.2",
     "rimraf": "^3.0.2",
     "sinon": "^15.0",
     "ts-node": "^10.9",

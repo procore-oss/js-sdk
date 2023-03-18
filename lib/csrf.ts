@@ -7,6 +7,7 @@ class Csrf implements Authorizer {
   constructor(csrfHeader?: String, getToken?: Function) {
     this.getToken = getToken || Csrf.getTokenDefault;
     this.csrfHeader = csrfHeader || 'X-CSRF-TOKEN';
+    this.authorize = this.authorize.bind(this);
   }
 
   public authorize(request: Function): Promise<any> {
@@ -22,13 +23,15 @@ class Csrf implements Authorizer {
   // 3) Return ""
   // https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
   private static getTokenDefault(): String {
-    const cookieToken = document.cookie.match(/(?:^|;)\s*csrf_token\s*=\s*([^;]+)/);
-    if (cookieToken) {
-      return decodeURIComponent(cookieToken[cookieToken.length - 1]);
+    const cookieCsrf = document.cookie.match(/(?:^|;)\s*csrf_token\s*=\s*([^;]+)/);
+    if (cookieCsrf) {
+      return decodeURIComponent(cookieCsrf.pop());
     }
 
-    const metaTokenCtr = window.document.querySelector('meta[name="csrf-token"]');
-    return (metaTokenCtr && metaTokenCtr.getAttribute('content')) || '';
+    const metaCsrf = document
+      .querySelector('meta[name="csrf-token"]')!
+      .getAttribute('content');
+    return (metaCsrf !== undefined && metaCsrf !== null && metaCsrf.length > 0) ? metaCsrf : '';
   }
 }
 

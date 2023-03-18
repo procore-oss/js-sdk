@@ -1,8 +1,9 @@
 # Change Log
 
-## 4.0.0 (December 2023)
+## 4.0.0 (March 2022)
 
-* Update to NodeJs 14.15 (Oldest version of NodeJs Still supported)
+* Fix Csrf Class
+* Require Node >= 14.15.0 (First LTS version of this version)
 * Update package.json dependencies
 
 ## 3.0.2 (September 2022)
