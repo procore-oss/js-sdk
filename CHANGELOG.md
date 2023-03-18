@@ -1,6 +1,6 @@
 # Change Log
 
-## 4.0.0 (March 2022)
+## 4.0.0 (March 2023)
 
 * Fix Csrf Class
 * Require Node >= 14.15.0 (First LTS version of this version)
