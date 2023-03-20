@@ -1,5 +1,10 @@
 # Change Log
 
+## 4.0.2 (March 2023)
+
+* Improve Csrf Class (No change in functionality)
+* Update package.json dependencies
+
 ## 4.0.1 (March 2023)
 
 * Readme Improvement
