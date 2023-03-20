@@ -458,6 +458,23 @@ describe('client', () => {
         fetchMock.restore();
       })
 
+      it('gets the resource by id and project_id in querystring', async () => {
+        const project_id = project.id;
+
+        fetchMock.get(
+          { url: `${HOSTNAME}/rest/v1.0/rfis/${rfi.id}?project_id=${project_id}&foo=1&bar=2`, headers: headers }, rfi);
+
+        const qs = { foo: 1, bar: 2 };
+
+        const { body } = await client
+          .get(
+            { base: '/rfis', params: { id: rfi.id }, qs: { project_id, ...qs } }
+          );
+        expect(body).to.eql(rfi);
+
+        fetchMock.restore();
+      })
+
       it('gets the resource by query strings', async () => {
         fetchMock.get(
           { url: `${HOSTNAME}/rest/v1.0/projects?a%5B%5D=1&a%5B%5D=2`, headers: headers }, rfi);

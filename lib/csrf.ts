@@ -7,12 +7,10 @@ class Csrf implements Authorizer {
   constructor(csrfHeader?: String, getToken?: Function) {
     this.getToken = getToken || Csrf.getTokenDefault;
     this.csrfHeader = csrfHeader || 'X-CSRF-TOKEN';
-    this.authorize = this.authorize.bind(this);
   }
 
-  public authorize(request: Function): Promise<any> {
-    return request([this.csrfHeader, this.getToken()]);
-  }
+  public authorize = (request: Function): Promise<any> =>
+    request([this.csrfHeader, this.getToken()]);
 
   // 1) Look for csrf_token cookie
   // "csrf_token={{ csrf_token() }}; Path=/; Domain=.procore.com; SameSite=Strict; Secure=true;"
