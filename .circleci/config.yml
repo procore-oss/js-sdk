@@ -5,7 +5,7 @@ executors:
       - image: sonarsource/sonar-scanner-cli:4.7.0
 jobs:
   test:
-    working_directory: ~/js-sdk
+    working_directory: /home/circleci/js-sdk
     docker:
       - image: cimg/node:14.15.0
     steps:
@@ -30,7 +30,7 @@ jobs:
           paths:
             - .
   publish:
-    working_directory: ~/js-sdk
+    working_directory: /home/circleci/js-sdk
     docker:
       - image: cimg/node:14.15.0
     steps:
@@ -57,7 +57,7 @@ jobs:
           name: Publish Package
           command: npm publish
   sonarqube_analysis:
-    working_directory: /home/circleci/app
+    working_directory: /home/circleci/js-sdk
     executor: sonar-scanner
     steps:
       - attach_workspace:
