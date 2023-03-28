@@ -1,4 +1,8 @@
 version: 2
+executors:
+  sonar-scanner:
+    docker:
+      - image: sonarsource/sonar-scanner-cli:4.7.0
 jobs:
   test:
     working_directory: ~/js-sdk
@@ -20,7 +24,11 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: Test
-          command: yarn test
+          command: yarn test:coverage
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   publish:
     working_directory: ~/js-sdk
     docker:
@@ -48,6 +56,15 @@ jobs:
       - run:
           name: Publish Package
           command: npm publish
+  sonarqube_analysis:
+    working_directory: /home/circleci/app
+    executor: sonar-scanner
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Execute sonar-scanner
+          command: sonar-scanner -Dsonar.host.url=$SONARQUBE_HOST -Dsonar.login=$SONARQUBE_OPS_CI_TOKEN -Dsonar.buildString=$CIRCLE_SHA1 -Dsonar.analysis.build.url=$CIRCLE_BUILD_URL
 workflows:
   version: 2
   test_and_publish:
@@ -62,3 +79,10 @@ workflows:
             branches:
               only:
                 - master
+      - sonarqube_analysis:
+          context: procore-sonarqube-ci
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
