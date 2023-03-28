@@ -1,8 +1,11 @@
 node_modules
+coverage
 dist
 types
 *-debug.log
 *-error.log
 *DS_Store
+.idea
 .npmrc
+.nyc_output
 lib/version.json
