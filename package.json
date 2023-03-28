@@ -19,7 +19,7 @@
     "test": "yarn clean && yarn compile && yarn test:once",
     "test:once": "nyc mocha -r ts-node/register test/**/*.spec.ts",
     "test:file": "nyc mocha -r ts-node/register",
-    "test:coverage": "nyc --reporter=lcov mocha -r ts-node/register test/**/*.spec.ts",
+    "test:coverage": "yarn clean && yarn compile && nyc --reporter=lcov mocha -r ts-node/register test/**/*.spec.ts",
     "clean": "rimraf dist types",
     "watch": "tsc --watch",
     "compile": "yarn writeVer && tsc",
