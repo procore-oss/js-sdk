@@ -19,7 +19,7 @@
     "test": "yarn clean && yarn compile && yarn test:once",
     "test:once": "mocha -r ts-node/register test/**/*.spec.ts",
     "test:file": "mocha -r ts-node/register",
-    "test:coverage": "mocha -r ts-node/register",
+    "test:coverage": "mocha -r ts-node/register test/**/*.spec.ts",
     "clean": "rimraf dist types",
     "watch": "tsc --watch",
     "compile": "yarn writeVer && tsc",
