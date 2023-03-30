@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { revoke } from '../dist/index'
+import { revoke } from '../lib/index'
 
 const someJson = {
   foo: 'bar',
@@ -24,7 +24,9 @@ describe('revoke', () => {
         token: 'fake_token',
         clientId: 'fake_clientid',
         clientSecret: 'fake_secret'
-      });
+      },
+      {}
+      );
     expect(res).to.eql(someJson);
     fetchMock.restore();
   });

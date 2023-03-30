@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { JSDOM } from 'jsdom'
-import * as sdk from '../dist/index'
+import * as sdk from '../lib/index'
 import fetchMock from 'fetch-mock'
 
 interface Global {
@@ -32,7 +32,7 @@ describe('client', () => {
   context('Override fetch', () => {
     it('uses a custom formatter', async () => {
       const authorizer = sdk.oauth(token);
-      const client = sdk.client(authorizer);
+      const client = sdk.client(authorizer, {}, {});
       let counter = 1;
 
       function formatter(response: any) {
@@ -167,7 +167,7 @@ describe('client', () => {
 
     it('sets company id header using requestConfig', async () => {
       const authorizer = sdk.oauth(token);
-      const client = sdk.client(authorizer, { headers: { ...headers } });
+      const client = sdk.client(authorizer, { headers: { ...headers } }, {});
 
       const customHeaders = {
         'Procore-Company-Id': `${company.id}`,
@@ -221,7 +221,7 @@ describe('client', () => {
 
     it('uses a custom header', async () => {
       const authorizer = sdk.oauth(token);
-      const client = sdk.client(authorizer, { headers: { ...headers } });
+      const client = sdk.client(authorizer, { headers: { ...headers } }, {});
 
       const customHeaders = {
         'Procore-Company-Id': `${company.id}`,
@@ -253,7 +253,7 @@ describe('client', () => {
     describe('request defaults', () => {
       it('sets default request options', async () => {
         const authorizer = sdk.oauth(token);
-        const client = sdk.client(authorizer, { credentials: 'omit' })
+        const client = sdk.client(authorizer, { credentials: 'omit' }, {})
 
         fetchMock.get(`${HOSTNAME}/rest/v1.0/test_config`, {});
 
@@ -265,7 +265,7 @@ describe('client', () => {
       it('allows response headers override', async () => {
         const headers = new Headers();
         const authorizer = sdk.oauth(token);
-        const client = sdk.client(authorizer, { headers });
+        const client = sdk.client(authorizer, { headers }, {});
         const successResponse = { success: true };
 
         fetchMock.get(`${HOSTNAME}/rest/v1.0/test_config`, successResponse);
@@ -280,7 +280,7 @@ describe('client', () => {
       })
 
       it('returns the raw request even if the request fails', async () => {
-        const client = sdk.client(sdk.oauth(token));
+        const client = sdk.client(sdk.oauth(token), {}, {});
         const response = {
           status: 401,
           body: { errors: { name: ['is already taken'] } }
@@ -300,7 +300,7 @@ describe('client', () => {
 
     describe('request using version', () => {
       const authorizer = sdk.oauth(token);
-      const client = sdk.client(authorizer);
+      const client = sdk.client(authorizer, {}, {});
 
       it('sets default version when not passing', async () => {
         fetchMock.get(`${HOSTNAME}/rest/v1.0/me`, me);
@@ -390,7 +390,7 @@ describe('client', () => {
 
     describe('#post', () => {
       const authorizer = sdk.oauth(token);
-      const client = sdk.client(authorizer);
+      const client = sdk.client(authorizer, {}, {});
 
       it('creates a resource', async () => {
         fetchMock.post(
@@ -425,7 +425,7 @@ describe('client', () => {
 
     describe('#get', () => {
       const authorizer = sdk.oauth(token);
-      const client = sdk.client(authorizer);
+      const client = sdk.client(authorizer, {}, {});
 
       it('gets a signleton resource', async () => {
         fetchMock.get({ url: `${HOSTNAME}/rest/v1.0/me`, headers: headers }, me);
@@ -517,7 +517,7 @@ describe('client', () => {
     describe('#delete', () => {
       const authorizer = sdk.oauth(token)
 
-      const client = sdk.client(authorizer)
+      const client = sdk.client(authorizer, {}, {})
 
       it('deletes a resource without a body', async () => {
         fetchMock.delete(

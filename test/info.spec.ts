@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { info } from '../dist/index'
+import { info } from '../lib/index'
 
 const token = 'token';
 const infoResponse = {
@@ -20,7 +20,7 @@ const headers = {
 describe('info', () => {
   it('request', async () => {
     fetchMock.get({ url: `https://app.procore.com/oauth/token/info`, headers }, infoResponse);
-    const body = await info(token);
+    const body = await info(token, {});
     expect(body).to.deep.equal(infoResponse);
     fetchMock.restore();
   });

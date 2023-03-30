@@ -1,6 +1,6 @@
 import { JSDOM } from 'jsdom'
 import { spy } from 'sinon'
-import { csrf } from '../dist/index'
+import { csrf } from '../lib/index'
 import { expect } from 'chai'
 
 interface Global {
