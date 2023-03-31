@@ -85,3 +85,7 @@ workflows:
           context: procore-sonarqube-ci
           requires:
             - test
+          filters:
+            branches:
+              only:
+                - master
