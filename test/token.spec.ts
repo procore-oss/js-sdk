@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { token } from '../dist/index'
+import { token } from '../lib/index'
 
 const tokenResponse = {
   auth_token: "token",
@@ -30,7 +30,9 @@ describe('token', () => {
         secret: "fake_secret",
         code: "fake_code",
         uri: "fake_redirect_uri"
-      });
+      },
+      {}
+      );
     expect(res).to.eql(tokenResponse);
     fetchMock.restore();
   });

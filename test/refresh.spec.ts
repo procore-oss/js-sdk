@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock'
 import { expect } from 'chai'
-import { refresh } from '../dist/index'
+import { refresh } from '../lib/index'
 
 const jsonResponse = {
   foo: "bar"
@@ -27,7 +27,9 @@ describe('refresh', () => {
         secret: 'fake_secret',
         uri: 'fake_redirect_uri',
         refresh: 'fake_refresh_token'
-      });
+      },
+      {}
+      );
     expect(res).to.eql(jsonResponse);
     fetchMock.restore();
   });

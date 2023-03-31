@@ -1,0 +1,26 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: js-sdk
+  description: 'A node.js JS SDK for the Procore API.'
+  annotations:
+    circleci.com/project-slug: github/procore/js-sdk
+    sonarqube.org/project-key: js-sdk
+    circleci.com/test-workflow: build-workflow
+  tags:
+    - java-script
+    - dockerfile
+  links:
+    - url: https://procoretech.slack.com/archives/CSG83TSCV
+      title: Team Slack
+      icon: chat
+    - url: https://procoretech.slack.com/archives/CSG83TSCV
+      title: Support
+      icon: help
+    - url: https://procoretech.atlassian.net/jira/software/c/projects/AGX/boards/1293
+      title: Jira
+      icon: developerBoard
+spec:
+  type: service
+  lifecycle: ga
+  owner: team-api

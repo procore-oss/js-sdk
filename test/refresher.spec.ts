@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { stub, match } from 'sinon'
-import { refresher, oauth } from '../dist/index'
+import { refresher, oauth } from '../lib/index'
 
 describe('refresher', () => {
   describe('#authorize', () => {
