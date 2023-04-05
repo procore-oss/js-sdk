@@ -1,0 +1,4 @@
+# Read more about CODEOWNERS here - https://github.com/blog/2392-introducing-code-owners
+# how to setup: https://procoretech.atlassian.net/wiki/spaces/DEV/pages/366805250/Github+how+to+setup+CODEOWNERS
+
+*   @procore/team-api

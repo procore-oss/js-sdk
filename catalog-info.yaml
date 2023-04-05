@@ -3,6 +3,7 @@ kind: Component
 metadata:
   name: js-sdk
   description: A node.js JS SDK for the Procore API. NPM package @procore/js-sdk
+  title: Procore JS SDK
   annotations:
     github.com/project-slug: procore/js-sdk
     github.com/team-slug: procore/team-api
