@@ -38,7 +38,8 @@ function defaultFormatter(response: Response) {
 const baseRequest = (defaults: RequestInit, options: ClientOptions): Function => (url: string, config: RequestInit, reqConfig?: RequestConfig): Function => {
   const headers = new Headers();
   headers.append('Accept', 'application/json');
-  headers.append('Content-Type', 'application/json');
+  //headers.append('Content-Type', 'application/json');
+  headers.append('Content-Type', 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW;');
   headers.append('Procore-Sdk-Version', sdkVersionHeader);
   headers.append('Procore-Sdk-language', 'javascript');
 
