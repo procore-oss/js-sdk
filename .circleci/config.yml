@@ -66,7 +66,7 @@ jobs:
           at: .
       - run:
           name: Execute sonar-scanner
-          command: sonar-scanner -Dsonar.host.url=$SONARQUBE_HOST -Dsonar.login=$SONARQUBE_OPS_CI_TOKEN -Dsonar.buildString=$CIRCLE_SHA1 -Dsonar.analysis.build.url=$CIRCLE_BUILD_URL
+          command: sonar-scanner -Dsonar.host.url=$SONARQUBE_HOST -Dsonar.token=$SONARQUBE_OPS_CI_TOKEN -Dsonar.buildString=$CIRCLE_SHA1 -Dsonar.analysis.build.url=$CIRCLE_BUILD_URL
 workflows:
   version: 2
   test_and_publish:
