@@ -2,7 +2,10 @@ version: 2.1
 executors:
   sonar-scanner:
     docker:
-      - image: sonarsource/sonar-scanner-cli:4.7.0
+      - image: containers.artifacts.procoretech.com/test-tooling/procore-sonarscanner:latest
+        auth:
+          username: $ARTIFACTORY_PULL_USERNAME
+          password: $ARTIFACTORY_PULL_PASSWORD
 jobs:
   test:
     working_directory: /home/circleci/js-sdk
@@ -82,7 +85,9 @@ workflows:
               only:
                 - master
       - sonarqube_analysis:
-          context: procore-sonarqube-ci
+          context:
+            - procore-sonarqube-ci
+            - artifactory-production-pull
           requires:
             - test
           filters:
