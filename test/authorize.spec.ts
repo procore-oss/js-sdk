@@ -6,7 +6,7 @@ describe('authorize grant', () => {
   const uri = 'https://www.example.com/callback';
   it('returns valid url', () => {
     expect(authorize({ clientId, uri }, {})).to.equal(
-      `https://app.procore.com/oauth/authorize?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(uri)}`
+      `https://api.procore.com/oauth/authorize?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(uri)}`
     )
   });
 

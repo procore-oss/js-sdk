@@ -7,7 +7,7 @@ describe('implicit grant', () => {
 
   it('returns valid url', () => {
     expect(implicit({ id, uri }, {})).to.equal(
-      `https://app.procore.com/oauth/authorize?response_type=token&client_id=${encodeURIComponent(id)}&redirect_uri=${encodeURIComponent(uri)}`
+      `https://api.procore.com/oauth/authorize?response_type=token&client_id=${encodeURIComponent(id)}&redirect_uri=${encodeURIComponent(uri)}`
     )
   });
 

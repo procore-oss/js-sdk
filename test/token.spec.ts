@@ -23,7 +23,7 @@ const body = {
 
 describe('token', () => {
   it('generates an auth token', async () => {
-    fetchMock.post({ url: `https://app.procore.com/oauth/token`, headers, body }, tokenResponse);
+    fetchMock.post({ url: `https://api.procore.com/oauth/token`, headers, body }, tokenResponse);
     const res = await token(
       {
         id: "fake_id",

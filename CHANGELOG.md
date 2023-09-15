@@ -55,7 +55,7 @@ const { body } = await procore.get({
   base: '/vapid/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 }
 });
-// app.procore.com/vapid/drawing_areas/42/drawings
+// api.procore.com/vapid/drawing_areas/42/drawings
 ```
 
 v3.0.1 Version Usage
@@ -68,21 +68,21 @@ const { body } = await procore.get({
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 }
 });
-// app.procore.com/rest/v1.0/drawing_areas/42/drawings
+// api.procore.com/rest/v1.0/drawing_areas/42/drawings
 
 // Override default version
 const { body } = await procore.get({ 
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 },
   version: 'v1.1' });
-// app.procore.com/rest/v1.1/drawing_areas/42/drawings
+// api.procore.com/rest/v1.1/drawing_areas/42/drawings
 
 // Override default version with legacy version
 const { body } = await procore.get({
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 },
   version: 'vapid' });
-// app.procore.com/vapid/drawing_areas/42/drawings
+// api.procore.com/vapid/drawing_areas/42/drawings
 ```
 
 To keep the legacy behavior, set the new `defaultVersion` configuration option when

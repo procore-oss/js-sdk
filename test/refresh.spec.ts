@@ -20,7 +20,7 @@ const body = {
 
 describe('refresh', () => {
   it('refresh token', async () => {
-    fetchMock.post({ url: `https://app.procore.com/oauth/token`, headers, body }, jsonResponse);
+    fetchMock.post({ url: `https://api.procore.com/oauth/token`, headers, body }, jsonResponse);
     const res = await refresh(
       {
         id: 'fake_id',

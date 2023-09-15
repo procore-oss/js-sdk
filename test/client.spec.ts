@@ -16,7 +16,7 @@ const me = { id: 42, login: 'foo@procore.com', name: 'foo' };
 const rfi = { id: 1, subject: 'Create RFI Subject', assignee_id: 2945 };
 const idsToDelete = [{ id: 1 }, { id: 2 }];
 const token = 'token';
-const HOSTNAME = 'https://app.procore.com';
+const HOSTNAME = 'https://api.procore.com';
 const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ describe('client', () => {
         const { window } = new JSDOM(
           `<!doctype html><html><head><meta name="csrf-token" content="${CSRF_TOKEN}"></head></html>`,
           {
-            url: "https://app.procore.com"
+            url: "https://api.procore.com"
           }
         );
         global.document = window._document;
@@ -125,7 +125,7 @@ describe('client', () => {
         const { window } = new JSDOM(
           '<!doctype html><html></html>',
           {
-            url: "https://app.procore.com",
+            url: "https://api.procore.com",
             cookieJar: { getCookieStringSync: () => `csrf_token=${encodeURIComponent(CSRF_TOKEN)}; domain=.procore.com; path=/; secure; SameSite=Strict` }
           }
         );

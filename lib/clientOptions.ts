@@ -1,5 +1,5 @@
 const ClientOptionsDefaults: ClientOptions = {
-  apiHostname: "https://app.procore.com",
+  apiHostname: "https://api.procore.com",
   defaultVersion: "v1.0"
 };
 
