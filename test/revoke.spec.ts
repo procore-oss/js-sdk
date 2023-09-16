@@ -18,7 +18,7 @@ const body = {
 
 describe('revoke', () => {
   it('revokes a token', async () => {
-    fetchMock.post({ url: `https://app.procore.com/oauth/revoke`, headers, body }, someJson);
+    fetchMock.post({ url: `https://api.procore.com/oauth/revoke`, headers, body }, someJson);
     const res = await revoke(
       {
         token: 'fake_token',

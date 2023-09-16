@@ -19,7 +19,7 @@ const headers = {
 
 describe('info', () => {
   it('request', async () => {
-    fetchMock.get({ url: `https://app.procore.com/oauth/token/info`, headers }, infoResponse);
+    fetchMock.get({ url: `https://api.procore.com/oauth/token/info`, headers }, infoResponse);
     const body = await info(token, {});
     expect(body).to.deep.equal(infoResponse);
     fetchMock.restore();

@@ -114,9 +114,9 @@ function call, or the `defaultCompanyId` value will be used when appending the
 
 | Example | Requested URL |
 | --- | --- |
-| `client.get({ base: '/example/{id}', params: { id: 42 } })` | `https://app.procore.com/rest/v1.0/example/42` |
-| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'v1.1' })` | `https://app.procore.com/rest/v1.1/example/42` |
-| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'vapid' })` | `https://app.procore.com/vapid/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 } })` | `https://api.procore.com/rest/v1.0/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'v1.1' })` | `https://api.procore.com/rest/v1.1/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'vapid' })` | `https://api.procore.com/vapid/example/42` |
 
 ## Responses
 A single API response contains the response body (JSON parsed), original request, and complete response: `{ body, request, response }`.
@@ -222,7 +222,7 @@ client.get(
 ### Client Options (ClientOptions)
 
 ClientOptions supports 3 parameters:
-  * **apiHostname**: This is the hostname used for api requests. Default: https://app.procore.com
+  * **apiHostname**: This is the hostname used for api requests. Default: https://api.procore.com
   * **defaultVersion**: Rest api version. Must in the format `v\d.\d` e.g. v1.0. Default: v1.0
   * **defaultCompanyId**: If companyId is not provided in RequestConfig this value will be used. Default: undefined
 
