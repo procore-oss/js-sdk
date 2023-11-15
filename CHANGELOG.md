@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.1.0 (November 2023)
+
+* Change hostname url from `app` to `api`
+
 ## 4.0.2 (March 2023)
 
 * Improve Csrf Class (No change in functionality)
