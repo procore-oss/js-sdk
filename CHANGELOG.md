@@ -2,7 +2,7 @@
 
 ## 4.1.0 (November 2023)
 
-* Change hostname url from `app` to `api`
+* Update codes to be consistent of API hostname `api.procore.com`
 
 ## 4.0.2 (March 2023)
 
