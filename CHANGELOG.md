@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.1.0 (November 2023)
+
+* Update codes to be consistent of API hostname `api.procore.com`
+
 ## 4.0.2 (March 2023)
 
 * Improve Csrf Class (No change in functionality)
@@ -55,7 +59,7 @@ const { body } = await procore.get({
   base: '/vapid/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 }
 });
-// api.procore.com/vapid/drawing_areas/42/drawings
+// app.procore.com/vapid/drawing_areas/42/drawings
 ```
 
 v3.0.1 Version Usage
@@ -68,21 +72,21 @@ const { body } = await procore.get({
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 }
 });
-// api.procore.com/rest/v1.0/drawing_areas/42/drawings
+// app.procore.com/rest/v1.0/drawing_areas/42/drawings
 
 // Override default version
 const { body } = await procore.get({ 
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 },
   version: 'v1.1' });
-// api.procore.com/rest/v1.1/drawing_areas/42/drawings
+// app.procore.com/rest/v1.1/drawing_areas/42/drawings
 
 // Override default version with legacy version
 const { body } = await procore.get({
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 },
   version: 'vapid' });
-// api.procore.com/vapid/drawing_areas/42/drawings
+// app.procore.com/vapid/drawing_areas/42/drawings
 ```
 
 To keep the legacy behavior, set the new `defaultVersion` configuration option when
