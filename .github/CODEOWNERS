@@ -1,3 +1,3 @@
 # Read more about CODEOWNERS here - https://github.com/blog/2392-introducing-code-owners
 
-*   @procore/team-api
+* @procore-oss/procore-ospo @procore-oss/procore-api

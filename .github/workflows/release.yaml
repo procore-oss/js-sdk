@@ -1,0 +1,42 @@
+name: Release
+on:
+  workflow_run:
+    workflows: [Test]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch: # allow manual deployment through GitHub Action UI
+permissions:
+  contents: read
+jobs:
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    env:
+      NODE_VERSION: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if version has been updated
+        id: check
+        uses: EndBug/version-check@v2
+      - name: Log when changed
+        if: steps.check.outputs.changed == 'true'
+        run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
+      - name: Set up node
+        if: ${{ github.event_name == 'workflow_dispatch' || steps.check.outputs.changed == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Compile source
+        if: ${{ github.event_name == 'workflow_dispatch' || steps.check.outputs.changed == 'true' }}
+        run: yarn run compile
+      - name: Publish package
+        if: ${{ github.event_name == 'workflow_dispatch' || steps.check.outputs.changed == 'true' }}
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Tag the release
+        if: ${{ github.event_name == 'workflow_dispatch' || steps.check.outputs.changed == 'true' }}
+        run: git tag -a v${{ steps.check.outputs.version }} -m "v${{ steps.check.outputs.version }}"

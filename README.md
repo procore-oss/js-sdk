@@ -1,20 +1,25 @@
 # Procore JS SDK
 
-[![CircleCI](https://circleci.com/gh/procore/js-sdk.svg?style=svg&circle-token=b24f4748ba5d14817088d02a0e14d376e1461c60)](https://circleci.com/gh/procore/js-sdk)
+[![test](https://github.com/procore-oss/js-sdk/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/procore-oss/js-sdk/actions/workflows/test.yaml)
+[![npm version](https://badge.fury.io/js/@procore%2Fjs-sdk.svg)](https://badge.fury.io/js/@procore%2Fjs-sdk)
+[![discord](https://img.shields.io/badge/Chat-EDEDED?logo=discord)](https://discord.gg/PbntEMmWws)
 
 A node.js JS SDK for the Procore API.
 
 Note: ECMAScript target is ES5.
 
-# Requirements
-- Node.js version 14.15.0 and above.
+## Requirements
+
+- Node.js version 18 and above.
 - A registered app on the [Procore Developer Portal](https://developers.procore.com/).
 - A Node.js web server (such as Express) for server authentication.
 
 ## Installation
+
 ```bash
 yarn add @procore/js-sdk
 ```
+
 We recommend installing the package with [yarn](http://yarnpkg.com).
 
 ## Making Requests
@@ -65,10 +70,10 @@ client.delete(
 ### Request Config (RequestConfig)
 
 RequestConfig supports 3 parameters:
-  * **formatter**: Custom formatter function for response body.
-  * **companyId**: Company Id used to set `Procore-Company-Id` header. Takes precedence over `defaultCompanyId` passed in ClientOptions.
-  * **headers**: Custom headers passed as key/value pairs.
 
+- **formatter**: Custom formatter function for response body.
+- **companyId**: Company Id used to set `Procore-Company-Id` header. Takes precedence over `defaultCompanyId` passed in ClientOptions.
+- **headers**: Custom headers passed as key/value pairs.
 
 ```javascript
 import * as sdk from '@procore/js-sdk';
@@ -111,7 +116,6 @@ function call, or the `defaultCompanyId` value will be used when appending the
 `Procore-Company-Id` header to the request.
 (`client(Authorizer, RequestInit, { defaultCompanyId: 10 })`).
 
-
 | Example | Requested URL |
 | --- | --- |
 | `client.get({ base: '/example/{id}', params: { id: 42 } })` | `https://api.procore.com/rest/v1.0/example/42` |
@@ -119,6 +123,7 @@ function call, or the `defaultCompanyId` value will be used when appending the
 | `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'vapid' })` | `https://api.procore.com/vapid/example/42` |
 
 ## Responses
+
 A single API response contains the response body (JSON parsed), original request, and complete response: `{ body, request, response }`.
 [isomorphic-fetch](https://github.com/matthew-andrews/isomorphic-fetch) is the underlying http library, so both the request and response follow its specification. See [fetch](https://github.github.io/fetch/) for more details.
 
@@ -222,10 +227,10 @@ client.get(
 ### Client Options (ClientOptions)
 
 ClientOptions supports 3 parameters:
-  * **apiHostname**: This is the hostname used for api requests. Default: https://api.procore.com
-  * **defaultVersion**: Rest api version. Must in the format `v\d.\d` e.g. v1.0. Default: v1.0
-  * **defaultCompanyId**: If companyId is not provided in RequestConfig this value will be used. Default: undefined
 
+- **apiHostname**: This is the hostname used for api requests. Default: <https://api.procore.com>
+- **defaultVersion**: Rest api version. Must in the format `v\d.\d` e.g. v1.0. Default: v1.0
+- **defaultCompanyId**: If companyId is not provided in RequestConfig this value will be used. Default: undefined
 
 ```javascript
 import * as sdk from '@procore/js-sdk';
@@ -244,13 +249,14 @@ client.get({ base: "/projects" });
 ```
 
 ## Tests
-```
+
+```bash
 yarn && yarn test
 ```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/procore/js-sdk. This project is
+Bug reports and pull requests are welcome on GitHub at <https://github.com/procore/js-sdk>. This project is
 intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the
 [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
