@@ -22,6 +22,7 @@ jobs:
         uses: EndBug/version-check@v2
         with:
           static-checking: localIsNew
+          file-url: https://unpkg.com/@procore/js-sdk/package.json
       - name: Log when changed
         if: steps.check.outputs.changed == 'true'
         run: 'echo "Version change found in commit ${{ steps.check.outputs.commit }}! New version: ${{ steps.check.outputs.version }} (${{ steps.check.outputs.type }})"'
