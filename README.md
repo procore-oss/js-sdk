@@ -10,7 +10,8 @@ Note: ECMAScript target is ES5.
 
 ## Requirements
 
-- Node.js version 14 (with emphasis on latest LTS version, currently 18) and above.
+- Node.js version 14 or 16+, not 15.
+  - We emphasize using the latest LTS version
 - A registered app on the [Procore Developer Portal](https://developers.procore.com/).
 - A Node.js web server (such as Express) for server authentication.
 

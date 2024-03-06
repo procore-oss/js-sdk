@@ -7,7 +7,7 @@ Node versions that are currently being supported with security updates.
 | Version | Supported          |
 | ------- | ------------------ |
 | 14      | :white_check_mark: |
-| 15      | :white_check_mark: |
+| 15      | :x:                |
 | 16      | :white_check_mark: |
 | 17      | :white_check_mark: |
 | 18      | :white_check_mark: |

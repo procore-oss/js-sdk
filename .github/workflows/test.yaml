@@ -10,7 +10,7 @@ jobs:
   test:
     strategy:
       matrix:
-        node: ['14', '15', '16', '17', '18', '19', '20', '21']
+        node: ['14', '16', '17', '18', '19', '20', '21']
     name: Node ${{ matrix.node }}
     # https://docs.github.com/en/actions/learn-github-actions/expressions#example
     runs-on: ubuntu-latest
