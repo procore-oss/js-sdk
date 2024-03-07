@@ -1,5 +1,17 @@
 # Change Log
 
+## 4.2.0 (March 2024)
+
+* Move repo to <https://github.com/procore-oss/js-sdk>
+* Update package.json dependencies to latest versions
+  * via dependabot PRs
+  * Explicitly mention we support node 14, 16, 17, 18, 19, 20, 21 but
+    emphasize latest LTS version
+* Setup repository standards (CODE_OF_CONDUCT.md, SECURITY.md, CONTRIBUTING.md)
+* Move tests to GitHub Actions
+* Update badges in README.md
+* Add check for all PR commits to be signed to meet our [DCO](https://github.com/apps/dco/) requirement
+
 ## 4.1.0 (November 2023)
 
 * Update codes to be consistent of API hostname `api.procore.com`
