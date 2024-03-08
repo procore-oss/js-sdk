@@ -1,6 +1,7 @@
 .env
 .idea
 .npmrc
+.nvmrc
 .nyc_output
 *DS_Store
 *-debug.log
