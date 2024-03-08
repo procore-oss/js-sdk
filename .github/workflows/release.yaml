@@ -32,6 +32,9 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
+      - name: Install Dependencies
+        if: ${{ github.event_name == 'workflow_dispatch' || steps.check.outputs.changed == 'true' }}
+        run: yarn install
       - name: Compile source
         if: ${{ github.event_name == 'workflow_dispatch' || steps.check.outputs.changed == 'true' }}
         run: yarn run compile
