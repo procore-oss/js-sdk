@@ -1,16 +1,16 @@
 {
   "name": "@procore/js-sdk",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "A wrapper for the procore API",
   "main": "dist/index.js",
   "files": [
     "/dist"
   ],
   "types": "dist/types",
-  "homepage": "https://github.com/procore/js-sdk",
+  "homepage": "https://github.com/procore-oss/js-sdk",
   "repository": {
     "type": "git",
-    "url": "https://github.com/procore/js-sdk.git"
+    "url": "https://github.com/procore-oss/js-sdk.git"
   },
   "engines": {
     "node": ">=16 || 14 >=14.17"
