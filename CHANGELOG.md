@@ -1,6 +1,11 @@
 # Change Log
 
-## 4.2.0 (March 2024)
+## 4.2.1 (March 8 2024)
+
+* Update package urls to point to new repo
+* Use new GitHub Action to handle release tagging
+
+## 4.2.0 (March 7 2024)
 
 * Move repo to <https://github.com/procore-oss/js-sdk>
 * Update package.json dependencies to latest versions
