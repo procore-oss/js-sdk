@@ -35,7 +35,7 @@
     "@types/chai": "^4.3.4",
     "@types/core-js": "^2.5.5",
     "@types/fetch-mock": "^7.3.5",
-    "@types/isomorphic-fetch": "^0.0.36",
+    "@types/isomorphic-fetch": "^0.0.39",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.11.24",
     "@types/qs": "^6.9.7",
