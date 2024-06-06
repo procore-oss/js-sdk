@@ -2,9 +2,9 @@ name: "Custom CodeQL"
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 permissions:
   contents: read
 jobs:
@@ -19,17 +19,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'typescript', 'javascript' ]
+        language: ['typescript', 'javascript']
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: ${{ matrix.language }}
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:${{matrix.language}}"
+      - name: Checkout repository
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@c99bbc0c74b76ffa9be1dea4e8bc8c73d945d43f # v3
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@c99bbc0c74b76ffa9be1dea4e8bc8c73d945d43f # v3
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@c99bbc0c74b76ffa9be1dea4e8bc8c73d945d43f # v3
+        with:
+          category: "/language:${{matrix.language}}"
