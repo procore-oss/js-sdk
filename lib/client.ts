@@ -139,18 +139,21 @@ export class Client {
 
     return url;
   };
-
+  
   private version = (version: string = this.options.defaultVersion): string => {
-    const [, restVersion = undefined] = version.match(/(^v[1-9]\d*\.\d+$)/) || [];
-    const [, vapidVersion = undefined] = version.match(/(^vapid)\/?$/) || [];
+  if (version === 'unversioned') {
+    return ''; // no prefix
+  }
 
-    if (restVersion) {
-      return `rest/${restVersion}`;
-    } else if (vapidVersion) {
-      return vapidVersion;
-    } else {
-      throw new Error(`'${version}' is an invalid Procore API version`)
-    }
+  const [, restVersion = undefined] = version.match(/^(v[1-9]\d*\.\d+)$/) || [];
+  const [, vapidVersion = undefined] = version.match(/^(vapid)\/?$/) || [];
+
+  if (restVersion) {
+    return `rest/${restVersion}`;
+  } else if (vapidVersion) {
+    return vapidVersion;
+  } else {
+    throw new Error(`'${version}' is an invalid Procore API version`);
   }
 }
 
