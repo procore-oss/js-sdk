@@ -123,7 +123,13 @@ export class Client {
       this.urlConfig(endpoint as EndpointConfig);
 
   private urlConfig = ({ base, action, params = {}, qs, version }: EndpointConfig): string => {
-    let url = `${this.options.apiHostname}/${this.version(version)}${replaceParams(base, params)}`;
+    let url: string;
+
+    if (this.version(version) === '') {
+      url = `${this.options.apiHostname}${replaceParams(base, params)}`;
+    } else {
+      url = `${this.options.apiHostname}/${this.version(version)}${replaceParams(base, params)}`;
+    }
 
     if (notNil(params.id)) {
       url = `${url}/${params.id}`;
@@ -141,19 +147,20 @@ export class Client {
   };
 
   private version = (version: string = this.options.defaultVersion): string => {
-  if (version === 'unversioned') {
-    return ''; // no prefix
-  }
+    if (version === 'unversioned') {
+      return ''; // no prefix
+    }
 
-  const [, restVersion = undefined] = version.match(/^(v[1-9]\d*\.\d+)$/) || [];
-  const [, vapidVersion = undefined] = version.match(/^(vapid)\/?$/) || [];
+    const [, restVersion = undefined] = version.match(/^(v[1-9]\d*\.\d+)$/) || [];
+    const [, vapidVersion = undefined] = version.match(/^(vapid)\/?$/) || [];
 
-  if (restVersion) {
-    return `rest/${restVersion}`;
-  } else if (vapidVersion) {
-    return vapidVersion;
-  } else {
-    throw new Error(`'${version}' is an invalid Procore API version`);
+    if (restVersion) {
+      return `rest/${restVersion}`;
+    } else if (vapidVersion) {
+      return vapidVersion;
+    } else {
+      throw new Error(`'${version}' is an invalid Procore API version`);
+    }
   }
 }
 
