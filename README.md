@@ -88,7 +88,7 @@ const customFormatter = async (response) => {
 };
 
 client.get(
-  { base: "/projects" }, 
+  { base: "/projects" },
   {
     formatter: customFormatter,
     companyId: 1,
@@ -122,6 +122,7 @@ function call, or the `defaultCompanyId` value will be used when appending the
 | `client.get({ base: '/example/{id}', params: { id: 42 } })` | `https://api.procore.com/rest/v1.0/example/42` |
 | `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'v1.1' })` | `https://api.procore.com/rest/v1.1/example/42` |
 | `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'vapid' })` | `https://api.procore.com/vapid/example/42` |
+| `client.get({ base: '/example/{id}', params: { id: 42 }, version: 'unversioned' })` | `https://api.procore.com/example/42` |
 
 ## Responses
 
@@ -239,7 +240,7 @@ import * as sdk from '@procore/js-sdk';
 const client = client(
   authorizer,
   undefined,
-  { 
+  {
     apiHostname: "https://api.procore.com",
     defaultVersion: "v1.1",
     defaultCompanyId: 10,
