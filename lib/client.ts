@@ -139,7 +139,7 @@ export class Client {
 
     return url;
   };
-  
+
   private version = (version: string = this.options.defaultVersion): string => {
   if (version === 'unversioned') {
     return ''; // no prefix
