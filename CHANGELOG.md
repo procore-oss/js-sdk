@@ -1,6 +1,6 @@
 # Change Log
 
-## 4.2.2 (April 16 2025)
+## 4.3.0 (April 16 2025)
 
 * Add support for unversioned API requests with `version: 'unversioned'` option
 
