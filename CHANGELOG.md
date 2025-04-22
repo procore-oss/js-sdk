@@ -1,5 +1,9 @@
 # Change Log
 
+## 4.3.0 (April 16 2025)
+
+* Add support for unversioned API requests with `version: 'unversioned'` option
+
 ## 4.2.1 (March 8 2024)
 
 * Update package urls to point to new repo
@@ -85,14 +89,14 @@ v3.0.1 Version Usage
 const procore = client(authorizer);
 
 // Default version is v1.0
-const { body } = await procore.get({ 
+const { body } = await procore.get({
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 }
 });
 // app.procore.com/rest/v1.0/drawing_areas/42/drawings
 
 // Override default version
-const { body } = await procore.get({ 
+const { body } = await procore.get({
   base: '/drawing_areas/{drawing_area_id}/drawings',
   params: { drawing_area_id: 42 },
   version: 'v1.1' });

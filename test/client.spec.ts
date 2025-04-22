@@ -337,6 +337,16 @@ describe('client', () => {
 
         fetchMock.restore();
       })
+
+      it('still work when unversioned', async () => {
+        fetchMock.get(`${HOSTNAME}/me`, me);
+
+        const { body } = await client.get({ base: '/me', version: 'unversioned' });
+        expect(body).to.eql(me);
+
+        fetchMock.restore();
+      })
+
     })
 
     describe('request using ClientOptions', () => {
